@@ -83,12 +83,16 @@ $userData = $stmt->fetch(PDO::FETCH_ASSOC);
     <div class="info-grid">
         <div class="info-item">
             <span class="label">Nume</span>
-            <span class="value"><?php echo isset($userData['nume']) ? htmlspecialchars($userData['nume']) : 'Nesetat'; ?></span>
+            <span class="value">
+                <?php echo isset($userData['nume']) ? htmlspecialchars($userData['nume']) : 'Nesetat'; ?>
+            </span>
         </div>
 
         <div class="info-item">
             <span class="label">Prenume</span>
-            <span class="value"><?php echo isset($userData['prenume']) ? htmlspecialchars($userData['prenume']) : 'Nesetat'; ?></span>
+            <span class="value">
+                <?php echo isset($userData['prenume']) ? htmlspecialchars($userData['prenume']) : 'Nesetat'; ?>
+            </span>
         </div>
 
         <div class="info-item">
@@ -98,19 +102,31 @@ $userData = $stmt->fetch(PDO::FETCH_ASSOC);
 
         <div class="info-item">
             <span class="label">Telefon</span>
-            <span class="value"><?php echo isset($userData['telefon']) ? htmlspecialchars($userData['telefon']) : '-'; ?></span>
+            <span class="value">
+                <?php echo isset($userData['telefon']) ? htmlspecialchars($userData['telefon']) : '-'; ?>
+            </span>
         </div>
 
         <div class="info-item">
             <span class="label">Județ</span>
-            <span class="value"><?php echo isset($userData['judet']) ? htmlspecialchars($userData['judet']) : '-'; ?></span>
+            <span class="value">
+                <?php echo isset($userData['judet']) ? htmlspecialchars($userData['judet']) : '-'; ?>
+            </span>
         </div>
 
         <div class="info-item">
             <span class="label">Localitate</span>
-            <span class="value"><?php echo isset($userData['oras']) ? htmlspecialchars($userData['oras']) : '-'; ?></span>
+            <span class="value">
+                <?php echo isset($userData['oras']) ? htmlspecialchars($userData['oras']) : '-'; ?>
+            </span>
         </div>
 
+        <div class="info-item">
+            <span class="label">Data Nașterii</span>
+            <span class="value">
+                <?php echo isset($userData['data_nasterii']) ? htmlspecialchars($userData['data_nasterii']) : '-'; ?>
+            </span>
+        </div>
     </div>
 
     <a href="../dashboard.php" class="back-link">← Înapoi la Dashboard</a>
