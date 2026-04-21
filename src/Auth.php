@@ -5,7 +5,6 @@ class Auth
 {
     private $db;
 
-    // Primim conexiunea la baza de date prin constructor
     public function __construct($dbConnection) {
         $this->db = $dbConnection;
     }
