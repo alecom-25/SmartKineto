@@ -1,11 +1,11 @@
 <?php
 // create_test_user.php
-require_once 'src/Database.php';
+require_once '../src/Database.php';
 
 $db = Database::getInstance()->getConnection();
-$user = "AndreiSGD";
-$email = "isandrei@gmail.com";
-$pass = "123456";
+$user = "alexia_25";
+$email = "alecom@gmail.com";
+$pass = "alexia";
 
 $hashed_pass = password_hash($pass, PASSWORD_DEFAULT);
 
