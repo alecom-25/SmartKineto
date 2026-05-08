@@ -6,8 +6,15 @@ if (!isset($_SESSION['user_id'])) {
     exit();
 }
 
+if (!isset($db)) {
+    die("Eroare: Variabila \$db nu a fost creată în init.php!");
+}
+
 $username = $_SESSION['username'];
 $role = $_SESSION['role'];
+
+$stmt = $db->query("SELECT COUNT(*) FROM pending_upgrades WHERE status = 'pending'");
+$nr_cereri = $stmt->fetchColumn();
 ?>
 
 <!DOCTYPE html>
@@ -120,14 +127,25 @@ $role = $_SESSION['role'];
     <?php endif; ?>
 
     <?php if ($role === 'trainer' || $role === 'kineto'): ?>
-        <a href="pages/personal_info.php" class="card-btn staff-card">
+        <a href="pages/personal_information.php" class="card-btn staff-card">
             <span class="icon">👤</span>
             <span>Personal Information</span>
         </a>
         <a href="pages/trainer/my_clients.php" class="card-btn staff-card">
             <span class="icon">👥</span>
-            <span>Pacienții mei</span>
+            <span>Clienții mei</span>
         </a>
+        <?php if ($role === 'trainer'): ?>
+            <a href="pages/trainer/manage_payments.php" class="card-btn staff-card">
+                <span class="icon">📩</span>
+                <span>Cereri abonamente</span>
+                <?php if ($nr_cereri > 0): ?>
+                    <span style="background: red; color: white; padding: 2px 6px; border-radius: 50%; font-size: 12px;">
+                    <?php echo $nr_cereri; ?>
+                </span>
+                <?php endif; ?>
+            </a>
+        <?php endif; ?>
         <a href="pages/trainer/my_schedule.php" class="card-btn staff-card">
             <span class="icon">🕒</span>
             <span>Programul meu</span>
