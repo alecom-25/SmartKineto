@@ -69,16 +69,9 @@ $session_type_id = $sessionType['id'];
 try {
     $stmtInsert = $db->prepare("
         INSERT INTO appointments (user_id, staff_id, session_type_id, booking_date, start_time, status) 
-        VALUES (?, ?, ?, ?, ?, 'pending')
-    ");
+        VALUES (?, ?, ?, ?, ?, 'pending')");
 
-    $stmtInsert->execute([
-        $user_id,
-        $trainer_id,
-        $session_type_id,
-        $date,
-        $time
-    ]);
+    $stmtInsert->execute([$user_id, $trainer_id, $session_type_id, $date, $time]);
 
     // 4. Setăm notificarea pentru flash message
     $_SESSION['dismissed_bookings'] = []; // Resetăm lista de notificări închise ca să o vadă pe cea nouă

@@ -14,16 +14,27 @@ class Auth
         $stmt->execute([$email]);
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        if ($user && password_verify($password, $user['password_hash'])) {
+        if ($user){
+            if (empty($user['password_hash'])){
+                $newHash = password_hash($password, PASSWORD_DEFAULT);
 
-            // 3. Dacă totul e OK, salvăm datele importante în SESIUNE
-            $_SESSION['user_id'] = $user['id'];
-            $_SESSION['username'] = $user['username'];
-            $_SESSION['role'] = $user['role'];
+                $update = $this->db->prepare("UPDATE users SET password_hash = ? WHERE id = ?");
+                $update->execute([$newHash, $user['id']]);
 
-            return true;
+                $_SESSION['user_id'] = $user['id'];
+                $_SESSION['username'] = $user['username'];
+                $_SESSION['role'] = $user['role'];
+                return true;
+            }
+
+            if(password_verify($password, $user['password_hash'])){
+                $_SESSION['user_id'] = $user['id'];
+                $_SESSION['username'] = $user['username'];
+                $_SESSION['role'] = $user['role'];
+
+                return true;
+            }
         }
-
         return false;
     }
 

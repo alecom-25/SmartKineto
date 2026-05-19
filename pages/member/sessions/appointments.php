@@ -19,7 +19,7 @@ $active_sub = $stmt->fetch();
 
 if (!$active_sub) {
     // Dacă nu are abonament, îl trimitem la pagina de planuri cu un mesaj
-    header("Location: choose_plan.php?error=no_active_sub");
+    header("Location: ../abonament/abonament.php");
     exit();
 }
 
@@ -46,7 +46,9 @@ $stmtUpcoming = $db->prepare("
     SELECT a.*, st.name as session_name, st.location, ud.nume as trainer_fname, ud.prenume as trainer_lname
     FROM appointments a JOIN session_types st ON a.session_type_id = st.id 
     JOIN user_details ud ON a.staff_id = ud.user_id WHERE a.user_id = ? 
-    AND a.booking_date BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 7 DAY) AND a.status IN ('approved', 'rescheduled')
+    AND ( a.booking_date > CURDATE() OR (a.booking_date = CURDATE() AND a.start_time > CURTIME()))
+    AND a.booking_date <= DATE_ADD(CURDATE(), INTERVAL 7 DAY) 
+    AND a.status IN ('approved', 'rescheduled')
     ORDER BY a.booking_date, a.start_time");
 $stmtUpcoming->execute([$user_id]);
 $upcoming_sessions = $stmtUpcoming->fetchAll(PDO::FETCH_ASSOC);
@@ -56,8 +58,8 @@ $stmtHistory = $db->prepare("
     SELECT a.*, st.name as session_name, ud.nume as trainer_fname, ud.prenume as trainer_lname
     FROM appointments a JOIN session_types st ON a.session_type_id = st.id 
     JOIN user_details ud ON a.staff_id = ud.user_id
-    WHERE a.user_id = ? AND (a.booking_date < CURDATE() OR a.status IN ('rejected', 'cancelled'))
-    ORDER BY a.booking_date DESC LIMIT 5");
+    WHERE a.user_id = ? AND ( a.booking_date < CURDATE() OR (a.booking_date = CURDATE() AND a.start_time <= CURTIME())
+    OR a.status IN ('rejected', 'cancelled')) ORDER BY a.booking_date DESC LIMIT 10");
 $stmtHistory->execute([$user_id]);
 $history_sessions = $stmtHistory->fetchAll(PDO::FETCH_ASSOC);
 ?>
@@ -217,7 +219,7 @@ $history_sessions = $stmtHistory->fetchAll(PDO::FETCH_ASSOC);
     <?php if (isset($_SESSION['flash_message'])): ?>
         <div class="alert alert-approved" style="background: #d4edda; color: #155724; border: 1px solid #c3e6cb; padding: 15px; border-radius: 8px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center;">
             <span>✅ <?php echo $_SESSION['flash_message']; ?></span>
-            <a href="#" onclick="this.parentElement.style.display='none'; return false;" style="text-decoration: none; color: inherit; font-weight: bold; font-size: 20px;">&times;</a>
+            <a href="#" onclick="this.parentElement.style.display='none'; return false;" class="close-notif">&times;</a>
         </div>
         <?php unset($_SESSION['flash_message']); ?>
     <?php endif; ?>
@@ -277,7 +279,7 @@ $history_sessions = $stmtHistory->fetchAll(PDO::FETCH_ASSOC);
                 <td><?php echo $h['session_name']; ?></td>
                 <td><?php echo $h['trainer_fname']; ?></td>
                 <td>
-                    <span style="color: <?php echo ($h['status'] == 'approved') ? 'green' : 'red'; ?>">
+                    <span style="color: <?php echo ($h['status'] == 'approved' or $h['status'] == 'rescheduled') ? 'green' : 'red'; ?>">
                         <?php echo strtoupper($h['status']); ?>
                     </span>
                 </td>

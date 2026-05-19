@@ -1,8 +1,8 @@
 <?php
-require_once __DIR__ . '/../../init.php';
+require_once __DIR__ . '/../../../init.php';
 
 if (!isset($_SESSION['user_id'])) {
-    header("Location: ../../login.php");
+    header("Location: ../../../login.php");
     exit();
 }
 
@@ -15,6 +15,12 @@ $user_id = $_SESSION['user_id'];
 $stmt = $db->prepare("SELECT * FROM subscriptions WHERE user_id = ? LIMIT 1");
 $stmt->execute([$user_id]);
 $sub = $stmt->fetch(PDO::FETCH_ASSOC);
+
+if (!$sub) {
+    // Dacă nu are abonament, îl trimitem la pagina de planuri cu un mesaj
+    header("Location: choose_plan.php");
+    exit();
+}
 
 $today = date('Y-m-d');
 
@@ -179,7 +185,7 @@ if ($rejected_request) {
 <body>
 
 <div class="container">
-    <a href="../../dashboard.php" style="text-decoration: none; color: #7f8c8d;">← Dashboard</a>
+    <a href="../../../dashboard.php" style="text-decoration: none; color: #7f8c8d;">← Dashboard</a>
 
 <!--    --><?php //if ($rejected_request): ?>
 <!--        <div style="background: #f8d7da; color: #721c24; padding: 15px; border-radius: 8px; border: 1px solid #f5c6cb; margin-bottom: 20px; position: relative;">-->
@@ -239,7 +245,7 @@ if ($rejected_request) {
             <div class="sub-actions">
                 <a href="choose_plan.php" class="btn-action">Schimbă sau Prelungește</a>
 
-                <form action="suspend.php" method="POST" onsubmit="return confirm('Sigur dorești să modifici starea abonamentului?');">
+                <form action="../suspend.php" method="POST" onsubmit="return confirm('Sigur dorești să modifici starea abonamentului?');">
                 <button type="submit" class="btn-suspend">
                     <?php echo $sub['is_suspended'] ? 'Reactivează Abonament' : 'Intrerupere Abonament'; ?>
                 </button>
