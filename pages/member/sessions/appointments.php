@@ -219,7 +219,7 @@ $history_sessions = $stmtHistory->fetchAll(PDO::FETCH_ASSOC);
             <span>✅ <?php echo $_SESSION['flash_message']; ?></span>
             <a href="#" onclick="this.parentElement.style.display='none'; return false;" style="text-decoration: none; color: inherit; font-weight: bold; font-size: 20px;">&times;</a>
         </div>
-        <?php unset($_SESSION['flash_message']); // O ștergem ca să nu apară la refresh ?>
+        <?php unset($_SESSION['flash_message']); ?>
     <?php endif; ?>
     <?php foreach ($all_notifications as $n):
         $notif_key = $n['id'] . '_' . $n['status'];

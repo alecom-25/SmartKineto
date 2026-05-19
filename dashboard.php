@@ -116,7 +116,7 @@ $nr_cereri = $stmt->fetchColumn();
             <span class="icon">📅</span>
             <span>Program Sala</span>
         </a>
-        <a href="pages/member/session_reserving.php" class="card-btn">
+        <a href="pages/member/sessions/appointments.php" class="card-btn">
             <span class="icon">🎟️</span>
             <span>Session Reserving</span>
         </a>
@@ -146,7 +146,7 @@ $nr_cereri = $stmt->fetchColumn();
                 <?php endif; ?>
             </a>
         <?php endif; ?>
-        <a href="pages/trainer/my_schedule.php" class="card-btn staff-card">
+        <a href="pages/trainer/program/manage_sessions.php" class="card-btn staff-card">
             <span class="icon">🕒</span>
             <span>Programul meu</span>
         </a>
