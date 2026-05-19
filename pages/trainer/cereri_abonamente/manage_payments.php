@@ -1,14 +1,14 @@
 <?php
-require_once __DIR__ . '/../../init.php';
+require_once __DIR__ . '/../../../init.php';
 
 if (!isset($_SESSION['user_id'])) {
-    header("Location: ../../login.php");
+    header("Location: ../../../login.php");
     exit();
 }
 
 if ($_SESSION['role'] !== 'trainer') {
 //     die("Acces interzis");
-    header("Location: ../../login.php");
+    header("Location: ../../../login.php");
     exit();
 }
 
@@ -194,7 +194,7 @@ $pending_list = $db->query("SELECT p.*, u.username FROM pending_upgrades p JOIN 
     <?php if(isset($msg)) echo "<p>$msg</p>"; ?>
 
     <div class="btn">
-        <a href="../../dashboard.php" class="btn-return">← Înapoi la Dashboard</a>
+        <a href="../../../dashboard.php" class="btn-return">← Înapoi la Dashboard</a>
         <a href="payment_history.php" class="btn-history">Vezi Istoric Toate Cererile</a>
     </div>
     <table>
