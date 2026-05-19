@@ -1,14 +1,20 @@
 <?php
-require_once __DIR__ . '/../../init.php';
+require_once __DIR__ . '/../../../init.php';
 
 if (!isset($_SESSION['user_id'])) {
-    header("Location: ../../login.php");
+    header("Location: ../../../login.php");
     exit();
 }
 
 if (!isset($db)) {
     die("Eroare: Variabila \$db nu a fost creată în init.php!");
 }
+
+$user_id = $_SESSION['user_id'];
+
+$stmt = $db->prepare("SELECT * FROM subscriptions WHERE user_id = ? LIMIT 1");
+$stmt->execute([$user_id]);
+$sub = $stmt->fetch(PDO::FETCH_ASSOC);
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $params = http_build_query($_POST);
@@ -235,7 +241,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </div>
 
 <p style="text-align:center; margin-top:30px;">
-    <a href="abonament.php">Înapoi fără modificări</a>
+    <?php if(!$sub){?>
+        <a href="../../../dashboard.php">Înapoi fără modificări</a>
+    <?php }else { ?>
+        <a href="abonament.php">Înapoi fără modificări</a>
+    <?php } ?>
+
 </p>
 
 </body>

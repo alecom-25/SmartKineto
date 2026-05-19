@@ -10,6 +10,8 @@ if (!isset($db)) {
     die("Eroare: Variabila \$db nu a fost creată în init.php!");
 }
 
+$trainer_id = $_SESSION['user_id'];
+
 // Preluăm datele (pot veni prin GET de la butoane sau POST de la formularul de reprogramare)
 if (isset($_GET['id'])) {
     $id = $_GET['id'];

@@ -67,7 +67,7 @@ if (!$active_sub) {
         <label for="category">Mod desfășurare:</label>
         <select id="category" onchange="checkNextStep()">
             <option value="">-- Selectează --</option>
-            <option value="individual">Individual (1 la 1)</option>
+            <option value="individual">Individual</option>
             <option value="grup">Grup</option>
         </select>
 
@@ -155,12 +155,12 @@ if (!$active_sub) {
                 const container = document.getElementById('slots_container');
 
                 if (data.length > 0 && data[0] === "lipsa_program") {
-                    container.innerHTML = '<p style="color:red; font-weight:bold;">⚠️ Acest antrenor nu are program stabilit în baza de date pentru această zi.</p>';
+                    container.innerHTML = '<p style="color:red; font-weight:bold;">⚠️ Acest antrenor nu are program stabilit pentru această zi.</p>';
                     document.getElementById('submit_btn').style.display = 'none';
                     return;
                 }
 
-                container.innerHTML = '<h4>Ore disponibile "ca la filme":</h4>';
+                container.innerHTML = '<h4>Ore disponibile:</h4>';
 
                 if (data.length === 0) {
                     container.innerHTML += '<p style="color:orange;">Oups! Nu mai sunt intervale libere pentru această dată.</p>';
