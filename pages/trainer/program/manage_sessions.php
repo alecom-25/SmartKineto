@@ -1,7 +1,7 @@
 <?php
 require_once __DIR__ . '/../../../init.php';
 
-// Verificăm dacă e logat și are rolul corect (presupunem că doar trainer/kineto au acces)
+// Verificăm dacă e logat și are rolul corect
 if (!isset($_SESSION['user_id']) || !in_array($_SESSION['role'], ['trainer', 'kineto'])) {
     header("Location: ../../../login.php");
     exit();
@@ -126,8 +126,7 @@ $sessions = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 <div class="container">
     <div style="margin-bottom: 20px;">
-        <a href="../../../dashboard.php" style="text-decoration: none; color: #333; font-weight: bold;">← Înapoi la
-            Dashboard</a>
+        <a href="../../../dashboard.php" style="text-decoration: none; color: #333; font-weight: bold;">← Înapoi la Dashboard</a>
     </div>
 
     <h1>📅 Programările Mele</h1>

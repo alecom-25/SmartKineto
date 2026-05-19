@@ -1,8 +1,8 @@
 <?php
-require_once __DIR__ . '/../../init.php';
+require_once __DIR__ . '/../../../init.php';
 
 if (!isset($_SESSION['user_id'])) {
-    header("Location: ../../login.php");
+    header("Location: ../../../login.php");
     exit();
 }
 
@@ -143,7 +143,7 @@ $activities = $stmt->fetchAll(PDO::FETCH_ASSOC);
     </table>
 
     <br>
-    <a href="../../dashboard.php" style="color: #3498db; text-decoration: none;">← Înapoi la Dashboard</a>
+    <a href="../../../dashboard.php" style="color: #3498db; text-decoration: none;">← Înapoi la Dashboard</a>
 </div>
 
 </body>

@@ -1,14 +1,14 @@
 <?php
-require_once __DIR__ . '/../../init.php';
+require_once __DIR__ . '/../../../init.php';
 
 if (!isset($_SESSION['user_id'])) {
-    header("Location: ../../login.php");
+    header("Location: ../../../login.php");
     exit();
 }
 
 if ($_SESSION['role'] !== 'trainer') {
 //     die("Acces interzis");
-    header("Location: ../../login.php");
+    header("Location: ../../../login.php");
     exit();
 }
 

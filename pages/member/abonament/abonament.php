@@ -245,7 +245,7 @@ if ($rejected_request) {
             <div class="sub-actions">
                 <a href="choose_plan.php" class="btn-action">Schimbă sau Prelungește</a>
 
-                <form action="../suspend.php" method="POST" onsubmit="return confirm('Sigur dorești să modifici starea abonamentului?');">
+                <form action="suspend.php" method="POST" onsubmit="return confirm('Sigur dorești să modifici starea abonamentului?');">
                 <button type="submit" class="btn-suspend">
                     <?php echo $sub['is_suspended'] ? 'Reactivează Abonament' : 'Intrerupere Abonament'; ?>
                 </button>

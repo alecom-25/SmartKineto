@@ -108,7 +108,7 @@ $nr_cereri = $stmt->fetchColumn();
             <span class="icon">👤</span>
             <span>Personal Information</span>
         </a>
-        <a href="pages/member/history.php" class="card-btn">
+        <a href="pages/member/istoric/history.php" class="card-btn">
             <span class="icon">📜</span>
             <span>History & Activity</span>
         </a>
@@ -136,7 +136,7 @@ $nr_cereri = $stmt->fetchColumn();
             <span>Clienții mei</span>
         </a>
         <?php if ($role === 'trainer'): ?>
-            <a href="pages/trainer/manage_payments.php" class="card-btn staff-card">
+            <a href="pages/trainer/cereri_abonamente/manage_payments.php" class="card-btn staff-card">
                 <span class="icon">📩</span>
                 <span>Cereri abonamente</span>
                 <?php if ($nr_cereri > 0): ?>
