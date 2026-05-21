@@ -126,7 +126,7 @@ $sessions = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 <div class="container">
     <div style="margin-bottom: 20px;">
-        <a href="../../../dashboard.php" style="text-decoration: none; color: #333; font-weight: bold;">← Înapoi la Dashboard</a>
+        <a href="my_schedule.php" style="text-decoration: none; color: #333; font-weight: bold;">← Înapoi la Agenda</a>
     </div>
 
     <h1>📅 Programările Mele</h1>
@@ -163,8 +163,18 @@ $sessions = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     <?php if ($s['status'] !== 'cancelled'): ?>
 
                         <?php if ($s['status'] === 'pending'): ?>
-                            <a href="process_session_action.php?id=<?php echo $s['id']; ?>&action=approve"
-                               class="btn btn-approve">✅ Aprobă</a>
+                            <button onclick="toggleApprove(<?php echo $s['id']; ?>, '<?php echo $s['booking_date']; ?>',
+                                    '<?php echo $s['start_time']; ?>')" class="btn btn-approve">✅ Aprobă</button>
+
+                            <form id="approve-form-<?php echo $s['id']; ?>" class="reschedule-form" action="process_session_action.php" method="POST">
+                                <input type="hidden" name="id" value="<?php echo $s['id']; ?>">
+                                <input type="hidden" name="action" value="approve">
+                                <label style="font-size:12px;">Alege Sala:</label>
+                                <select name="room_id" id="room-approve-<?php echo $s['id']; ?>" required style="width:100%; padding:5px; margin-bottom:5px;">
+                                    <option value="">Se caută săli...</option>
+                                </select>
+                                <button type="submit" class="btn btn-approve" style="width:100%;">Confirmă Aprobarea</button>
+                            </form>
                         <?php endif; ?>
 
                         <a href="process_session_action.php?id=<?php echo $s['id']; ?>&action=cancel"
@@ -195,12 +205,48 @@ $sessions = $stmt->fetchAll(PDO::FETCH_ASSOC);
 </div>
 
 <script>
+    function toggleApprove(id, date, time) {
+        var form = document.getElementById('approve-form-' + id);
+        if (form.style.display === 'none' || form.style.display === '') {
+            form.style.display = 'block';
+            fetchRooms(date, time, 'room-approve-' + id);
+        } else {
+            form.style.display = 'none';
+        }
+    }
+
+    function fetchRooms(date, time, selectId) {
+        const select = document.getElementById(selectId);
+        select.innerHTML = '<option value="">Se caută săli disponibile...</option>';
+
+        fetch(`get_rooms_availability.php?date=${date}&time=${time}`)
+            .then(res => res.json())
+            .then(data => {
+                select.innerHTML = '<option value="">-- Alege Sala --</option>';
+                data.forEach(room => {
+                    const isFull = parseInt(room.occupied) >= parseInt(room.capacity);
+                    const disabled = isFull ? 'disabled' : '';
+                    const statusText = isFull ? '🔴 PLIN' : `(${room.occupied}/${room.capacity} ocupat)`;
+
+                    select.innerHTML += `<option value="${room.id}" ${disabled}>${room.name} ${statusText}</option>`;
+                });
+            });
+    }
+
     function toggleReschedule(id) {
         var form = document.getElementById('form-' + id);
         if (form.style.display === 'none' || form.style.display === '') {
             form.style.display = 'block';
         } else {
             form.style.display = 'none';
+        }
+    }
+
+    function fetchRoomsForReschedule(id) {
+        const date = document.getElementById('res-date-' + id).value;
+        const time = document.getElementById('res-time-' + id).value;
+        if(date && time) {
+            fetchRooms(date, time, 'room-reschedule-' + id);
         }
     }
 </script>

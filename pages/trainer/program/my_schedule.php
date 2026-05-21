@@ -1,7 +1,7 @@
 <?php
 require_once __DIR__ . '/../../../init.php';
 
-if (!isset($_SESSION['user_id']) || !in_array($_SESSION['role'], ['trainer', 'kinetoterapeut'])) {
+if (!isset($_SESSION['user_id']) || !in_array($_SESSION['role'], ['trainer', 'kineto'])) {
     header("Location: ../../../login.php");
     exit();
 }
@@ -15,16 +15,17 @@ $trainer_id = $_SESSION['user_id'];
 // --- LOGICA 1: ADĂUGARE INTERVAL LIBER ---
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_slot'])) {
     $date = $_POST['available_date'];
-    $time = $_POST['available_time'];
+    $start_time = $_POST['start_time'];
+    $stop_time = $_POST['stop_time'];
 
-    if (!empty($date) && !empty($time)) {
+    if (!empty($date) && !empty($start_time) && !empty($stop_time)) {
         // Verificăm dacă intervalul există deja ca să nu îl duplicăm
-        $check = $db->prepare("SELECT id FROM staff_availability WHERE trainer_id = ? AND available_date = ? AND start_time = ?");
-        $check->execute([$trainer_id, $date, $time]);
+        $check = $db->prepare("SELECT id FROM staff_availability WHERE trainer_id = ? AND available_date = ? AND start_time = ? AND end_time = ?");
+        $check->execute([$trainer_id, $date, $start_time, $stop_time]);
 
         if ($check->rowCount() == 0) {
-            $stmt = $db->prepare("INSERT INTO staff_availability (trainer_id, available_date, start_time) VALUES (?, ?, ?)");
-            $stmt->execute([$trainer_id, $date, $time]);
+            $stmt = $db->prepare("INSERT INTO staff_availability (trainer_id, available_date, start_time, end_time) VALUES (?, ?, ?, ?)");
+            $stmt->execute([$trainer_id, $date, $start_time, $stop_time]);
             $_SESSION['schedule_msg'] = "✅ Intervalul de lucru a fost adăugat cu succes!";
         } else {
             $_SESSION['schedule_msg'] = "⚠️ Ai adăugat deja acest interval de lucru.";
@@ -34,25 +35,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_slot'])) {
     exit();
 }
 
-// --- LOGICA 2: PRELUARE DATE PENTRU TABELUL DE JOS ---
-// Luăm toate orele pe care trainerul le-a marcat ca fiind disponibile de azi înainte
-$stmtSlots = $db->prepare("
-    SELECT sa.id as slot_id, sa.available_date, sa.start_time,
-           a.id as app_id, a.status, a.user_id,
-           ud.nume as client_nume, ud.prenume as client_prenume,
-           st.name as session_name
-    FROM staff_availability sa
-    LEFT JOIN appointments a ON sa.trainer_id = a.staff_id 
-         AND sa.available_date = a.booking_date 
-         AND sa.start_time = a.start_time
-         AND a.status IN ('approved', 'rescheduled')
-    LEFT JOIN user_details ud ON a.user_id = ud.user_id
-    LEFT JOIN session_types st ON a.session_type_id = st.id
-    WHERE sa.trainer_id = ? AND sa.available_date >= CURDATE()
-    ORDER BY sa.available_date ASC, sa.start_time ASC
+$stmtAvail = $db->prepare("SELECT available_date, start_time, end_time as stop_time FROM staff_availability 
+                                WHERE trainer_id = ? AND available_date >= CURDATE() ORDER BY available_date ASC");
+$stmtAvail->execute([$trainer_id]);
+$my_schedule = $stmtAvail->fetchAll(PDO::FETCH_ASSOC);
+
+// luam toate programarile antrenorului
+$stmtApps = $db->prepare("
+    SELECT a.*, ud.nume as client_nume, ud.prenume as client_prenume, st.name as session_name, r.name as room_name FROM appointments a 
+    LEFT JOIN user_details ud ON a.user_id = ud.user_id LEFT JOIN session_types st ON a.session_type_id = st.id 
+    LEFT JOIN rooms r ON a.room_id = r.id 
+    WHERE a.staff_id = ? AND a.booking_date >= CURDATE() AND a.status NOT IN ('rejected', 'cancelled')
 ");
-$stmtSlots->execute([$trainer_id]);
-$my_schedule = $stmtSlots->fetchAll(PDO::FETCH_ASSOC);
+$stmtApps->execute([$trainer_id]);
+$apps = $stmtApps->fetchAll(PDO::FETCH_ASSOC);
+
+// grupam programarile dupa data si ora
+$appointments_list = [];
+foreach ($apps as $app) {
+    $appointments_list[$app['booking_date']][$app['start_time']] = $app;
+}
 ?>
 
 <!DOCTYPE html>
@@ -119,68 +121,89 @@ $my_schedule = $stmtSlots->fetchAll(PDO::FETCH_ASSOC);
     <div id="add_slot_form" class="form-box">
         <h3>Adaugă o nouă oră de disponibilitate în calendar</h3>
         <form method="POST" action="">
-            <label for="available_date">Alege Ziua:</label>
+            <label for="available_date">Alege ziua:</label>
             <input type="date" id="available_date" name="available_date" min="<?php echo date('Y-m-d'); ?>" required>
 
-            <label for="available_time">Alege Ora (Fixă, ex: 09:00, 10:00, 14:00):</label>
-            <input type="time" id="available_time" name="available_time" required>
+            <label for="start_time">Alege ora de start:</label>
+            <input type="time" id="start_time" name="start_time" required>
+
+            <label for="stop_time">Alege ora de terminare:</label>
+            <input type="time" id="stop_time" name="stop_time" required>
 
             <button type="submit" name="add_slot" class="btn btn-blue" style="width: 100%; margin-top: 15px;">Salvează Intervalul ca Disponibil</button>
         </form>
     </div>
 
-    <h2>📋 Agenda mea (Ore definite & Stare actuală)</h2>
+    <h2>📋 Agenda mea</h2>
     <table>
         <thead>
         <tr>
             <th>Data și Ora</th>
             <th>Stare</th>
             <th>Client</th>
-            <th>Tip Antrenament Solicitat</th>
+            <th>Tip Antrenament </th>
+            <th>Sala </th>
         </tr>
         </thead>
         <tbody>
-        <?php if (empty($my_schedule)): ?>
-            <tr>
-                <td colspan="4" style="text-align: center; color: #777; font-style: italic;">Nu ai adăugat încă niciun interval orar de lucru în calendar.</td>
-            </tr>
-        <?php else: ?>
-            <?php foreach ($my_schedule as $slot): ?>
+            <?php if (empty($my_schedule)): ?>
                 <tr>
-                    <td>
-                        <strong><?php echo date('d.m.Y', strtotime($slot['available_date'])); ?></strong>
-                        la ora <?php echo substr($slot['start_time'], 0, 5); ?>
-                    </td>
-                    <td>
-                        <?php if (empty($slot['app_id'])): ?>
-                            <span class="badge badge-free">LIBER</span>
-                        <?php elseif ($slot['status'] === 'pending'): ?>
-                            <span class="badge badge-pending">CERERE PENDING</span>
-                        <?php else: ?>
-                            <span class="badge badge-busy">OCUPAT</span>
-                        <?php endif; ?>
-                    </td>
-                    <td>
-                        <?php
-                        if (!empty($slot['client_nume'])) {
-                            echo $slot['client_nume'] . ' ' . $slot['client_prenume'];
-                        } else {
-                            echo '<span style="color:#aaa;">-</span>';
-                        }
-                        ?>
-                    </td>
-                    <td>
-                        <?php
-                        if (!empty($slot['session_name'])) {
-                            echo '<strong>' . $slot['session_name'] . '</strong>';
-                        } else {
-                            echo '<span style="color:#aaa;">Nicio rezervare</span>';
-                        }
-                        ?>
-                    </td>
+                    <td colspan="4" style="text-align: center; color: #777; font-style: italic;">Nu ai adăugat încă niciun interval orar de lucru în calendar.</td>
                 </tr>
-            <?php endforeach; ?>
-        <?php endif; ?>
+            <?php else: ?>
+                <?php foreach ($my_schedule as $day):
+                    echo "<tr><td colspan='4' class='day-header'>📅 " . date('d.m.Y', strtotime($day['available_date'])) .
+                    " (De la " . substr($day['start_time'], 0, 5) . " la " . substr($day['stop_time'], 0, 5) . ")</td></tr>";
+
+                    $start_ts = strtotime($day['available_date'] . ' ' . $day['start_time']);
+                    $end_ts = strtotime($day['available_date'] . ' ' . $day['stop_time']);
+
+                    for ($i = $start_ts; $i < $end_ts; $i += 3600):
+                        $time_db = date('H:i:s', $i);
+                        $time_display = date('H:i', $i);
+                        $app = isset($appointments_list[$day['available_date']][$time_db]) ? $appointments_list[$day['available_date']][$time_db] : null; ?>
+                        <tr>
+                            <td><strong><?php echo $time_display; ?></strong></td>
+                            <td>
+                                <?php if (!$app): ?>
+                                    <span class="badge badge-free">LIBER</span>
+                                <?php elseif ($app['status'] === 'pending'): ?>
+                                    <span class="badge badge-pending">CERERE PENDING</span>
+                                <?php else: ?>
+                                    <span class="badge badge-busy">OCUPAT</span>
+                                <?php endif; ?>
+                            </td>
+                            <td>
+                                <?php
+                                if (!empty($app['client_nume'])) {
+                                    echo $app['client_nume'] . ' ' . $app['client_prenume'];
+                                } else {
+                                    echo '<span style="color:#aaa;">-</span>';
+                                }
+                                ?>
+                            </td>
+                            <td>
+                                <?php
+                                if (!empty($app['session_name'])) {
+                                    echo '<strong>' . $app['session_name'] . '</strong>';
+                                } else {
+                                    echo '<span style="color:#aaa;">Nicio rezervare</span>';
+                                }
+                                ?>
+                            </td>
+                            <td>
+                                <?php
+                                if ($app && !empty($app['room_name'])) {
+                                    echo '<span style="color:#e67e22; font-weight:bold;">📍 ' . $app['room_name'] . '</span>';
+                                } else {
+                                    echo '<span style="color:#aaa;">-</span>';
+                                }
+                                ?>
+                            </td>
+                        </tr>
+                    <?php endfor;
+                endforeach;
+             endif;?>
         </tbody>
     </table>
 </div>

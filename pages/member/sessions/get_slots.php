@@ -24,7 +24,7 @@ if (!$availability) {
 }
 
 // 2. Luăm programările deja existente pentru acea zi ca să le eliminăm
-$stmtBooked = $db->prepare("SELECT start_time FROM appointments WHERE staff_id = ? AND booking_date = ? AND status != 'rejected'");
+$stmtBooked = $db->prepare("SELECT start_time FROM appointments WHERE staff_id = ? AND booking_date = ? AND status != 'rejected' AND status != 'pending'");
 $stmtBooked->execute([$trainer_id, $date]);
 $booked_slots = $stmtBooked->fetchAll(PDO::FETCH_COLUMN);
 
