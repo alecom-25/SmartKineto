@@ -43,9 +43,10 @@ $all_notifications = $stmtNotif->fetchAll(PDO::FETCH_ASSOC);
 
 // --- 2. PRELUARE ȘEDINȚE VIITOARE (Următoarele 7 zile) ---
 $stmtUpcoming = $db->prepare("
-    SELECT a.*, st.name as session_name, st.location, ud.nume as trainer_fname, ud.prenume as trainer_lname
+    SELECT a.*, st.name as session_name, st.location, ud.nume as trainer_fname, ud.prenume as trainer_lname, r.name as room_name
     FROM appointments a JOIN session_types st ON a.session_type_id = st.id 
-    JOIN user_details ud ON a.staff_id = ud.user_id WHERE a.user_id = ? 
+    JOIN user_details ud ON a.staff_id = ud.user_id 
+    LEFT JOIN rooms r ON a.room_id = r.id WHERE a.user_id = ?
     AND ( a.booking_date > CURDATE() OR (a.booking_date = CURDATE() AND a.start_time > CURTIME()))
     AND a.booking_date <= DATE_ADD(CURDATE(), INTERVAL 7 DAY) 
     AND a.status IN ('approved', 'rescheduled')
@@ -55,9 +56,10 @@ $upcoming_sessions = $stmtUpcoming->fetchAll(PDO::FETCH_ASSOC);
 
 // --- 3. PRELUARE ISTORIC (Ultimele 5 ședințe trecute sau respinse) ---
 $stmtHistory = $db->prepare("
-    SELECT a.*, st.name as session_name, ud.nume as trainer_fname, ud.prenume as trainer_lname
+    SELECT a.*, st.name as session_name, ud.nume as trainer_fname, ud.prenume as trainer_lname, r.name as room_name
     FROM appointments a JOIN session_types st ON a.session_type_id = st.id 
     JOIN user_details ud ON a.staff_id = ud.user_id
+    LEFT JOIN rooms r ON a.room_id = r.id
     WHERE a.user_id = ? AND ( a.booking_date < CURDATE() OR (a.booking_date = CURDATE() AND a.start_time <= CURTIME())
     OR a.status IN ('rejected', 'cancelled')) ORDER BY a.booking_date DESC LIMIT 10");
 $stmtHistory->execute([$user_id]);
@@ -255,7 +257,11 @@ $history_sessions = $stmtHistory->fetchAll(PDO::FETCH_ASSOC);
                         | <?php echo substr($s['start_time'], 0, 5); ?>
                     </div>
                     <h3><?php echo $s['session_name']; ?></h3>
-                    <p>📍 Locație: <strong><?php echo ucfirst($s['location']); ?></strong></p>
+                    <p>📍 Locație: <strong><?php
+                            if (!empty($s['room_name'])) {
+                                echo $s['room_name'];
+                            } else {
+                                echo ucfirst($s['location']);} ?></strong></p>
                     <p>👤 Antrenor: <?php echo $s['trainer_fname'] . ' ' . $s['trainer_lname']; ?></p>
                 </div>
             <?php endforeach; ?>

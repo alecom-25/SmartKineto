@@ -62,25 +62,35 @@ if (!$active_sub) {
         <button class="btn-choice" onclick="selectType('kineto')">🏥 Kinetoterapie</button>
     </div>
 
-    <div id="step2" class="step-section">
+    <div id="step2_fitness" class="step-section">
         <h3>2. Detalii ședință:</h3>
         <label for="category">Mod desfășurare:</label>
-        <select id="category" onchange="checkNextStep()">
+        <select id="category" onchange="checkNextStepFitness()">
             <option value="">-- Selectează --</option>
             <option value="individual">Individual</option>
             <option value="grup">Grup</option>
         </select>
 
         <label for="location">Locație:</label>
-        <select id="location" onchange="checkNextStep()">
+        <select id="location" onchange="checkNextStepFitness()">
             <option value="">-- Selectează --</option>
             <option value="interior">Interior (În sală)</option>
             <option value="exterior">Exterior (În aer liber)</option>
         </select>
     </div>
 
+    <div id="step2_kineto" class="step-section">
+        <h3>2. Tipul procedurii:</h3>
+        <label for="category_kineto">Alege serviciul dorit:</label>
+        <select id="category_kineto" onchange="checkNextStepKineto()">
+            <option value="">-- Selectează --</option>
+            <option value="evaluare">📋 Evaluare inițială / Verificare</option>
+            <option value="masaj">💆 Masaj de relaxare / Terapeutic</option>
+        </select>
+    </div>
+
     <div id="step3" class="step-section">
-        <h3>3. Alege Antrenorul și Data:</h3>
+        <h3>3. Alege Specialistul și Data:</h3>
         <label for="trainer_id">Antrenor / Specialist disponibil:</label>
         <select id="trainer_id" onchange="fetchSlots()">
             <option value="">-- Mai întâi alege tipul la pasul 1 --</option>
@@ -114,7 +124,11 @@ if (!$active_sub) {
         document.getElementById('form_type').value = type;
 
         document.getElementById('step1').classList.remove('active');
-        document.getElementById('step2').classList.add('active');
+        if (type === 'fitness') {
+            document.getElementById('step2_fitness').classList.add('active');
+        } else if (type === 'kineto') {
+            document.getElementById('step2_kineto').classList.add('active');
+        }
 
         // AJAX: Încărcăm antrenorii dinamici (rol: trainer sau kinetoterapeut)
         fetch(`get_trainers.php?type=${type}`)
@@ -131,12 +145,22 @@ if (!$active_sub) {
     }
 
     // Pasul 2: Verificare selecturi pentru a debloca pasul 3
-    function checkNextStep() {
+    function checkNextStepFitness() {
         const cat = document.getElementById('category').value;
         const loc = document.getElementById('location').value;
         if(cat && loc) {
             document.getElementById('form_category').value = cat;
             document.getElementById('form_location').value = loc;
+            document.getElementById('step3').classList.add('active');
+        }
+    }
+
+    function checkNextStepKineto() {
+        const cat = document.getElementById('category_kineto').value;
+
+        if (cat) {
+            document.getElementById('form_category').value = cat; // Salvăm tipul procedurii
+            document.getElementById('form_location').value = 'interior'; // Kineto e mereu în interior
             document.getElementById('step3').classList.add('active');
         }
     }

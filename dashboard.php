@@ -131,10 +131,6 @@ $nr_cereri = $stmt->fetchColumn();
             <span class="icon">👤</span>
             <span>Personal Information</span>
         </a>
-        <a href="pages/trainer/my_clients.php" class="card-btn staff-card">
-            <span class="icon">👥</span>
-            <span>Clienții mei</span>
-        </a>
         <?php if ($role === 'trainer'): ?>
             <a href="pages/trainer/cereri_abonamente/manage_payments.php" class="card-btn staff-card">
                 <span class="icon">📩</span>
@@ -144,6 +140,12 @@ $nr_cereri = $stmt->fetchColumn();
                     <?php echo $nr_cereri; ?>
                 </span>
                 <?php endif; ?>
+            </a>
+        <?php endif; ?>
+        <?php if ($role === 'kineto'): ?>
+            <a href="pages/kineto/clienti/my_clients.php" class="card-btn staff-card">
+                <span class="icon">👥</span>
+                <span>Clienții mei</span>
             </a>
         <?php endif; ?>
         <a href="pages/trainer/program/my_schedule.php" class="card-btn staff-card">

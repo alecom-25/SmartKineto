@@ -42,7 +42,7 @@ $db_category = '';
 $db_location = '';
 
 if ($type == 'kineto') {
-    $db_category = 'kineto';
+    $db_category = ($category == 'masaj') ? 'kineto_masaj' : 'kineto_examen';
 } else if ($type == 'fitness') {
     $db_category = ($category == 'grup') ? 'fitness_group' : 'personal_training';
 }
@@ -51,8 +51,18 @@ if ($location == 'exterior') {
     $db_location = 'exterior';
 } else {
     // Dacă e interior, Personal Training-ul e de obicei în "sala_aparate", grupul în "sala_fitness"
-    $db_location = ($db_category == 'personal_training') ? 'sala_aparate' : 'sala_fitness';
+    //$db_location = ($db_category == 'personal_training') ? 'sala_aparate' : 'sala_fitness';
+    if($db_category == 'personal_training'){
+        $db_location = 'sala_aparate';
+    } else {
+        $db_location = 'sala_fitness';
+    }
+    if ($type == 'kineto'){
+        $db_location = 'sala_kineto';
+    }
 }
+
+echo $db_category; echo $db_location;
 
 // 2. Găsim ID-ul corespunzător în session_types
 $stmtType = $db->prepare("SELECT id FROM session_types WHERE category = ? AND location = ? LIMIT 1");

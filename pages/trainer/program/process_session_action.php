@@ -43,6 +43,7 @@ if (!$appointment) {
     die("Eroare: Ședința nu există.");
 }
 
+$user_id = $appointment['user_id'];
 $user_email = $appointment['user_email'];
 $session_name = $appointment['session_name'];
 $old_date = $appointment['booking_date'];
@@ -61,13 +62,20 @@ function sendNotificationEmail($to, $subject, $message)
 
 // 3. Procesăm Acțiunea
 try {
-    if ($action === 'approve') {
-        $db->prepare("UPDATE appointments SET status = 'approved' WHERE id = ?")->execute([$id]);
+    $room_id = isset($_POST['room_id']) ? $_POST['room_id'] : null;
 
-        $msg = "Salut! Ședința ta de <strong>$session_name</strong> din data de $old_date ($old_time) a fost aprobată de antrenor.";
+    if ($action === 'approve') {
+        $stmtroom = $db->prepare("SELECT name FROM rooms WHERE id = ?");
+        $stmtroom->execute([$room_id]);
+        $roomName = $stmtroom->fetchColumn();
+        $db->prepare("UPDATE appointments SET status = 'approved', room_id = ? WHERE id = ?")->execute([$room_id, $id]);
+        $desc = "$session_name in $roomName";
+        $db->prepare("INSERT INTO  activities_history (user_id, activity_type, description) VALUES (?, 'session', ?)")->execute([$user_id, $desc]);
+
+        $msg = "Salut! Ședința ta de <strong>$session_name</strong> din data de $old_date ($old_time) a fost aprobată de antrenor. Te așteptăm în: <strong>$roomName</strong>";
         sendNotificationEmail($user_email, "Ședință Aprobată - SmartKineto", $msg);
 
-        $_SESSION['flash_msg'] = "Ședința a fost aprobată!";
+        $_SESSION['flash_msg'] = "Ședința a fost aprobată si sala a fost rezervata!";
 
     } elseif ($action === 'cancel') {
         $db->prepare("UPDATE appointments SET status = 'cancelled' WHERE id = ?")->execute([$id]);
@@ -80,14 +88,18 @@ try {
     } elseif ($action === 'reschedule') {
         $new_date = $_POST['new_date'];
         $new_time = $_POST['new_time'];
+        $stmtroom = $db->prepare("SELECT name FROM rooms WHERE id = ?");
+        $stmtroom->execute([$room_id]);
+        $roomName = $stmtroom->fetchColumn();
+
 
         // Actualizăm cu noua dată și schimbăm statusul
-        $db->prepare("UPDATE appointments SET status = 'rescheduled', booking_date = ?, start_time = ? WHERE id = ?")
-            ->execute([$new_date, $new_time, $id]);
+        $db->prepare("UPDATE appointments SET status = 'rescheduled', booking_date = ?, start_time = ?, room_id = ? WHERE id = ?")
+            ->execute([$new_date, $new_time,$room_id, $id]);
 
         $msg = "Salut! Ședința ta de <strong>$session_name</strong> a fost reprogramată. <br>
-                Data veche: $old_date ($old_time) <br>
-                <strong>Data nouă: $new_date ($new_time)</strong>.";
+                Data veche: $old_date ($old_time) <br> <strong>Data nouă: $new_date ($new_time)</strong> 
+                Locația nouă: <strong>$roomName</strong>.";
         sendNotificationEmail($user_email, "Ședință Reprogramată - SmartKineto", $msg);
 
         $_SESSION['flash_msg'] = "Ședința a fost reprogramată cu succes! Data nouă: $new_date ($new_time)";
