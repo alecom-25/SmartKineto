@@ -184,12 +184,15 @@ $sessions = $stmt->fetchAll(PDO::FETCH_ASSOC);
                             Reprogramează
                         </button>
 
-                        <form id="form-<?php echo $s['id']; ?>" class="reschedule-form"
+                        <form id="reschedule-form-<?php echo $s['id']; ?>" class="reschedule-form"
                               action="process_session_action.php" method="POST">
                             <input type="hidden" name="id" value="<?php echo $s['id']; ?>">
                             <input type="hidden" name="action" value="reschedule">
-                            <input type="date" name="new_date" min="<?php echo date('Y-m-d'); ?>" required>
-                            <input type="time" name="new_time" required>
+                            <input type="date" id="res-date-<?php echo $s['id']; ?>" name="new_date" min="<?php echo date('Y-m-d'); ?>" required onchange="fetchRoomsForReschedule(<?php echo $s['id']; ?>)">
+                            <input type="time" id="res-time-<?php echo $s['id']; ?>" name="new_time" required onchange="fetchRoomsForReschedule(<?php echo $s['id']; ?>)">
+                            <select name="room_id" id="room-reschedule-<?php echo $s['id']; ?>" required style="width:100%; padding:5px; margin-bottom:5px;">
+                                <option value="">Alege întâi data și ora</option>
+                            </select>
                             <button type="submit" class="btn btn-approve" style="margin-top: 5px;">Salvează noua oră
                             </button>
                         </form>
@@ -234,7 +237,7 @@ $sessions = $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
     function toggleReschedule(id) {
-        var form = document.getElementById('form-' + id);
+        var form = document.getElementById('reschedule-form-' + id);
         if (form.style.display === 'none' || form.style.display === '') {
             form.style.display = 'block';
         } else {

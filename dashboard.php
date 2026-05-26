@@ -112,7 +112,7 @@ $nr_cereri = $stmt->fetchColumn();
             <span class="icon">📜</span>
             <span>History & Activity</span>
         </a>
-        <a href="pages/member/program.php" class="card-btn">
+        <a href="pages/member/orar.php" class="card-btn">
             <span class="icon">📅</span>
             <span>Program Sala</span>
         </a>
