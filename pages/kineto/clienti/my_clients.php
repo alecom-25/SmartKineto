@@ -14,8 +14,8 @@ $therapist_id = $_SESSION['user_id'];
 
 // Preluăm toți pacienții unici care au avut sau au vreo ședință programată cu acest kinetoterapeut
 $stmt = $db->prepare(" SELECT DISTINCT u.id, ud.nume, ud.prenume, u.email FROM users u
-    JOIN user_details ud ON u.id = ud.user_id JOIN appointments a ON u.id = a.user_id WHERE a.staff_id = ?
-    ORDER BY ud.nume ASC, ud.prenume ASC");
+    JOIN user_details ud ON u.id = ud.user_id JOIN patient_medical_records pmr ON u.id = pmr.patient_id 
+    WHERE pmr.therapist_id = ? ORDER BY ud.nume ASC, ud.prenume ASC");
 $stmt->execute([$therapist_id]);
 $clients = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
@@ -167,7 +167,7 @@ $clients = $stmt->fetchAll(PDO::FETCH_ASSOC);
 <div class="container">
     <div class="nav-header">
         <a href="../../../dashboard.php" class="btn btn-back">← Dashboard</a>
-        <a href="../../admin/register_member.php" class="btn btn-add">➕ Adaugă Pacient Nou</a>
+        <a href="assign_pacient.php" class="btn btn-add">➕ Adaugă Pacient Nou</a>
     </div>
 
     <h1>📋 Management Pacienți - Kinetoterapie</h1>
@@ -218,20 +218,65 @@ $clients = $stmt->fetchAll(PDO::FETCH_ASSOC);
             .then(data => {
                 // Generăm structura HTML dinamic direct în interiorul cardului medical
                 let html = `
-                <h2>Fișă Medicală: ${patientName}</h2>
-                <p><strong>🎂 Vârstă:</strong> ${data.age}</p>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <h2 style="margin: 0;">Fișă Medicală: ${patientName}</h2>
+                    <a href="remove_pacient.php?patient_id=${patientId}"
+                       class="btn"
+                       style="background: #e74c3c; color: white; font-size: 14px;"
+                       onclick="return confirm('Sigur vrei să elimini acest pacient? Toate notele și diagnosticul salvat de tine pentru el vor fi șterse definitiv din lista ta.');">
+                       Elimină din lista mea
+                    </a>
+                </div>
+
+                <p><strong> Vârstă:</strong> ${data.age}</p>
                 <hr style="border: 0; border-top: 1px solid #e2e8f0; margin: 20px 0;">
 
-                <form method="POST" action="save_patient_record.php">
+                <form method="POST" action="save_pacient_record.php">
                     <input type="hidden" name="patient_id" value="${patientId}">
 
                     <label for="diagnosis">📋 Diagnostic medical pus:</label>
-                    <textarea id="diagnosis" name="diagnosis" rows="3" placeholder="Introduceți diagnosticul oficial (ex: Hernie de disc L5-S1)...">${data.record.diagnosis}</textarea>
+                    <textarea id="diagnosis" name="diagnosis" rows="3" placeholder="Introduceți diagnosticul oficial">${data.record.diagnosis}</textarea>
 
                     <label for="therapist_notes">✍️ Note/Observații Kinetoterapeut (Indicații, evoluție):</label>
-                    <textarea id="therapist_notes" name="therapist_notes" rows="4" placeholder="Adăugați note din evoluția tratamentului sau cerințe specifice echipament...">${data.record.therapist_notes}</textarea>
+                    <textarea id="therapist_notes" name="therapist_notes" rows="4" placeholder="Adăugați note din evoluția tratamentului sau cerințe specifice echipament">${data.record.therapist_notes}</textarea>
 
                     <button type="submit" class="btn btn-save">💾 Salvează Fișa Pacientului</button>
+                </form>
+
+                <hr style="border: 0; border-top: 1px solid #e2e8f0; margin: 30px 0;">
+                <h3 style="color: #2980b9;">📅 Programează o nouă ședință</h3>
+                <form method="POST" action="process_therapist_booking.php" style="background: #f8fafc; padding: 20px; border-radius: 8px; border: 1px solid #e2e8f0;">
+                    <input type="hidden" name="patient_id" value="${patientId}">
+
+                    <div style="display: flex; gap: 15px; margin-bottom: 10px;">
+                        <div style="flex: 1;">
+                            <label>Data:</label>
+                            <input type="date" name="booking_date" required style="width:100%; padding:8px;">
+                        </div>
+                        <div style="flex: 1;">
+                            <label>Ora:</label>
+                            <input type="time" name="start_time" required style="width:100%; padding:8px;">
+                        </div>
+                    </div>
+
+                    <div style="display: flex; gap: 15px; margin-bottom: 15px;">
+                        <div style="flex: 1;">
+                            <label>Tip procedură:</label>
+                            <select name="session_type_id" required style="width:100%; padding:8px;">
+                                <option value="">-- Alege procedură --</option>
+                                ${data.services.map(service => `<option value="${service.id}">${service.name}</option>`).join('')}
+                            </select>
+                        </div>
+                        <div style="flex: 1;">
+                            <label>Sala:</label>
+                            <select name="room_id" required style="width:100%; padding:8px;">
+                                <option value="">-- Alege sala --</option>
+                                ${data.rooms.map(room => `<option value="${room.id}">${room.name}</option>`).join('')}
+                            </select>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn" style="background: #2ecc71; color: white; width: 100%;"> Salvează Programarea Aprobată</button>
                 </form>
 
                 <div style="display: flex; gap: 20px; margin-top: 30px;">

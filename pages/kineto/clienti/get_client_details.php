@@ -14,12 +14,12 @@ if (!isset($db)) {
 }
 
 
-// 1. Luăm diagnosticul și notele din tabela medicală
+// Luăm diagnosticul și notele din tabela medicală
 $stmtRecord = $db->prepare("SELECT diagnosis, therapist_notes FROM patient_medical_records WHERE patient_id = ? AND therapist_id = ?");
 $stmtRecord->execute([$patient_id, $therapist_id]);
 $record = $stmtRecord->fetch(PDO::FETCH_ASSOC) ?: ['diagnosis' => '', 'therapist_notes' => ''];
 
-// 2. Luăm vârsta (calculată din data nașterii)
+// Luăm vârsta
 $stmtAge = $db->prepare("SELECT data_nasterii FROM user_details WHERE user_id = ?");
 $stmtAge->execute([$patient_id]);
 $birth_date = $stmtRoom = $stmtAge->fetchColumn();
@@ -28,7 +28,7 @@ if ($birth_date) {
     $age = date_diff(date_create($birth_date), date_create('now'))->y . ' ani';
 }
 
-// 3. Luăm ședințele TRECUTE (Istoric)
+// Luăm ședințele trecute
 $stmtPast = $db->prepare("
     SELECT a.booking_date, a.start_time, st.name as session_name, r.name as room_name
     FROM appointments a
@@ -39,7 +39,7 @@ $stmtPast = $db->prepare("
 $stmtPast->execute([$patient_id, $therapist_id]);
 $past_sessions = $stmtPast->fetchAll(PDO::FETCH_ASSOC);
 
-// 4. Luăm ședințele viitoare
+// Luăm ședințele viitoare
 $stmtFuture = $db->prepare("
     SELECT a.booking_date, a.start_time, st.name as session_name, r.name as room_name, a.status
     FROM appointments a
@@ -50,10 +50,20 @@ $stmtFuture = $db->prepare("
 $stmtFuture->execute([$patient_id, $therapist_id]);
 $future_sessions = $stmtFuture->fetchAll(PDO::FETCH_ASSOC);
 
+//Luam salile disponibile
+$stmtRooms = $db->query("SELECT id, name FROM rooms WHERE type = 'kineto'");
+$rooms = $stmtRooms->fetchAll(PDO::FETCH_ASSOC);
+
+//Luam tipurile de sedinte de kineto disponibile
+$stmtTypes = $db->query("SELECT id, name FROM session_types WHERE category LIKE '%kineto%'");
+$kineto_services = $stmtTypes->fetchAll(PDO::FETCH_ASSOC);
+
 // Trimitem pachetul complet de date către JavaScript
 echo json_encode([
     'age' => $age,
     'record' => $record,
     'past' => $past_sessions,
-    'future' => $future_sessions
+    'future' => $future_sessions,
+    'rooms' => $rooms,
+    'services' => $kineto_services
 ]);

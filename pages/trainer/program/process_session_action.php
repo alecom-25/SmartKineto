@@ -49,7 +49,7 @@ $session_name = $appointment['session_name'];
 $old_date = $appointment['booking_date'];
 $old_time = substr($appointment['start_time'], 0, 5);
 
-// 2. Funcția noastră de Email (Poșta Electronică cerută de prof)
+// fct de email
 function sendNotificationEmail($to, $subject, $message)
 {
     $headers = "MIME-Version: 1.0" . "\r\n";
@@ -68,6 +68,7 @@ try {
         $stmtroom = $db->prepare("SELECT name FROM rooms WHERE id = ?");
         $stmtroom->execute([$room_id]);
         $roomName = $stmtroom->fetchColumn();
+
         $db->prepare("UPDATE appointments SET status = 'approved', room_id = ? WHERE id = ?")->execute([$room_id, $id]);
         $desc = "$session_name in $roomName";
         $db->prepare("INSERT INTO  activities_history (user_id, activity_type, description) VALUES (?, 'session', ?)")->execute([$user_id, $desc]);
