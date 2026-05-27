@@ -1,8 +1,8 @@
 <?php
-require_once __DIR__ . '/../../init.php';
+require_once __DIR__ . '/../../../init.php';
 
 if (!isset($_SESSION['user_id'])) {
-    header("Location: ../../login.php");
+    header("Location: ../../../login.php");
     exit();
 }
 
@@ -67,6 +67,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </style>
     </head>
     <body>
+        <a href="../../../dashboard.php" style="color: #3498db; text-decoration: none;">← Înapoi la Dashboard</a>
         <h1> Inregistrare utilizator: </h1>
         <div class="form-container" style="display: flex; gap: 40px;">
             <form method="POST">
@@ -90,7 +91,5 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <button type="submit">Înregistrează Membru</button>
             </form>
         </div>
-
-        <a href="manage_users.php" style="color: #3498db; text-decoration: none;">← Înapoi la Manage Users</a>
     </body>
 </html>

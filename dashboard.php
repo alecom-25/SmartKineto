@@ -155,11 +155,19 @@ $nr_cereri = $stmt->fetchColumn();
     <?php endif; ?>
 
     <?php if ($role === 'admin'): ?>
-        <a href="pages/admin/manage_users.php" class="card-btn admin-card">
-            <span class="icon">⚙️</span>
-            <span>Gestiune Utilizatori</span>
+        <a href="pages/admin/useri/register_member.php" class="card-btn admin-card">
+            <span class="icon">👤️</span>
+            <span>Adaugă un utilizator</span>
         </a>
-        <a href="pages/admin/reports.php" class="card-btn admin-card">
+        <a href="pages/admin/sali/manage_rooms.php" class="card-btn admin-card">
+            <span class="icon">🏙</span>
+            <span>Gestionare Săli</span>
+        </a>
+        <a href="pages/admin/staff/manage_staff.php" class="card-btn admin-card">
+            <span class="icon">👥️</span>
+            <span>Gestionare Staff</span>
+        </a>
+        <a href="pages/admin/statistics.php" class="card-btn admin-card">
             <span class="icon">📊</span>
             <span>Rapoarte Finale</span>
         </a>
