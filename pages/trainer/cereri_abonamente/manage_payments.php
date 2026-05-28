@@ -31,16 +31,11 @@ if (isset($_POST['approve_id'])) {
 
             $expires_at = date('Y-m-d', strtotime('+1 month'));
             $sqlSub = "INSERT INTO subscriptions (user_id, tier, has_fitness, has_forta, has_kineto, has_vip_perks, expires_at) 
-                       VALUES (?, ?, ?, ?, ?, ?, ?)
-                       ON DUPLICATE KEY UPDATE 
-                       tier=VALUES(tier), has_fitness=VALUES(has_fitness), 
-                       has_forta=VALUES(has_forta), has_kineto=VALUES(has_kineto), 
-                       has_vip_perks=VALUES(has_vip_perks), expires_at=VALUES(expires_at), 
+                       VALUES (?, ?, ?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE tier=VALUES(tier), has_fitness=VALUES(has_fitness), 
+                       has_forta=VALUES(has_forta), has_kineto=VALUES(has_kineto), has_vip_perks=VALUES(has_vip_perks), expires_at=VALUES(expires_at), 
                        is_suspended = 0";
-            $db->prepare($sqlSub)->execute([
-                $req['user_id'], $req['new_tier'], $req['has_fitness'],
-                $req['has_forta'], $req['has_kineto'], $req['has_vip_perks'], $expires_at
-            ]);
+            $db->prepare($sqlSub)->execute([$req['user_id'], $req['new_tier'], $req['has_fitness'],
+                $req['has_forta'], $req['has_kineto'], $req['has_vip_perks'], $expires_at]);
 
             $abonament = "";
             if($req['new_tier'] === 'membru'){
