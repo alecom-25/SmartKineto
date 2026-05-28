@@ -12,9 +12,14 @@ if (!isset($db)) {
 
 $username = $_SESSION['username'];
 $role = $_SESSION['role'];
+$id = $_SESSION['user_id'];
 
 $stmt = $db->query("SELECT COUNT(*) FROM pending_upgrades WHERE status = 'pending'");
 $nr_cereri = $stmt->fetchColumn();
+
+$stmt = $db->prepare("SELECT COUNT(*) FROM appointments WHERE staff_id = ? AND status = 'pending'");
+$stmt->execute([$id]);
+$nr_sessions = $stmt->fetchColumn();
 ?>
 
 <!DOCTYPE html>
@@ -137,8 +142,8 @@ $nr_cereri = $stmt->fetchColumn();
                 <span>Cereri abonamente</span>
                 <?php if ($nr_cereri > 0): ?>
                     <span style="background: red; color: white; padding: 2px 6px; border-radius: 50%; font-size: 12px;">
-                    <?php echo $nr_cereri; ?>
-                </span>
+                        <?php echo $nr_cereri; ?>
+                    </span>
                 <?php endif; ?>
             </a>
         <?php endif; ?>
@@ -151,6 +156,11 @@ $nr_cereri = $stmt->fetchColumn();
         <a href="pages/trainer/program/my_schedule.php" class="card-btn staff-card">
             <span class="icon">🕒</span>
             <span>Programul meu</span>
+            <?php if ($nr_sessions > 0): ?>
+                <span style="background: red; color: white; padding: 2px 6px; border-radius: 50%; font-size: 12px;">
+                        <?php echo $nr_sessions; ?>
+                    </span>
+            <?php endif; ?>
         </a>
     <?php endif; ?>
 

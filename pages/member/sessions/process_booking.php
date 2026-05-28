@@ -37,7 +37,42 @@ $trainer_id = $_POST['trainer_id'];
 $date = $_POST['date'];
 $time = $_POST['time'];
 
-// 1. Mapăm datele din formular la categoriile din baza noastră de date (session_types)
+//VERIFICAM DACA ARE ABONAMENTUL CORESPUNZATOR PENTRU A REZERVA SESIUNEA DORITA
+if($type === 'kineto' && $category === 'masaj') {
+    if ($active_sub['has_kineto'] == 0) {
+        $_SESSION['msj_red'] = "Preț de achitat la recepție: 175 RON.";
+    }else{
+        $_SESSION['msj_red'] = "Beneficiezi de 35% reducere (Preț de achitat la locație: 113.75 RON)";
+    }
+}
+
+if ($type === 'kineto' && $active_sub['has_fitness'] == 0 && $category === 'evaluare') {
+    $_SESSION['error_msg'] = "Abonamentul tău curent nu include sesiuni de evaluare la Kinetoterapie";
+    header("Location: appointments.php");
+    exit();
+}
+
+if ($type === 'fitness' && $active_sub['has_fitness'] == 0) {
+    $_SESSION['error_msg'] = "Abonamentul tău curent nu include sesiuni de Fitness";
+    header("Location: appointments.php");
+    exit();
+}
+
+//VERIFICAM DACA SESIUNEA DORITA NU SE SUPRAPUNE CU ALTE SESIUNI DEJA CONFIRMATE
+$stmtOverlap = $db->prepare("SELECT COUNT(*) FROM appointments WHERE user_id = ? AND booking_date = ? 
+      AND start_time = ? AND status != 'cancelled'");
+$stmtOverlap->execute([$user_id, $date, $time]);
+$is_overlapping = $stmtOverlap->fetchColumn();
+
+if ($is_overlapping > 0) {
+    // daca se afla si in alta sesiune la aceeasi data nu ii permitem inregistrarea alteia in acelasi timp
+    $_SESSION['error_msg'] = "Nu te poți programa! Ai deja o altă sesiune rezervată la exact aceeași oră.";
+    header("Location: appointments.php");
+    exit();
+}
+
+//ALTFEL, INSEGISTRAM SESIUNEA
+// 1. Mapăm datele din formular la categoriile din baza noastră de date
 $db_category = '';
 $db_location = '';
 
