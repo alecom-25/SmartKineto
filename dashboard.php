@@ -167,7 +167,7 @@ $nr_cereri = $stmt->fetchColumn();
             <span class="icon">👥️</span>
             <span>Gestionare Staff</span>
         </a>
-        <a href="pages/admin/statistics.php" class="card-btn admin-card">
+        <a href="pages/admin/rapoarte/statistics.php" class="card-btn admin-card">
             <span class="icon">📊</span>
             <span>Rapoarte Finale</span>
         </a>

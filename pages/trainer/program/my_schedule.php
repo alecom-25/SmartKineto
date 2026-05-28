@@ -12,7 +12,7 @@ if (!isset($db)) {
 
 $trainer_id = $_SESSION['user_id'];
 
-// --- LOGICA 1: ADĂUGARE INTERVAL LIBER ---
+// adaugare interval liber
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_slot'])) {
     $date = $_POST['available_date'];
     $start_time = $_POST['start_time'];
@@ -26,9 +26,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_slot'])) {
         if ($check->rowCount() == 0) {
             $stmt = $db->prepare("INSERT INTO staff_availability (trainer_id, available_date, start_time, end_time) VALUES (?, ?, ?, ?)");
             $stmt->execute([$trainer_id, $date, $start_time, $stop_time]);
-            $_SESSION['schedule_msg'] = "✅ Intervalul de lucru a fost adăugat cu succes!";
+            $_SESSION['schedule_msg'] = " Intervalul de lucru a fost adăugat cu succes!";
         } else {
-            $_SESSION['schedule_msg'] = "⚠️ Ai adăugat deja acest interval de lucru.";
+            $_SESSION['schedule_msg'] = " Ai adăugat deja acest interval de lucru.";
         }
     }
     header("Location: my_schedule.php");
@@ -108,6 +108,7 @@ foreach ($apps as $app) {
     <?php if(isset($_SESSION['schedule_msg'])): ?>
         <div style="background: #e3f2fd; color: #0d47a1; padding: 15px; border-radius: 8px; margin-bottom: 20px; font-weight: bold;">
             <?php echo $_SESSION['schedule_msg']; ?>
+            <!-- &times deseneaza x, face sa poti sa dai click pe x; link-ul/div-ul care il contine/ascunde-l/ramane pagina unde era inainte-->
             <a href="#" onclick="this.parentElement.style.display='none'; return false;" class="close-notif">&times;</a>
         </div>
         <?php unset($_SESSION['schedule_msg']); ?>
