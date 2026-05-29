@@ -13,37 +13,41 @@ if (!isset($db)) {
 if (isset($_GET['delete_id'])) {
     $id_to_delete = (int)$_GET['delete_id'];
 
-    $checkApps = $db->prepare("SELECT COUNT(*) FROM appointments WHERE staff_id = ?");
-    $checkApps->execute([$id_to_delete]);
+    $checkApps = $db->prepare("SELECT COUNT(*) FROM appointments WHERE staff_id = ? OR user_id = ?");
+    $checkApps->execute([$id_to_delete, $id_to_delete]);
     $apps_count = $checkApps->fetchColumn();
 
-    $checkPacients = $db->prepare("SELECT COUNT(*) FROM patient_medical_records WHERE therapist_id = ?");
-    $checkPacients->execute([$id_to_delete]);
+    $checkPacients = $db->prepare("SELECT COUNT(*) FROM patient_medical_records WHERE therapist_id = ? OR patient_id = ?");
+    $checkPacients->execute([$id_to_delete, $id_to_delete]);
     $pacients_count = $checkPacients->fetchColumn();
 
     if ($apps_count > 0 || $pacients_count > 0) {
-        $_SESSION['admin_msg'] = "Nu poți șterge acest membru al staff-ului deoarece are $apps_count programări în istoric și $pacients_count pacienți asociați. Istoricul aplicației trebuie păstrat!";
+        $_SESSION['admin_msg'] = "Nu poți șterge acest utilizator deoarece are $apps_count programări în istoric și $pacients_count înregistrări asociate!";
     } else {
+        $db->prepare("DELETE FROM subscriptions WHERE user_id = ?")->execute([$id_to_delete]);
         $db->prepare("DELETE FROM user_details WHERE user_id = ?")->execute([$id_to_delete]);
         $db->prepare("DELETE FROM users WHERE id = ?")->execute([$id_to_delete]);
 
-        $_SESSION['admin_msg'] = "Angajatul a fost șters cu succes din sistem!";
+        $_SESSION['admin_msg'] = "Utilizatorul a fost șters cu succes din sistem!";
     }
 
     header("Location: manage_staff.php");
     exit();
 }
 
-$stmt = $db->query("SELECT u.id, u.email, u.role, ud.nume, ud.prenume FROM users u 
-    JOIN user_details ud ON u.id = ud.user_id WHERE u.role IN ('trainer', 'kineto') ORDER BY u.role ASC, ud.nume ASC");
-$staff_list = $stmt->fetchAll(PDO::FETCH_ASSOC);
+$stmt = $db->query("SELECT u.id, u.email, u.role, ud.nume, ud.prenume, s.tier FROM users u 
+    JOIN user_details ud ON u.id = ud.user_id 
+    LEFT JOIN subscriptions s ON u.id = s.user_id 
+    WHERE u.role IN ('trainer', 'kineto', 'member') 
+    ORDER BY u.role ASC, ud.nume ASC");
+$user_list = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
 <!DOCTYPE html>
 <html lang="ro">
 <head>
     <meta charset="UTF-8">
-    <title>Gestiune Staff - Admin</title>
+    <title>Gestiune Utilizatori - Admin</title>
     <style>
         body { font-family: 'Segoe UI', sans-serif; background: #f8f9fa; color: #333; padding: 20px; }
         .container { max-width: 1000px; margin: auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
@@ -62,6 +66,7 @@ $staff_list = $stmt->fetchAll(PDO::FETCH_ASSOC);
         .badge { padding: 5px 10px; border-radius: 12px; font-size: 12px; font-weight: bold; text-transform: uppercase; }
         .bg-kineto { background: #9b59b6; color: white; }
         .bg-trainer { background: #3498db; color: white; }
+        .bg-member { background: #2ecc71; color: white; }
 
         .import-box { background: #f1f3f5; padding: 15px; border-radius: 8px; margin-top: 20px; display: flex; align-items: center; gap: 15px; }
     </style>
@@ -72,7 +77,7 @@ $staff_list = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <a href="../../../dashboard.php" class="btn btn-back" style="margin-bottom: 15px;">← Înapoi la Dashboard</a>
 
     <div class="header-actions">
-        <h1 style="margin: 0;">️ Gestiune Staff (Antrenori / Terapeuți)</h1>
+        <h1 style="margin: 0;">️ Gestiune Staff și Membri</h1>
         <div style="display: flex; gap: 10px;">
             <a href="export/export_staff_csv.php" class="btn btn-csv">⬇️ Export CSV</a>
             <a href="export/export_staff_xml.php" class="btn btn-xml">⬇️ Export XML</a>
@@ -86,7 +91,7 @@ $staff_list = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <?php endif; ?>
 
     <div class="import-box">
-        <strong style="margin-right: 10px;">⬆️ Importă Staff nou:</strong>
+        <strong style="margin-right: 10px;">⬆️ Importă Utilizator nou:</strong>
         <form action="import/import_staff.php" method="POST" enctype="multipart/form-data" style="display: flex; gap: 10px; align-items: center; margin: 0;">
             <input type="file" name="file_upload" accept=".csv, .xml" required style="border: 1px solid #ccc; padding: 5px; border-radius: 4px; background: white;">
             <button type="submit" class="btn btn-import">Încarcă Fișierul</button>
@@ -96,32 +101,37 @@ $staff_list = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <table>
         <thead>
         <tr>
-            <th> ID</th>
+            <th> ID </th>
             <th> Nume si Prenume </th>
             <th> Email </th>
-            <th> Rol
+            <th> Rol </th>
+            <th> Abonament </th>
             <th> Acțiuni </th>
         </tr>
         </thead>
         <tbody>
-        <?php if(empty($staff_list)): ?>
-            <tr><td colspan="4" style="text-align:center; color:#777;">Nu există staff înregistrat.</td></tr>
+        <?php if(empty($user_list)): ?>
+            <tr><td colspan="6" style="text-align:center; color:#777;">Nu există utilizatori înregistrați.</td></tr>
         <?php else: ?>
-            <?php foreach($staff_list as $s): ?>
+            <?php foreach($user_list as $s): ?>
                 <tr>
                     <td><?php echo $s['id']; ?></td>
                     <td><strong><?php echo $s['nume'] . ' ' . $s['prenume']; ?></strong></td>
                     <td><?php echo $s['email']; ?></td>
                     <td>
-                            <span class="badge <?php echo $s['role'] === 'kineto' ? 'bg-kineto' : 'bg-trainer'; ?>">
-                                <?php echo $s['role'] === 'kineto' ? 'Kinetoterapie' : 'Fitness'; ?>
+                            <span class="badge <?php echo $s['role'] === 'kineto' ? 'bg-kineto' : ($s['role'] === 'trainer' ? 'bg-trainer' : 'bg-member'); ?>">
+                                <?php echo $s['role'] === 'kineto' ? 'Kinetoterapie' : ($s['role'] === 'trainer' ? 'Fitness' : 'Membru'); ?>
                             </span>
                     </td>
                     <td>
+                        <?php echo $s['role'] === 'member' ? (!empty($s['tier']) ? strtoupper($s['tier']) : 'FĂRĂ ABONAMENT') : '-'; ?>
+                    </td>
+                    <td>
                         <div style="display: flex; gap: 5px;">
-                            <a href="view_staff_schedule.php?id=<?php echo $s['id']; ?>" class="btn" style="background: #3498db; color: white;">📅 Vezi Program</a>
-
-                            <a href="manage_staff.php?delete_id=<?php echo $s['id']; ?>" class="btn" style="background: #e74c3c; color: white;" onclick="return confirm('Sigur vrei să ștergi acest angajat? Acțiunea este ireversibilă!');">🗑️ Șterge</a>
+                            <?php if($s['role'] !== 'member'): ?>
+                                <a href="view_staff_schedule.php?id=<?php echo $s['id']; ?>" class="btn" style="background: #3498db; color: white;">📅 Vezi Program</a>
+                            <?php endif; ?>
+                            <a href="manage_staff.php?delete_id=<?php echo $s['id']; ?>" class="btn" style="background: #e74c3c; color: white;" onclick="return confirm('Sigur vrei să ștergi acest utilizator? Acțiunea este ireversibilă!');">🗑️ Șterge</a>
                         </div>
                     </td>
                 </tr>
