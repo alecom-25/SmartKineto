@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . '/../../../init.php';
+require_once __DIR__ . '/../../../mailer.php';
 
 if (!isset($_SESSION['user_id'])) {
     header("Location: ../../../login.php");
@@ -49,16 +50,26 @@ $session_name = $appointment['session_name'];
 $old_date = $appointment['booking_date'];
 $old_time = substr($appointment['start_time'], 0, 5);
 
-// fct de email
-function sendNotificationEmail($to, $subject, $message)
-{
-    $headers = "MIME-Version: 1.0" . "\r\n";
-    $headers .= "Content-type:text/html;charset=UTF-8" . "\r\n";
-    $headers .= "From: SmartKineto <no-reply@smartkineto.ro>" . "\r\n";
+$info = $db->prepare("SELECT * FROM users WHERE id = ?");
+$info->execute([$user_id]);
+$user = $info->fetch(PDO::FETCH_ASSOC);
 
-    // În realitate se trimite. Pentru XAMPP va rula, dar e posibil să nu plece pe rețea fără setări.
-    mail($to, $subject, $message, $headers);
-}
+$stmt = $db->prepare("SELECT * FROM subscriptions WHERE id = ?");
+$stmt->execute([$user_id]);
+$subscription = $stmt->fetch(PDO::FETCH_ASSOC);
+
+$sub = $subscription['has_kineto'];
+
+// fct de email
+//function sendNotificationEmail($to, $subject, $message)
+//{
+//    $headers = "MIME-Version: 1.0" . "\r\n";
+//    $headers .= "Content-type:text/html;charset=UTF-8" . "\r\n";
+//    $headers .= "From: SmartKineto <no-reply@smartkineto.ro>" . "\r\n";
+//
+//    // În realitate se trimite. Pentru XAMPP va rula, dar e posibil să nu plece pe rețea fără setări.
+//    mail($to, $subject, $message, $headers);
+//}
 
 // 3. Procesăm Acțiunea
 try {
@@ -68,13 +79,22 @@ try {
         $stmtroom = $db->prepare("SELECT name FROM rooms WHERE id = ?");
         $stmtroom->execute([$room_id]);
         $roomName = $stmtroom->fetchColumn();
+        $suma = 0;
+
+        if($session_name == 'Masaj de relaxare'){
+            if($sub == 1){
+                $suma = 131.70;
+            } else {
+                $suma = 175;
+            }
+        }
 
         $db->prepare("UPDATE appointments SET status = 'approved', room_id = ? WHERE id = ?")->execute([$room_id, $id]);
         $desc = "$session_name in $roomName";
-        $db->prepare("INSERT INTO  activities_history (user_id, activity_type, description) VALUES (?, 'session', ?)")->execute([$user_id, $desc]);
+        $db->prepare("INSERT INTO  activities_history (user_id, activity_type, description, amount) VALUES (?, 'session', ?, ?)")->execute([$user_id, $desc, $suma]);
 
         $msg = "Salut! Ședința ta de <strong>$session_name</strong> din data de $old_date ($old_time) a fost aprobată de antrenor. Te așteptăm în: <strong>$roomName</strong>";
-        sendNotificationEmail($user_email, "Ședință Aprobată - SmartKineto", $msg);
+        trimiteMailConfirmare($user_email, $user['username'], $old_date, $old_time, $session_name, $roomName);
 
         $_SESSION['flash_msg'] = "Ședința a fost aprobată si sala a fost rezervata!";
 
@@ -82,7 +102,7 @@ try {
         $db->prepare("UPDATE appointments SET status = 'cancelled' WHERE id = ?")->execute([$id]);
 
         $msg = "Salut! Din păcate, ședința de <strong>$session_name</strong> din data de $old_date a fost anulată de antrenor.";
-        sendNotificationEmail($user_email, "Ședință Anulată - SmartKineto", $msg);
+        trimiteMailAnulare($user_email, $user['username'], $old_date, $session_name);
 
         $_SESSION['flash_msg'] = "Ședința a fost anulată.";
 
@@ -93,7 +113,6 @@ try {
         $stmtroom->execute([$room_id]);
         $roomName = $stmtroom->fetchColumn();
 
-
         // Actualizăm cu noua dată și schimbăm statusul
         $db->prepare("UPDATE appointments SET status = 'rescheduled', booking_date = ?, start_time = ?, room_id = ? WHERE id = ?")
             ->execute([$new_date, $new_time,$room_id, $id]);
@@ -101,7 +120,7 @@ try {
         $msg = "Salut! Ședința ta de <strong>$session_name</strong> a fost reprogramată. <br>
                 Data veche: $old_date ($old_time) <br> <strong>Data nouă: $new_date ($new_time)</strong> 
                 Locația nouă: <strong>$roomName</strong>.";
-        sendNotificationEmail($user_email, "Ședință Reprogramată - SmartKineto", $msg);
+        trimiteMailReprogramare($user_email, $user['username'], $old_date, $old_time, $new_date, $new_time ,$session_name, $roomName);
 
         $_SESSION['flash_msg'] = "Ședința a fost reprogramată cu succes! Data nouă: $new_date ($new_time)";
     }
