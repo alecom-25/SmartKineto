@@ -6,6 +6,7 @@ use PHPMailer\PHPMailer\Exception;
 require_once __DIR__ . '/libs/PHPMailer/src/Exception.php';
 require_once __DIR__ . '/libs/PHPMailer/src/PHPMailer.php';
 require_once __DIR__ . '/libs/PHPMailer/src/SMTP.php';
+require_once __DIR__ . '/config_mail.php';
 
 function trimiteEmail($catre_email, $catre_nume, $subiect, $mesaj_html) {
     $mail = new PHPMailer(true);
@@ -15,8 +16,8 @@ function trimiteEmail($catre_email, $catre_nume, $subiect, $mesaj_html) {
         $mail->isSMTP();
         $mail->Host       = 'smtp.gmail.com';
         $mail->SMTPAuth   = true;
-        $mail->Username   = 'totosicarmelia@gmail.com';
-        $mail->Password   = 'hqpvrxtlyqioppvo';
+        $mail->Username   = MAIL_USER;
+        $mail->Password   = MAIL_PASS;
         $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
         $mail->Port       = 465;
 
