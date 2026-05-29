@@ -53,6 +53,24 @@ if ($zi_curenta >= 1 && $zi_curenta <= 6) {
         .hours { color: #3498db; font-weight: bold; }
 
         .today { background: #e0f2fe; margin: -10px -20px; padding: 10px 20px; border-radius: 8px; border-bottom: none; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        .contact-sidebar {
+            background: white;
+            padding: 24px;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            border-left: 4px solid #3498db;
+            margin-top: 30px;
+            max-width: 1000px;
+            width: 80%; /* Aliniază cu lățimea tabelelor tale */
+        }
+        .contact-sidebar h3 { color: #2c3e50; margin-bottom: 5px; font-size: 1.2rem; }
+        .contact-sidebar .subtitle { color: #7f8c8d; font-size: 0.9rem; margin-bottom: 20px; }
+        .contact-item { display: flex; align-items: flex-start; gap: 15px; margin-bottom: 15px; font-size: 0.95rem; }
+        .contact-icon { font-size: 1.4rem; background: #ebf5fb; padding: 8px; border-radius: 8px; }
+        .customer-service .contact-icon { background: #e8f8f5; }
+        .contact-item strong { color: #34495e; display: block; margin-bottom: 3px; }
+        .contact-item p { color: #2c3e50; margin: 2px 0; font-family: monospace; font-size: 1rem; }
+        .divider { border: 0; border-top: 1px solid #eee; margin: 15px 0; }
     </style>
 </head>
 <body>
@@ -91,6 +109,37 @@ if ($zi_curenta >= 1 && $zi_curenta <= 6) {
     <p style="margin-top: 30px; font-size: 14px; color: #94a3b8;">
         * În zilele de sărbătoare legală, programul poate suferi modificări. Te rugăm să verifici avizierul sălii.
     </p>
+
+    <div class="contact-sidebar">
+        <h3>📞 Contact Rapid & Suport</h3>
+        <p class="subtitle">Ai întrebări despre programări sau ai întârziat? Sună direct:</p>
+
+        <div class="contact-item customer-service">
+            <span class="contact-icon">🏢</span>
+            <div>
+                <strong>Serviciu Clienți (Recepție)</strong>
+                <p>0722 123 456</p>
+            </div>
+        </div>
+
+        <hr class="divider">
+
+        <div class="contact-item">
+            <span class="contact-icon">🏋️‍♂️</span>
+            <div>
+                <strong>Echipa Fitness (Traineri)</strong>
+                <p>Coman Alexia: 0733 987 654</p>
+            </div>
+        </div>
+
+        <div class="contact-item">
+            <span class="contact-icon">🩺</span>
+            <div>
+                <strong>Kinetoterapeuți</strong>
+                <p>Munteanu Raisa: 0755 444 555</p>
+            </div>
+        </div>
+    </div>
 </div>
 
 </body>
