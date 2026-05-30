@@ -33,8 +33,16 @@ $available_slots = [];
 $start = strtotime($availability['start_time']);
 $end = strtotime($availability['end_time']);
 
+$current_date = date('Y-m-d');
+$current_time = date('H:i');
+
 for ($i = $start; $i < $end; $i += 3600) {
     $time = date('H:i', $i);
+
+    if ($date === $current_date && $time <= $current_time) {
+        continue;
+    }
+
     if (!in_array($time . ":00", $booked_slots)) {
         $available_slots[] = $time;
     }

@@ -24,11 +24,10 @@ if (!$active_sub) {
 }
 
 // --- LOGICA DISMISS NOTIFICARE ---
-if (isset($_GET['dismiss']) && isset($_GET['status'])) {
-    $notif_id = $_GET['dismiss'];
-    $notif_status = $_GET['status'];
-    // Salvăm id_status (ex: 5_approved sau 5_rescheduled)
-    $_SESSION['dismissed_bookings'][] = $notif_id . '_' . $notif_status;
+if (isset($_GET['dismiss'])) {
+    $notif_id = (int)$_GET['dismiss'];
+    // Marcăm notificarea ca fiind citită în baza de date
+    $db->prepare("UPDATE appointments SET is_read = 1 WHERE id = ?")->execute([$notif_id]);
     header("Location: appointments.php");
     exit();
 }
@@ -37,7 +36,8 @@ if (isset($_GET['dismiss']) && isset($_GET['status'])) {
 // Căutăm ședințe care nu sunt 'pending' (deci au fost procesate)
 $stmtNotif = $db->prepare("SELECT a.id, a.status, st.name as session_name, a.booking_date 
                             FROM appointments a JOIN session_types st ON a.session_type_id = st.id
-                            WHERE a.user_id = ? AND a.status IN ('approved', 'rejected', 'cancelled', 'rescheduled')");
+                            WHERE a.user_id = ? AND a.status IN ('approved', 'rejected', 'cancelled', 'rescheduled')
+                            AND a.is_read = 0");
 $stmtNotif->execute([$user_id]);
 $all_notifications = $stmtNotif->fetchAll(PDO::FETCH_ASSOC);
 
@@ -246,10 +246,7 @@ $history_sessions = $stmtHistory->fetchAll(PDO::FETCH_ASSOC);
         </div>
         <?php unset($_SESSION['msj_red']); ?>
     <?php endif; ?>
-    <?php foreach ($all_notifications as $n):
-        $notif_key = $n['id'] . '_' . $n['status'];
-        if (isset($_SESSION['dismissed_bookings']) && in_array($notif_key, $_SESSION['dismissed_bookings'])) continue;
-        ?>
+    <?php foreach ($all_notifications as $n):?>
         <div class="alert alert-<?php echo $n['status']; ?>">
             <span>
                 🔔 Ședința de <strong><?php echo $n['session_name']; ?></strong> din data de <?php echo $n['booking_date']; ?>

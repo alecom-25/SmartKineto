@@ -30,6 +30,8 @@ if (isset($_GET['action'])) {
     $action = null;
 }
 
+$custom_message = isset($_POST['custom_message']) ? trim($_POST['custom_message']) : '';
+
 if (!$id || !$action) {
     die("Eroare: Date invalide.");
 }
@@ -60,17 +62,6 @@ $subscription = $stmt->fetch(PDO::FETCH_ASSOC);
 
 $sub = $subscription['has_kineto'];
 
-// fct de email
-//function sendNotificationEmail($to, $subject, $message)
-//{
-//    $headers = "MIME-Version: 1.0" . "\r\n";
-//    $headers .= "Content-type:text/html;charset=UTF-8" . "\r\n";
-//    $headers .= "From: SmartKineto <no-reply@smartkineto.ro>" . "\r\n";
-//
-//    // În realitate se trimite. Pentru XAMPP va rula, dar e posibil să nu plece pe rețea fără setări.
-//    mail($to, $subject, $message, $headers);
-//}
-
 // 3. Procesăm Acțiunea
 try {
     $room_id = isset($_POST['room_id']) ? $_POST['room_id'] : null;
@@ -93,16 +84,14 @@ try {
         $desc = "$session_name in $roomName";
         $db->prepare("INSERT INTO  activities_history (user_id, activity_type, description, amount) VALUES (?, 'session', ?, ?)")->execute([$user_id, $desc, $suma]);
 
-        $msg = "Salut! Ședința ta de <strong>$session_name</strong> din data de $old_date ($old_time) a fost aprobată de antrenor. Te așteptăm în: <strong>$roomName</strong>";
-        trimiteMailConfirmare($user_email, $user['username'], $old_date, $old_time, $session_name, $roomName);
+        trimiteMailConfirmare($user_email, $user['username'], $old_date, $old_time, $session_name, $roomName, $custom_message);
 
         $_SESSION['flash_msg'] = "Ședința a fost aprobată si sala a fost rezervata!";
 
     } elseif ($action === 'cancel') {
         $db->prepare("UPDATE appointments SET status = 'cancelled' WHERE id = ?")->execute([$id]);
 
-        $msg = "Salut! Din păcate, ședința de <strong>$session_name</strong> din data de $old_date a fost anulată de antrenor.";
-        trimiteMailAnulare($user_email, $user['username'], $old_date, $session_name);
+        trimiteMailAnulare($user_email, $user['username'], $old_date, $session_name, $custom_message);
 
         $_SESSION['flash_msg'] = "Ședința a fost anulată.";
 
@@ -117,10 +106,7 @@ try {
         $db->prepare("UPDATE appointments SET status = 'rescheduled', booking_date = ?, start_time = ?, room_id = ? WHERE id = ?")
             ->execute([$new_date, $new_time,$room_id, $id]);
 
-        $msg = "Salut! Ședința ta de <strong>$session_name</strong> a fost reprogramată. <br>
-                Data veche: $old_date ($old_time) <br> <strong>Data nouă: $new_date ($new_time)</strong> 
-                Locația nouă: <strong>$roomName</strong>.";
-        trimiteMailReprogramare($user_email, $user['username'], $old_date, $old_time, $new_date, $new_time ,$session_name, $roomName);
+        trimiteMailReprogramare($user_email, $user['username'], $old_date, $old_time, $new_date, $new_time ,$session_name, $roomName, $custom_message);
 
         $_SESSION['flash_msg'] = "Ședința a fost reprogramată cu succes! Data nouă: $new_date ($new_time)";
     }
