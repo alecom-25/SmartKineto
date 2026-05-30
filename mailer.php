@@ -40,7 +40,7 @@ function trimiteEmail($catre_email, $catre_nume, $subiect, $mesaj_html) {
     }
 }
 
-function trimiteMailConfirmare($email, $nume, $data, $ora, $tip, $sala) {
+function trimiteMailConfirmare($email, $nume, $data, $ora, $tip, $sala, $mesaj_personalizat) {
     $subiect = "Confirmare Rezervare - SmartKineto";
     $mesaj = "
         <div style='font-family: Arial, sans-serif; padding: 20px; color: #333;'>
@@ -50,15 +50,29 @@ function trimiteMailConfirmare($email, $nume, $data, $ora, $tip, $sala) {
             <p>🕒 Ora: <strong>{$ora}</strong></p>
             <p>🏋️‍♂️ Tip: <strong>" . ucfirst($tip) . "</strong></p>
             <p>📍 Sală: <strong>" . ucfirst($sala) . "</strong></p>
+    ";
+
+    if (!empty($mesaj_personalizat)) {
+        $mesaj .= "
+            <div style='background-color: #fcf8e3; border-left: 4px solid #f0ad4e; padding: 15px; margin: 20px 0; border-radius: 4px;'>
+                <p style='margin: 0; color: #8a6d3b; font-size: 14px;'>
+                    <strong>🗨️ Mesaj de la antrenorul tău:</strong><br>
+                    " . nl2br(htmlspecialchars($mesaj_personalizat)) . "
+                </p>
+            </div>
+        ";
+    }
+
+    $mesaj .="
             <hr>
-            <p style='color: #e74c3c;'>⚠️ Nu întârzia mai mult de 15 minute!</p>
+            <p style='color: #e74c3c;'>⚠️ Nu întârzia mai mult de 15 minute, altfel ședința se anulează!</p>
         </div>
     ";
     // Apelăm motorul
     return trimiteEmail($email, $nume, $subiect, $mesaj);
 }
 
-function trimiteMailReprogramare($email, $nume, $old_data, $old_ora, $new_data, $new_ora, $tip, $sala) {
+function trimiteMailReprogramare($email, $nume, $old_data, $old_ora, $new_data, $new_ora, $tip, $sala, $mesaj_personalizat) {
     $subiect = "Reprogramare Rezervare - SmartKineto";
     $mesaj = "
         <div style='font-family: Arial, sans-serif; padding: 20px; color: #333;'>
@@ -70,8 +84,22 @@ function trimiteMailReprogramare($email, $nume, $old_data, $old_ora, $new_data, 
             <p>🕒 Noua Ora: <strong>{$new_ora}</strong></p>
             <p>🏋️‍ Tip: <strong>" . ucfirst($tip) . "</strong></p>
             <p>📍 Sală: <strong>" . ucfirst($sala) . "</strong></p>
-            <hr>
-            <p style='color: #e74c3c;'>⚠️ Nu întârzia mai mult de 15 minute!</p>
+    ";
+
+    if (!empty($mesaj_personalizat)) {
+        $mesaj .= "
+            <div style='background-color: #fcf8e3; border-left: 4px solid #f0ad4e; padding: 15px; margin: 20px 0; border-radius: 4px;'>
+                <p style='margin: 0; color: #8a6d3b; font-size: 14px;'>
+                    <strong>🗨️ Mesaj de la antrenorul tău:</strong><br>
+                    " . nl2br(htmlspecialchars($mesaj_personalizat)) . "
+                </p>
+            </div>
+        ";
+    }
+
+    $mesaj .= "
+        <hr>
+            <p style='color: #e74c3c;'>⚠️ Nu întârzia mai mult de 15 minute, altfel ședința se anulează!</p>
             <p> Pentru orice nelamuriri vă puteți contacta antrenorul sau adminul folosind numerele de telefon afișate pe site </p>
         </div>
     ";
@@ -79,7 +107,7 @@ function trimiteMailReprogramare($email, $nume, $old_data, $old_ora, $new_data, 
     return trimiteEmail($email, $nume, $subiect, $mesaj);
 }
 
-function trimiteMailAnulare($email, $nume, $data, $tip) {
+function trimiteMailAnulare($email, $nume, $data, $tip, $mesaj_personalizat) {
     $subiect = " Anulare Rezervare - SmartKineto";
     $mesaj = "
         <div style='font-family: Arial, sans-serif; padding: 20px; color: #333;'>
@@ -88,6 +116,20 @@ function trimiteMailAnulare($email, $nume, $data, $tip) {
             <p>Datele ședinței: </p>
             <p>📅 Data: <strong>{$data}</strong></p>
             <p>📍 Tip: <strong>" . ucfirst($tip) . "</strong></p>
+    ";
+
+    if (!empty($mesaj_personalizat)) {
+        $mesaj .= "
+            <div style='background-color: #fcf8e3; border-left: 4px solid #f0ad4e; padding: 15px; margin: 20px 0; border-radius: 4px;'>
+                <p style='margin: 0; color: #8a6d3b; font-size: 14px;'>
+                    <strong>🗨️ Mesaj de la antrenorul tău:</strong><br>
+                    " . nl2br(htmlspecialchars($mesaj_personalizat)) . "
+                </p>
+            </div>
+        ";
+    }
+
+    $mesaj .= "
             <hr>
             <p> Pentru orice nelamuriri vă puteți contacta antrenorul sau adminul folosind numerele de telefon afișate pe site </p>
         </div>

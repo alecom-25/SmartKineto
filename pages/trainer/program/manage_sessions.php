@@ -120,6 +120,18 @@ $sessions = $stmt->fetchAll(PDO::FETCH_ASSOC);
             border-radius: 5px;
             border: 1px solid #ddd;
         }
+
+        .custom-msg-input {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-family: inherit;
+            font-size: 12px;
+            box-sizing: border-box;
+            resize: vertical;
+        }
     </style>
 </head>
 <body>
@@ -173,12 +185,20 @@ $sessions = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                 <select name="room_id" id="room-approve-<?php echo $s['id']; ?>" required style="width:100%; padding:5px; margin-bottom:5px;">
                                     <option value="">Se caută săli...</option>
                                 </select>
+                                <textarea name="custom_message" class="custom-msg-input" placeholder="Mesaj opțional" rows="2"></textarea>
                                 <button type="submit" class="btn btn-approve" style="width:100%;">Confirmă Aprobarea</button>
                             </form>
                         <?php endif; ?>
 
-                        <a href="process_session_action.php?id=<?php echo $s['id']; ?>&action=cancel"
-                           class="btn btn-cancel" onclick="return confirm('Sigur vrei să anulezi?');">❌ Anulează</a>
+                        <button onclick="toggleCancel(<?php echo $s['id']; ?>)" class="btn btn-cancel">❌ Anulează</button>
+
+                        <form id="cancel-form-<?php echo $s['id']; ?>" class="reschedule-form" action="process_session_action.php" method="POST">
+                            <input type="hidden" name="id" value="<?php echo $s['id']; ?>">
+                            <input type="hidden" name="action" value="cancel">
+                            <label style="font-size:12px;">Motivul anulării:</label>
+                            <textarea name="custom_message" class="custom-msg-input" placeholder="Ex: Din păcate aparatul este defect..." rows="2"></textarea>
+                            <button type="submit" class="btn btn-cancel" style="width:100%;" onclick="return confirm('Confirmă anularea definitivă!');">Confirmă Anularea</button>
+                        </form>
 
                         <button onclick="toggleReschedule(<?php echo $s['id']; ?>)" class="btn btn-reschedule" >🔄
                             Reprogramează
@@ -193,6 +213,7 @@ $sessions = $stmt->fetchAll(PDO::FETCH_ASSOC);
                             <select name="room_id" id="room-reschedule-<?php echo $s['id']; ?>" required style="width:100%; padding:5px; margin-bottom:5px;">
                                 <option value="">Alege întâi data și ora</option>
                             </select>
+                            <textarea name="custom_message" class="custom-msg-input" placeholder="Motivul reprogramării" rows="2"></textarea>
                             <button type="submit" class="btn btn-approve" style="margin-top: 5px;">Salvează noua oră
                             </button>
                         </form>
@@ -243,6 +264,11 @@ $sessions = $stmt->fetchAll(PDO::FETCH_ASSOC);
         } else {
             form.style.display = 'none';
         }
+    }
+
+    function toggleCancel(id) {
+        var form = document.getElementById('cancel-form-' + id);
+        form.style.display = (form.style.display === 'none' || form.style.display === '') ? 'block' : 'none';
     }
 
     function fetchRoomsForReschedule(id) {
