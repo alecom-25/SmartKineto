@@ -23,7 +23,7 @@ header('Content-Disposition: attachment; filename=staff_smartkineto_' . date('Y-
 $output = fopen('php://output', 'w');
 
 // adaugam BOM (Byte Order Mark) pt ca excel sa recunoasca diacriticile
-fprintf($output, chr(0xEF).chr(0xBB).chr(0xBF));
+fprintf($output, chr(0xEF) . chr(0xBB) . chr(0xBF));
 
 // scriem denumirile coloanelor
 fputcsv($output, ['ID Angajat', 'Nume', 'Prenume', 'Email Contact', 'Rol / Specializare']);

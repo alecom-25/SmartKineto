@@ -225,7 +225,8 @@ $history_sessions = $stmtHistory->fetchAll(PDO::FETCH_ASSOC);
 
 <div class="container">
     <?php if (isset($_SESSION['flash_message'])): ?>
-        <div class="alert alert-approved" style="background: #d4edda; color: #155724; border: 1px solid #c3e6cb; padding: 15px; border-radius: 8px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center;">
+        <div class="alert alert-approved"
+             style="background: #d4edda; color: #155724; border: 1px solid #c3e6cb; padding: 15px; border-radius: 8px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center;">
             <span>✅ <?php echo $_SESSION['flash_message']; ?></span>
             <a href="#" onclick="this.parentElement.style.display='none'; return false;" class="close-notif">&times;</a>
         </div>
@@ -233,26 +234,29 @@ $history_sessions = $stmtHistory->fetchAll(PDO::FETCH_ASSOC);
     <?php endif; ?>
     <?php if (isset($_SESSION['error_msg'])): ?>
         <?php unset($_SESSION['msj_red']); ?>
-        <div class="alert alert-rejected" style="margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center;">
+        <div class="alert alert-rejected"
+             style="margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center;">
             <span><?php echo $_SESSION['error_msg']; ?></span>
             <a href="#" onclick="this.parentElement.style.display='none'; return false;" class="close-notif">&times;</a>
         </div>
         <?php unset($_SESSION['error_msg']); ?>
     <?php endif; ?>
     <?php if (isset($_SESSION['msj_red'])): ?>
-        <div class="alert alert-payment" style="margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center;">
+        <div class="alert alert-payment"
+             style="margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center;">
             <span><?php echo $_SESSION['msj_red']; ?></span>
             <a href="#" onclick="this.parentElement.style.display='none'; return false;" class="close-notif">&times;</a>
         </div>
         <?php unset($_SESSION['msj_red']); ?>
     <?php endif; ?>
-    <?php foreach ($all_notifications as $n):?>
+    <?php foreach ($all_notifications as $n): ?>
         <div class="alert alert-<?php echo $n['status']; ?>">
             <span>
                 🔔 Ședința de <strong><?php echo $n['session_name']; ?></strong> din data de <?php echo $n['booking_date']; ?>
                 a fost <strong><?php echo strtoupper($n['status']); ?></strong>.
             </span>
-            <a href="?dismiss=<?php echo $n['id']; ?>&status=<?php echo $n['status']; ?>" class="close-notif">&times;</a>
+            <a href="?dismiss=<?php echo $n['id']; ?>&status=<?php echo $n['status']; ?>"
+               class="close-notif">&times;</a>
         </div>
     <?php endforeach; ?>
 
@@ -279,10 +283,11 @@ $history_sessions = $stmtHistory->fetchAll(PDO::FETCH_ASSOC);
                             if (!empty($s['room_name'])) {
                                 echo $s['room_name'];
                             } else {
-                                echo ucfirst($s['location']);} ?></strong></p>
+                                echo ucfirst($s['location']);
+                            } ?></strong></p>
                     <p>👤 Antrenor: <?php echo $s['trainer_fname'] . ' ' . $s['trainer_lname']; ?></p>
-                    <?php if($s['category'] == 'kineto_masaj'): ?>
-                        <p> 💳 Preț: <?php echo !empty($active_sub['has_kineto']) ? '113,75' : '175'  ?> RON </p>
+                    <?php if ($s['category'] == 'kineto_masaj'): ?>
+                        <p> 💳 Preț: <?php echo !empty($active_sub['has_kineto']) ? '113,75' : '175' ?> RON </p>
                     <?php endif; ?>
                 </div>
             <?php endforeach; ?>

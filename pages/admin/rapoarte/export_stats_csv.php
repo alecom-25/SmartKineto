@@ -15,7 +15,7 @@ header('Content-Type: text/csv; charset=utf-8');
 header('Content-Disposition: attachment; filename=raport_statistici_' . date('Y-m-d') . '.csv');
 
 $output = fopen('php://output', 'w');
-fprintf($output, chr(0xEF).chr(0xBB).chr(0xBF)); // BOM pentru diacritice în Excel
+fprintf($output, chr(0xEF) . chr(0xBB) . chr(0xBF)); // BOM pentru diacritice în Excel
 
 //statistica utilizatori
 fputcsv($output, ['--- REPARTITIE UTILIZATORI ---']);
@@ -49,21 +49,29 @@ $toate_abonamentele = ['fitness' => 0, 'forta' => 0, 'kineto' => 0, 'tip1' => 0,
 $stmtSubs = $db->query("SELECT tier, has_fitness, has_forta, has_kineto FROM subscriptions WHERE is_suspended = 0");
 $subsData = $stmtSubs->fetchAll(PDO::FETCH_ASSOC);
 
-foreach($subsData as $row) {
-    if($row['tier'] == 'membru') {
-        if($row['has_fitness'] == 1) { $toate_abonamentele['fitness'] += 1; }
-        elseif($row['has_forta'] == 1) { $toate_abonamentele['forta'] += 1; }
-        elseif($row['has_kineto'] == 1) { $toate_abonamentele['kineto'] += 1; }
-    } elseif($row['tier'] == 'premium') {
-        if($row['has_fitness'] == 1 && $row['has_forta'] == 1) { $toate_abonamentele['tip1'] += 1; }
-        elseif($row['has_fitness'] == 1 && $row['has_kineto'] == 1) { $toate_abonamentele['tip2'] += 1; }
-        elseif($row['has_fitness'] == 0) { $toate_abonamentele['tip3'] += 1; }
+foreach ($subsData as $row) {
+    if ($row['tier'] == 'membru') {
+        if ($row['has_fitness'] == 1) {
+            $toate_abonamentele['fitness'] += 1;
+        } elseif ($row['has_forta'] == 1) {
+            $toate_abonamentele['forta'] += 1;
+        } elseif ($row['has_kineto'] == 1) {
+            $toate_abonamentele['kineto'] += 1;
+        }
+    } elseif ($row['tier'] == 'premium') {
+        if ($row['has_fitness'] == 1 && $row['has_forta'] == 1) {
+            $toate_abonamentele['tip1'] += 1;
+        } elseif ($row['has_fitness'] == 1 && $row['has_kineto'] == 1) {
+            $toate_abonamentele['tip2'] += 1;
+        } elseif ($row['has_fitness'] == 0) {
+            $toate_abonamentele['tip3'] += 1;
+        }
     } else {
         $toate_abonamentele['vip'] += 1;
     }
 }
 
-foreach($toate_abonamentele as $tip => $total) {
+foreach ($toate_abonamentele as $tip => $total) {
     fputcsv($output, [strtoupper($tip), $total]);
 }
 fputcsv($output, []);

@@ -78,8 +78,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['file_upload'])) {
                 }
                 fclose($handle);
             }
-        }
-        // fisier xml
+        } // fisier xml
         elseif ($ext === 'xml') {
             // incarcam fisierul xml
             libxml_use_internal_errors(true);
@@ -100,7 +99,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['file_upload'])) {
 
                 $role = (strpos($rol, 'kinetoterapeut') !== false) ? 'kineto' : 'trainer';
 
-                if (empty($email) || empty($nume)){
+                if (empty($email) || empty($nume)) {
                     continue;
                 }
 

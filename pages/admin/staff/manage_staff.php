@@ -49,26 +49,109 @@ $user_list = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <meta charset="UTF-8">
     <title>Gestiune Utilizatori - Admin</title>
     <style>
-        body { font-family: 'Segoe UI', sans-serif; background: #f8f9fa; color: #333; padding: 20px; }
-        .container { max-width: 1000px; margin: auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: #f8f9fa;
+            color: #333;
+            padding: 20px;
+        }
 
-        .header-actions { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding-bottom: 20px; border-bottom: 2px solid #eee; }
+        .container {
+            max-width: 1000px;
+            margin: auto;
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+        }
 
-        .btn { padding: 10px 15px; border-radius: 6px; font-weight: bold; border: none; cursor: pointer; color: white; text-decoration: none; font-size: 14px; display: inline-block; }
-        .btn-back { background: #e9ecef; color: #495057; }
-        .btn-csv { background: #27ae60; }
-        .btn-xml { background: #e67e22; }
-        .btn-import { background: #34495e; }
+        .header-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #eee;
+        }
 
-        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #eee; }
-        th { background: #34495e; color: white; }
-        .badge { padding: 5px 10px; border-radius: 12px; font-size: 12px; font-weight: bold; text-transform: uppercase; }
-        .bg-kineto { background: #9b59b6; color: white; }
-        .bg-trainer { background: #3498db; color: white; }
-        .bg-member { background: #2ecc71; color: white; }
+        .btn {
+            padding: 10px 15px;
+            border-radius: 6px;
+            font-weight: bold;
+            border: none;
+            cursor: pointer;
+            color: white;
+            text-decoration: none;
+            font-size: 14px;
+            display: inline-block;
+        }
 
-        .import-box { background: #f1f3f5; padding: 15px; border-radius: 8px; margin-top: 20px; display: flex; align-items: center; gap: 15px; }
+        .btn-back {
+            background: #e9ecef;
+            color: #495057;
+        }
+
+        .btn-csv {
+            background: #27ae60;
+        }
+
+        .btn-xml {
+            background: #e67e22;
+        }
+
+        .btn-import {
+            background: #34495e;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+
+        th {
+            background: #34495e;
+            color: white;
+        }
+
+        .badge {
+            padding: 5px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .bg-kineto {
+            background: #9b59b6;
+            color: white;
+        }
+
+        .bg-trainer {
+            background: #3498db;
+            color: white;
+        }
+
+        .bg-member {
+            background: #2ecc71;
+            color: white;
+        }
+
+        .import-box {
+            background: #f1f3f5;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
     </style>
 </head>
 <body>
@@ -84,16 +167,19 @@ $user_list = $stmt->fetchAll(PDO::FETCH_ASSOC);
         </div>
     </div>
 
-    <?php if(isset($_SESSION['admin_msg'])): ?>
+    <?php if (isset($_SESSION['admin_msg'])): ?>
         <div style="background: #d4edda; color: #155724; padding: 15px; border-radius: 8px; margin-bottom: 20px; font-weight: bold;">
-            <?php echo $_SESSION['admin_msg']; unset($_SESSION['admin_msg']); ?>
+            <?php echo $_SESSION['admin_msg'];
+            unset($_SESSION['admin_msg']); ?>
         </div>
     <?php endif; ?>
 
     <div class="import-box">
         <strong style="margin-right: 10px;">⬆️ Importă Utilizator nou:</strong>
-        <form action="import/import_staff.php" method="POST" enctype="multipart/form-data" style="display: flex; gap: 10px; align-items: center; margin: 0;">
-            <input type="file" name="file_upload" accept=".csv, .xml" required style="border: 1px solid #ccc; padding: 5px; border-radius: 4px; background: white;">
+        <form action="import/import_staff.php" method="POST" enctype="multipart/form-data"
+              style="display: flex; gap: 10px; align-items: center; margin: 0;">
+            <input type="file" name="file_upload" accept=".csv, .xml" required
+                   style="border: 1px solid #ccc; padding: 5px; border-radius: 4px; background: white;">
             <button type="submit" class="btn btn-import">Încarcă Fișierul</button>
         </form>
     </div>
@@ -101,19 +187,21 @@ $user_list = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <table>
         <thead>
         <tr>
-            <th> ID </th>
-            <th> Nume si Prenume </th>
-            <th> Email </th>
-            <th> Rol </th>
-            <th> Abonament </th>
-            <th> Acțiuni </th>
+            <th> ID</th>
+            <th> Nume si Prenume</th>
+            <th> Email</th>
+            <th> Rol</th>
+            <th> Abonament</th>
+            <th> Acțiuni</th>
         </tr>
         </thead>
         <tbody>
-        <?php if(empty($user_list)): ?>
-            <tr><td colspan="6" style="text-align:center; color:#777;">Nu există utilizatori înregistrați.</td></tr>
+        <?php if (empty($user_list)): ?>
+            <tr>
+                <td colspan="6" style="text-align:center; color:#777;">Nu există utilizatori înregistrați.</td>
+            </tr>
         <?php else: ?>
-            <?php foreach($user_list as $s): ?>
+            <?php foreach ($user_list as $s): ?>
                 <tr>
                     <td><?php echo $s['id']; ?></td>
                     <td><strong><?php echo $s['nume'] . ' ' . $s['prenume']; ?></strong></td>
@@ -128,10 +216,14 @@ $user_list = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     </td>
                     <td>
                         <div style="display: flex; gap: 5px;">
-                            <?php if($s['role'] !== 'member'): ?>
-                                <a href="view_staff_schedule.php?id=<?php echo $s['id']; ?>" class="btn" style="background: #3498db; color: white;">📅 Vezi Program</a>
+                            <?php if ($s['role'] !== 'member'): ?>
+                                <a href="view_staff_schedule.php?id=<?php echo $s['id']; ?>" class="btn"
+                                   style="background: #3498db; color: white;">📅 Vezi Program</a>
                             <?php endif; ?>
-                            <a href="manage_staff.php?delete_id=<?php echo $s['id']; ?>" class="btn" style="background: #e74c3c; color: white;" onclick="return confirm('Sigur vrei să ștergi acest utilizator? Acțiunea este ireversibilă!');">🗑️ Șterge</a>
+                            <a href="manage_staff.php?delete_id=<?php echo $s['id']; ?>" class="btn"
+                               style="background: #e74c3c; color: white;"
+                               onclick="return confirm('Sigur vrei să ștergi acest utilizator? Acțiunea este ireversibilă!');">🗑️
+                                Șterge</a>
                         </div>
                     </td>
                 </tr>

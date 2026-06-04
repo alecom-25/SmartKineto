@@ -33,8 +33,8 @@ class DSNConfigurator
     /**
      * Create new PHPMailer instance configured by DSN.
      *
-     * @param string $dsn        DSN
-     * @param bool   $exceptions Should we throw external exceptions?
+     * @param string $dsn DSN
+     * @param bool $exceptions Should we throw external exceptions?
      *
      * @return PHPMailer
      */
@@ -53,7 +53,7 @@ class DSNConfigurator
      * Configure PHPMailer instance with DSN string.
      *
      * @param PHPMailer $mailer PHPMailer instance
-     * @param string    $dsn    DSN
+     * @param string $dsn DSN
      *
      * @return PHPMailer
      */
@@ -71,9 +71,9 @@ class DSNConfigurator
      *
      * @param string $dsn DSN
      *
+     * @return array Configuration
      * @throws Exception If DSN is malformed
      *
-     * @return array Configuration
      */
     private function parseDSN($dsn)
     {
@@ -94,7 +94,7 @@ class DSNConfigurator
      * Apply configuration to mailer.
      *
      * @param PHPMailer $mailer PHPMailer instance
-     * @param array     $config Configuration
+     * @param array $config Configuration
      *
      * @throws Exception If scheme is invalid
      */
@@ -133,7 +133,7 @@ class DSNConfigurator
      * Configure SMTP.
      *
      * @param PHPMailer $mailer PHPMailer instance
-     * @param array     $config Configuration
+     * @param array $config Configuration
      */
     private function configureSMTP($mailer, $config)
     {
@@ -165,8 +165,8 @@ class DSNConfigurator
     /**
      * Configure options.
      *
-     * @param PHPMailer $mailer  PHPMailer instance
-     * @param array     $options Options
+     * @param PHPMailer $mailer PHPMailer instance
+     * @param array $options Options
      *
      * @throws Exception If option is unknown
      */
@@ -203,12 +203,12 @@ class DSNConfigurator
                 case 'UseSendmailOptions':
                 case 'do_verp':
                 case 'DKIM_copyHeaderFields':
-                    $mailer->$key = (bool) $value;
+                    $mailer->$key = (bool)$value;
                     break;
                 case 'Priority':
                 case 'SMTPDebug':
                 case 'WordWrap':
-                    $mailer->$key = (int) $value;
+                    $mailer->$key = (int)$value;
                     break;
                 default:
                     $mailer->$key = $value;

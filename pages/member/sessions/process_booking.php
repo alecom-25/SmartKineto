@@ -38,10 +38,10 @@ $date = $_POST['date'];
 $time = $_POST['time'];
 
 //VERIFICAM DACA ARE ABONAMENTUL CORESPUNZATOR PENTRU A REZERVA SESIUNEA DORITA
-if($type === 'kineto' && $category === 'masaj') {
+if ($type === 'kineto' && $category === 'masaj') {
     if ($active_sub['has_kineto'] == 0) {
         $_SESSION['msj_red'] = "Preț de achitat la recepție: 175 RON.";
-    }else{
+    } else {
         $_SESSION['msj_red'] = "Beneficiezi de 35% reducere (Preț de achitat la locație: 113.75 RON)";
     }
 }
@@ -87,17 +87,18 @@ if ($location == 'exterior') {
 } else {
     // Dacă e interior, Personal Training-ul e de obicei în "sala_aparate", grupul în "sala_fitness"
     //$db_location = ($db_category == 'personal_training') ? 'sala_aparate' : 'sala_fitness';
-    if($db_category == 'personal_training'){
+    if ($db_category == 'personal_training') {
         $db_location = 'sala_aparate';
     } else {
         $db_location = 'sala_fitness';
     }
-    if ($type == 'kineto'){
+    if ($type == 'kineto') {
         $db_location = 'sala_kineto';
     }
 }
 
-echo $db_category; echo $db_location;
+echo $db_category;
+echo $db_location;
 
 // 2. Găsim ID-ul corespunzător în session_types
 $stmtType = $db->prepare("SELECT id FROM session_types WHERE category = ? AND location = ? LIMIT 1");

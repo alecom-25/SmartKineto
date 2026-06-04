@@ -176,31 +176,41 @@ $sessions = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
                         <?php if ($s['status'] === 'pending'): ?>
                             <button onclick="toggleApprove(<?php echo $s['id']; ?>, '<?php echo $s['booking_date']; ?>',
-                                    '<?php echo $s['start_time']; ?>')" class="btn btn-approve">✅ Aprobă</button>
+                                    '<?php echo $s['start_time']; ?>')" class="btn btn-approve">✅ Aprobă
+                            </button>
 
-                            <form id="approve-form-<?php echo $s['id']; ?>" class="reschedule-form" action="process_session_action.php" method="POST">
+                            <form id="approve-form-<?php echo $s['id']; ?>" class="reschedule-form"
+                                  action="process_session_action.php" method="POST">
                                 <input type="hidden" name="id" value="<?php echo $s['id']; ?>">
                                 <input type="hidden" name="action" value="approve">
                                 <label style="font-size:12px;">Alege Sala:</label>
-                                <select name="room_id" id="room-approve-<?php echo $s['id']; ?>" required style="width:100%; padding:5px; margin-bottom:5px;">
+                                <select name="room_id" id="room-approve-<?php echo $s['id']; ?>" required
+                                        style="width:100%; padding:5px; margin-bottom:5px;">
                                     <option value="">Se caută săli...</option>
                                 </select>
-                                <textarea name="custom_message" class="custom-msg-input" placeholder="Mesaj opțional" rows="2"></textarea>
-                                <button type="submit" class="btn btn-approve" style="width:100%;">Confirmă Aprobarea</button>
+                                <textarea name="custom_message" class="custom-msg-input" placeholder="Mesaj opțional"
+                                          rows="2"></textarea>
+                                <button type="submit" class="btn btn-approve" style="width:100%;">Confirmă Aprobarea
+                                </button>
                             </form>
                         <?php endif; ?>
 
-                        <button onclick="toggleCancel(<?php echo $s['id']; ?>)" class="btn btn-cancel">❌ Anulează</button>
+                        <button onclick="toggleCancel(<?php echo $s['id']; ?>)" class="btn btn-cancel">❌ Anulează
+                        </button>
 
-                        <form id="cancel-form-<?php echo $s['id']; ?>" class="reschedule-form" action="process_session_action.php" method="POST">
+                        <form id="cancel-form-<?php echo $s['id']; ?>" class="reschedule-form"
+                              action="process_session_action.php" method="POST">
                             <input type="hidden" name="id" value="<?php echo $s['id']; ?>">
                             <input type="hidden" name="action" value="cancel">
                             <label style="font-size:12px;">Motivul anulării:</label>
-                            <textarea name="custom_message" class="custom-msg-input" placeholder="Ex: Din păcate aparatul este defect..." rows="2"></textarea>
-                            <button type="submit" class="btn btn-cancel" style="width:100%;" onclick="return confirm('Confirmă anularea definitivă!');">Confirmă Anularea</button>
+                            <textarea name="custom_message" class="custom-msg-input"
+                                      placeholder="Ex: Din păcate aparatul este defect..." rows="2"></textarea>
+                            <button type="submit" class="btn btn-cancel" style="width:100%;"
+                                    onclick="return confirm('Confirmă anularea definitivă!');">Confirmă Anularea
+                            </button>
                         </form>
 
-                        <button onclick="toggleReschedule(<?php echo $s['id']; ?>)" class="btn btn-reschedule" >🔄
+                        <button onclick="toggleReschedule(<?php echo $s['id']; ?>)" class="btn btn-reschedule">🔄
                             Reprogramează
                         </button>
 
@@ -208,12 +218,17 @@ $sessions = $stmt->fetchAll(PDO::FETCH_ASSOC);
                               action="process_session_action.php" method="POST">
                             <input type="hidden" name="id" value="<?php echo $s['id']; ?>">
                             <input type="hidden" name="action" value="reschedule">
-                            <input type="date" id="res-date-<?php echo $s['id']; ?>" name="new_date" min="<?php echo date('Y-m-d'); ?>" required onchange="fetchRoomsForReschedule(<?php echo $s['id']; ?>)">
-                            <input type="time" id="res-time-<?php echo $s['id']; ?>" name="new_time" required onchange="fetchRoomsForReschedule(<?php echo $s['id']; ?>)">
-                            <select name="room_id" id="room-reschedule-<?php echo $s['id']; ?>" required style="width:100%; padding:5px; margin-bottom:5px;">
+                            <input type="date" id="res-date-<?php echo $s['id']; ?>" name="new_date"
+                                   min="<?php echo date('Y-m-d'); ?>" required
+                                   onchange="fetchRoomsForReschedule(<?php echo $s['id']; ?>)">
+                            <input type="time" id="res-time-<?php echo $s['id']; ?>" name="new_time" required
+                                   onchange="fetchRoomsForReschedule(<?php echo $s['id']; ?>)">
+                            <select name="room_id" id="room-reschedule-<?php echo $s['id']; ?>" required
+                                    style="width:100%; padding:5px; margin-bottom:5px;">
                                 <option value="">Alege întâi data și ora</option>
                             </select>
-                            <textarea name="custom_message" class="custom-msg-input" placeholder="Motivul reprogramării" rows="2"></textarea>
+                            <textarea name="custom_message" class="custom-msg-input" placeholder="Motivul reprogramării"
+                                      rows="2"></textarea>
                             <button type="submit" class="btn btn-approve" style="margin-top: 5px;">Salvează noua oră
                             </button>
                         </form>
@@ -274,7 +289,7 @@ $sessions = $stmt->fetchAll(PDO::FETCH_ASSOC);
     function fetchRoomsForReschedule(id) {
         const date = document.getElementById('res-date-' + id).value;
         const time = document.getElementById('res-time-' + id).value;
-        if(date && time) {
+        if (date && time) {
             fetchRooms(date, time, 'room-reschedule-' + id);
         }
     }

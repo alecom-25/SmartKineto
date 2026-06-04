@@ -72,8 +72,8 @@ try {
         $roomName = $stmtroom->fetchColumn();
         $suma = 0;
 
-        if($session_name == 'Masaj de relaxare'){
-            if($sub == 1){
+        if ($session_name == 'Masaj de relaxare') {
+            if ($sub == 1) {
                 $suma = 131.70;
             } else {
                 $suma = 175;
@@ -104,9 +104,9 @@ try {
 
         // Actualizăm cu noua dată și schimbăm statusul
         $db->prepare("UPDATE appointments SET status = 'rescheduled', booking_date = ?, start_time = ?, room_id = ? WHERE id = ?")
-            ->execute([$new_date, $new_time,$room_id, $id]);
+            ->execute([$new_date, $new_time, $room_id, $id]);
 
-        trimiteMailReprogramare($user_email, $user['username'], $old_date, $old_time, $new_date, $new_time ,$session_name, $roomName, $custom_message);
+        trimiteMailReprogramare($user_email, $user['username'], $old_date, $old_time, $new_date, $new_time, $session_name, $roomName, $custom_message);
 
         $_SESSION['flash_msg'] = "Ședința a fost reprogramată cu succes! Data nouă: $new_date ($new_time)";
     }

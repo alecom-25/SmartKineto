@@ -53,17 +53,77 @@ foreach ($apps as $app) {
     <meta charset="UTF-8">
     <title>Program: <?php echo $staff_name; ?></title>
     <style>
-        body { font-family: 'Segoe UI', sans-serif; background: #f8f9fa; color: #333; padding: 20px; }
-        .container { max-width: 900px; margin: auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
-        .btn-back { background: #e9ecef; color: #495057; padding: 10px 15px; border-radius: 6px; text-decoration: none; font-weight: bold; display: inline-block; margin-bottom: 20px; }
-        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #eee; }
-        th { background: #34495e; color: white; }
-        .badge { padding: 5px 10px; border-radius: 5px; font-weight: bold; font-size: 13px; }
-        .badge-free { background: #d4edda; color: #155724; }
-        .badge-busy { background: #f8d7da; color: #721c24; }
-        .badge-pending { background: #fff3cd; color: #856404; }
-        .day-header { background: #ecf0f1; font-weight: bold; border-left: 4px solid #3498db; }
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: #f8f9fa;
+            color: #333;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: auto;
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .btn-back {
+            background: #e9ecef;
+            color: #495057;
+            padding: 10px 15px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: bold;
+            display: inline-block;
+            margin-bottom: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+
+        th {
+            background: #34495e;
+            color: white;
+        }
+
+        .badge {
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-weight: bold;
+            font-size: 13px;
+        }
+
+        .badge-free {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .badge-busy {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .badge-pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .day-header {
+            background: #ecf0f1;
+            font-weight: bold;
+            border-left: 4px solid #3498db;
+        }
     </style>
 </head>
 <body>
@@ -86,13 +146,15 @@ foreach ($apps as $app) {
         <tbody>
         <?php if (empty($availabilities)): ?>
             <tr>
-                <td colspan="4" style="text-align: center; color: #777; font-style: italic;">Acest angajat nu are program de lucru setat pentru perioada următoare.</td>
+                <td colspan="4" style="text-align: center; color: #777; font-style: italic;">Acest angajat nu are
+                    program de lucru setat pentru perioada următoare.
+                </td>
             </tr>
         <?php else: ?>
             <?php foreach ($availabilities as $day):
                 $current_date = $day['available_date'];
                 echo "<tr><td colspan='4' class='day-header'>📅 " . date('d.m.Y', strtotime($current_date)) .
-                    " (De la " . substr($day['start_time'], 0, 5) . " la " . substr($day['end_time'], 0, 5) . ")</td></tr>";
+                        " (De la " . substr($day['start_time'], 0, 5) . " la " . substr($day['end_time'], 0, 5) . ")</td></tr>";
 
                 $start_ts = strtotime($current_date . ' ' . $day['start_time']);
                 $end_ts = strtotime($current_date . ' ' . $day['end_time']);
@@ -123,7 +185,7 @@ foreach ($apps as $app) {
                     </tr>
                 <?php endfor;
             endforeach;
-        endif;?>
+        endif; ?>
         </tbody>
     </table>
 </div>

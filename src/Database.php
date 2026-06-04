@@ -1,6 +1,7 @@
 <?php
 
-class Database {
+class Database
+{
     private static $instance = null;
     private $conn;
 
@@ -9,24 +10,27 @@ class Database {
     private $username = "root";
     private $password = "";
 
-      private function __construct() {
+    private function __construct()
+    {
         try {
             $this->conn = new PDO("mysql:host=" . $this->host . ";dbname=" . $this->db_name, $this->username, $this->password);
             $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             $this->conn->setAttribute(PDO::ATTR_PERSISTENT, true);
-        } catch(PDOException $exception) {
+        } catch (PDOException $exception) {
             die("Eroare conexiune: " . $exception->getMessage());
         }
     }
 
-    public static function getInstance() {
+    public static function getInstance()
+    {
         if (self::$instance == null) {
             self::$instance = new Database();
         }
         return self::$instance;
     }
 
-    public function getConnection() {
+    public function getConnection()
+    {
         return $this->conn;
     }
 }

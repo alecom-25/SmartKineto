@@ -8,18 +8,19 @@ require_once __DIR__ . '/libs/PHPMailer/src/PHPMailer.php';
 require_once __DIR__ . '/libs/PHPMailer/src/SMTP.php';
 require_once __DIR__ . '/config_mail.php';
 
-function trimiteEmail($catre_email, $catre_nume, $subiect, $mesaj_html) {
+function trimiteEmail($catre_email, $catre_nume, $subiect, $mesaj_html)
+{
     $mail = new PHPMailer(true);
 
     try {
         // Setări Server SMTP (Google)
         $mail->isSMTP();
-        $mail->Host       = 'smtp.gmail.com';
-        $mail->SMTPAuth   = true;
-        $mail->Username   = MAIL_USER;
-        $mail->Password   = MAIL_PASS;
+        $mail->Host = 'smtp.gmail.com';
+        $mail->SMTPAuth = true;
+        $mail->Username = MAIL_USER;
+        $mail->Password = MAIL_PASS;
         $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
-        $mail->Port       = 465;
+        $mail->Port = 465;
 
         // Setări Expeditor și Destinatar
         // Înlocuiește tot cu gmail-ul tău și numele sălii
@@ -29,7 +30,7 @@ function trimiteEmail($catre_email, $catre_nume, $subiect, $mesaj_html) {
         // Conținutul Mailului
         $mail->isHTML(true); // Îi spunem că trimitem un mail cu design HTML
         $mail->Subject = $subiect;
-        $mail->Body    = $mesaj_html;
+        $mail->Body = $mesaj_html;
 
         $mail->send();
         return true;
@@ -40,7 +41,8 @@ function trimiteEmail($catre_email, $catre_nume, $subiect, $mesaj_html) {
     }
 }
 
-function trimiteMailConfirmare($email, $nume, $data, $ora, $tip, $sala, $mesaj_personalizat) {
+function trimiteMailConfirmare($email, $nume, $data, $ora, $tip, $sala, $mesaj_personalizat)
+{
     $subiect = "Confirmare Rezervare - SmartKineto";
     $mesaj = "
         <div style='font-family: Arial, sans-serif; padding: 20px; color: #333;'>
@@ -63,7 +65,7 @@ function trimiteMailConfirmare($email, $nume, $data, $ora, $tip, $sala, $mesaj_p
         ";
     }
 
-    $mesaj .="
+    $mesaj .= "
             <hr>
             <p style='color: #e74c3c;'>⚠️ Nu întârzia mai mult de 15 minute, altfel ședința se anulează!</p>
         </div>
@@ -72,7 +74,8 @@ function trimiteMailConfirmare($email, $nume, $data, $ora, $tip, $sala, $mesaj_p
     return trimiteEmail($email, $nume, $subiect, $mesaj);
 }
 
-function trimiteMailReprogramare($email, $nume, $old_data, $old_ora, $new_data, $new_ora, $tip, $sala, $mesaj_personalizat) {
+function trimiteMailReprogramare($email, $nume, $old_data, $old_ora, $new_data, $new_ora, $tip, $sala, $mesaj_personalizat)
+{
     $subiect = "Reprogramare Rezervare - SmartKineto";
     $mesaj = "
         <div style='font-family: Arial, sans-serif; padding: 20px; color: #333;'>
@@ -107,7 +110,8 @@ function trimiteMailReprogramare($email, $nume, $old_data, $old_ora, $new_data, 
     return trimiteEmail($email, $nume, $subiect, $mesaj);
 }
 
-function trimiteMailAnulare($email, $nume, $data, $tip, $mesaj_personalizat) {
+function trimiteMailAnulare($email, $nume, $data, $tip, $mesaj_personalizat)
+{
     $subiect = " Anulare Rezervare - SmartKineto";
     $mesaj = "
         <div style='font-family: Arial, sans-serif; padding: 20px; color: #333;'>

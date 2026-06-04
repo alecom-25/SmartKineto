@@ -32,7 +32,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta charset="UTF-8">
     <title>Login - SmartKineto</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
         body {
             background: linear-gradient(135deg, #f5f7fa 0%, #3075d1 100%);
             height: 100vh;
@@ -40,6 +46,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             justify-content: center;
             align-items: center;
         }
+
         .login-container {
             background: white;
             padding: 40px;
@@ -49,12 +56,38 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             max-width: 420px;
             text-align: center;
         }
-        .logo-area { font-size: 2.5rem; margin-bottom: 10px; }
-        h2 { color: #2c3e50; margin-bottom: 5px; font-weight: 600; }
-        p { color: #7f8c8d; margin-bottom: 30px; font-size: 0.95rem; }
 
-        .input-group { position: relative; margin-bottom: 20px; text-align: left; }
-        .input-group label { display: block; margin-bottom: 8px; color: #34495e; font-size: 0.9rem; font-weight: 500; }
+        .logo-area {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        h2 {
+            color: #2c3e50;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+
+        p {
+            color: #7f8c8d;
+            margin-bottom: 30px;
+            font-size: 0.95rem;
+        }
+
+        .input-group {
+            position: relative;
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #34495e;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
         .input-group input {
             width: 100%;
             padding: 14px 16px;
@@ -65,6 +98,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             transition: all 0.3s ease;
             background: #f9f9f9;
         }
+
         .input-group input:focus {
             border-color: #3498db;
             background: white;
@@ -85,8 +119,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             transition: all 0.2s ease;
             margin-top: 10px;
         }
-        .login-btn:hover { background: #2980b9; transform: translateY(-1px); }
-        .login-btn:active { transform: translateY(0); }
+
+        .login-btn:hover {
+            background: #2980b9;
+            transform: translateY(-1px);
+        }
+
+        .login-btn:active {
+            transform: translateY(0);
+        }
 
         /* Alertă eroare drăguță */
         .error-alert {
@@ -101,26 +142,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </style>
 </head>
 <body>
-    <div class="login-container">
-        <h2>Autentificare</h2>
+<div class="login-container">
+    <h2>Autentificare</h2>
 
-        <?php if ($eroare): ?>
-            <div class="error-alert"><?php echo $eroare; ?></div>
-        <?php endif; ?>
+    <?php if ($eroare): ?>
+        <div class="error-alert"><?php echo $eroare; ?></div>
+    <?php endif; ?>
 
-        <form method="POST" action="login.php">
-            <div class="input-group">
-                <label>Email:</label><br>
-                <input type="email" name="email" required><br><br>
-            </div>
-            <div class="input-group">
-                <label>Parolă:</label><br>
-                <input type="password" name="password" required><br><br>
-            </div>
+    <form method="POST" action="login.php">
+        <div class="input-group">
+            <label>Email:</label><br>
+            <input type="email" name="email" required><br><br>
+        </div>
+        <div class="input-group">
+            <label>Parolă:</label><br>
+            <input type="password" name="password" required><br><br>
+        </div>
 
-            <button type="submit" class="login-btn">Intră în cont</button>
+        <button type="submit" class="login-btn">Intră în cont</button>
 
-        </form>
-    </div>
+    </form>
+</div>
 </body>
 </html>
