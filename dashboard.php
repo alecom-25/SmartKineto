@@ -36,19 +36,23 @@ $nr_sessions = $stmt->fetchColumn();
             flex-direction: column;
             align-items: center;
         }
+
         .welcome-section {
             margin-top: 50px;
             text-align: center;
         }
+
         .welcome-section h1 {
             color: #2c3e50;
             font-size: 2.5em;
         }
+
         .role-badge {
             background: #3498db;
             color: white;
             padding: 5px 15px;
-            border-radius: 20px; font-size: 0.9em;
+            border-radius: 20px;
+            font-size: 0.9em;
         }
 
         .grid-container {
@@ -67,7 +71,7 @@ $nr_sessions = $stmt->fetchColumn();
             text-decoration: none;
             color: #34495e;
             border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             transition: transform 0.2s, box-shadow 0.2s;
             display: flex;
             flex-direction: column;
@@ -77,7 +81,7 @@ $nr_sessions = $stmt->fetchColumn();
 
         .card-btn:hover {
             transform: translateY(-5px);
-            box-shadow: 0 8px 15px rgba(0,0,0,0.15);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.15);
             background-color: #ebf5fb;
         }
 
@@ -85,6 +89,7 @@ $nr_sessions = $stmt->fetchColumn();
             font-size: 2em;
             margin-bottom: 10px;
         }
+
         .logout-btn {
             margin-top: 50px;
             color: #e74c3c;
@@ -95,6 +100,7 @@ $nr_sessions = $stmt->fetchColumn();
         .admin-card {
             border-left: 5px solid #e74c3c;
         }
+
         .staff-card {
             border-left: 5px solid #f1c40f;
         }

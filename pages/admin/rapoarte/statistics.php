@@ -21,29 +21,29 @@ $topStaffData = $stmtTopStaff->fetchAll(PDO::FETCH_ASSOC);
 
 // statistici abonamente -> după tipul abonamentului din istoricul de plati/abonamente
 $toate_abonamentele = ['fitness' => 0, 'forta' => 0, 'kineto' => 0, 'tip1' => 0, 'tip2' => 0,
-    'tip3' => 0, 'vip' => 0];
+        'tip3' => 0, 'vip' => 0];
 // extragem doar abonamentele active și le grupăm după nivelul lor
 $stmtSubs = $db->query("SELECT tier, has_fitness, has_forta, has_kineto FROM subscriptions WHERE is_suspended = 0");
 $subsData = $stmtSubs->fetchAll(PDO::FETCH_ASSOC);
 
-foreach($subsData as $row) {
-    if($row['tier'] == 'membru') {
-        if($row['has_fitness'] == 1) {
+foreach ($subsData as $row) {
+    if ($row['tier'] == 'membru') {
+        if ($row['has_fitness'] == 1) {
             $toate_abonamentele['fitness'] += 1;
-        } elseif($row['has_forta'] == 1) {
+        } elseif ($row['has_forta'] == 1) {
             $toate_abonamentele['forta'] += 1;
-        } elseif($row['has_kineto'] == 1) {
+        } elseif ($row['has_kineto'] == 1) {
             $toate_abonamentele['kineto'] += 1;
         }
-    }elseif($row['tier'] == 'premium') {
-        if($row['has_fitness'] == 1 && $row['has_forta'] == 1) {
+    } elseif ($row['tier'] == 'premium') {
+        if ($row['has_fitness'] == 1 && $row['has_forta'] == 1) {
             $toate_abonamentele['tip1'] += 1;
-        } elseif($row['has_fitness'] == 1 && $row['has_kineto'] == 1) {
+        } elseif ($row['has_fitness'] == 1 && $row['has_kineto'] == 1) {
             $toate_abonamentele['tip2'] += 1;
-        } elseif($row['has_fitness'] == 0) {
+        } elseif ($row['has_fitness'] == 0) {
             $toate_abonamentele['tip3'] += 1;
         }
-    } else{
+    } else {
         $toate_abonamentele['vip'] += 1;
     }
 }
@@ -59,9 +59,9 @@ $stmtMonth = $db->query("SELECT COUNT(*) FROM appointments WHERE MONTH(booking_d
 $sessionsMonth = $stmtMonth->fetchColumn();
 
 $sessionsData = [
-    'Azi' => $sessionsDay,
-    'Săptămâna curentă' => $sessionsWeek,
-    'Luna curentă' => $sessionsMonth
+        'Azi' => $sessionsDay,
+        'Săptămâna curentă' => $sessionsWeek,
+        'Luna curentă' => $sessionsMonth
 ];
 
 // Transformăm datele PHP în JSON pentru a le putea folosi în JavaScript
@@ -78,20 +78,84 @@ $sessionsJson = json_encode($sessionsData);
     <title>Statistici și Rapoarte - Admin</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        body { font-family: 'Segoe UI', sans-serif; background: #f4f6f9; color: #333; padding: 20px; }
-        .container { max-width: 1200px; margin: auto; }
-        .btn-back { background: #e9ecef; color: #495057; padding: 10px 15px; border-radius: 6px; text-decoration: none; font-weight: bold; display: inline-block; margin-bottom: 20px; }
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: #f4f6f9;
+            color: #333;
+            padding: 20px;
+        }
 
-        .header-actions { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-        .btn-export { padding: 10px 15px; border-radius: 6px; font-weight: bold; border: none; cursor: pointer; color: white; text-decoration: none; font-size: 14px; background: #27ae60; }
+        .container {
+            max-width: 1200px;
+            margin: auto;
+        }
 
-        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 20px; }
-        .card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+        .btn-back {
+            background: #e9ecef;
+            color: #495057;
+            padding: 10px 15px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: bold;
+            display: inline-block;
+            margin-bottom: 20px;
+        }
 
-        h3 { margin-top: 0; color: #2c3e50; border-bottom: 2px solid #eee; padding-bottom: 10px; }
+        .header-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
 
-        .export-img-btns { display: flex; gap: 10px; margin-top: 15px; justify-content: center; }
-        .btn-img { padding: 5px 10px; font-size: 12px; border: none; border-radius: 4px; cursor: pointer; background: #34495e; color: white; }
+        .btn-export {
+            padding: 10px 15px;
+            border-radius: 6px;
+            font-weight: bold;
+            border: none;
+            cursor: pointer;
+            color: white;
+            text-decoration: none;
+            font-size: 14px;
+            background: #27ae60;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 20px;
+        }
+
+        .card {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        h3 {
+            margin-top: 0;
+            color: #2c3e50;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+        }
+
+        .export-img-btns {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+            justify-content: center;
+        }
+
+        .btn-img {
+            padding: 5px 10px;
+            font-size: 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            background: #34495e;
+            color: white;
+        }
     </style>
 </head>
 <body>
@@ -182,7 +246,7 @@ $sessionsJson = json_encode($sessionsData);
                 backgroundColor: '#9b59b6'
             }]
         },
-        options: { scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } } }
+        options: {scales: {y: {beginAtZero: true, ticks: {stepSize: 1}}}}
     });
 
     // setari grafica abonamente
@@ -211,7 +275,7 @@ $sessionsJson = json_encode($sessionsData);
                 backgroundColor: ['#f1c40f', '#e67e22', '#e74c3c']
             }]
         },
-        options: { scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } } }
+        options: {scales: {y: {beginAtZero: true, ticks: {stepSize: 1}}}}
     });
 
     // functie pt exportul paginilor (png si webp)

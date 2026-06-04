@@ -13,9 +13,9 @@ if (!isset($db)) {
 $user_id = $_SESSION['user_id'];
 
 $prices = [
-    'membru'  => 250,
-    'premium' => 500,
-    'vip'     => 1000
+        'membru' => 250,
+        'premium' => 500,
+        'vip' => 1000
 ];
 
 $stmt = $db->prepare("SELECT tier, expires_at FROM subscriptions WHERE user_id = ?");
@@ -65,24 +65,29 @@ if (isset($_POST['confirm_payment'])) {
             justify-content: center;
             padding: 50px;
         }
+
         .checkout-box {
             background: white;
             padding: 30px;
             border-radius: 15px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
             width: 400px;
         }
+
         .price-tag {
-            font-size: 2em; color: #2ecc71;
+            font-size: 2em;
+            color: #2ecc71;
             text-align: center;
             margin: 20px 0;
         }
+
         .details {
             background: #f8f9fa;
             padding: 15px;
             border-radius: 8px;
             margin-bottom: 20px;
         }
+
         .btn-confirm {
             background: #2ecc71;
             color: white;
@@ -102,24 +107,24 @@ if (isset($_POST['confirm_payment'])) {
     <p>Tip tranzacție: <strong><?php echo $tip_plata; ?></strong></p>
 
     <div class="details">
-        <p>Abonament ales: <strong><?php echo strtoupper($new_tier); ?> <?php
-                if($new_tier === 'membru'){
-                        if($fitness){
-                            echo " - Fitness";
-                        }elseif ($forta){
-                            echo " - Forta";
-                        }elseif ($kineto){
-                            echo " - Kineto";
-                        }
-                    }elseif($new_tier === 'premium'){
-                        if($fitness && $forta){
-                            echo " - Tip 1";
-                        }elseif ($fitness && $kineto){
-                            echo " - Tip 2";
-                        }elseif($forta && $kineto){
-                            echo " - Tip 3";
-                        }
+        <p>Abonament ales: <strong><?php echo strtoupper($new_tier); ?><?php
+                if ($new_tier === 'membru') {
+                    if ($fitness) {
+                        echo " - Fitness";
+                    } elseif ($forta) {
+                        echo " - Forta";
+                    } elseif ($kineto) {
+                        echo " - Kineto";
                     }
+                } elseif ($new_tier === 'premium') {
+                    if ($fitness && $forta) {
+                        echo " - Tip 1";
+                    } elseif ($fitness && $kineto) {
+                        echo " - Tip 2";
+                    } elseif ($forta && $kineto) {
+                        echo " - Tip 3";
+                    }
+                }
                 ?></strong></p>
         <p>Valabilitate: 30 zile (după confirmare)</p>
     </div>
@@ -137,7 +142,8 @@ if (isset($_POST['confirm_payment'])) {
         <button type="submit" name="confirm_payment" class="btn-confirm">Trimite spre validare</button>
     </form>
     <br>
-    <a href="choose_plan.php" style="display:block; text-align:center; color: #7f8c8d; text-decoration:none;">Anulează</a>
+    <a href="choose_plan.php"
+       style="display:block; text-align:center; color: #7f8c8d; text-decoration:none;">Anulează</a>
 </div>
 
 </body>

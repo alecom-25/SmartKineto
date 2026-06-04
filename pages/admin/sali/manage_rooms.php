@@ -59,23 +59,103 @@ $rooms = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <meta charset="UTF-8">
     <title>Gestiune Săli - Admin</title>
     <style>
-        body { font-family: 'Segoe UI', sans-serif; background: #f8f9fa; color: #333; padding: 20px; }
-        .container { max-width: 900px; margin: auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
-        .btn { padding: 10px 15px; border-radius: 6px; font-weight: bold; border: none; cursor: pointer; color: white; text-decoration: none; }
-        .btn-blue { background: #3498db; }
-        .btn-red { background: #e74c3c; font-size: 13px; }
-        .btn-back { background: #e9ecef; color: #495057; display: inline-block; margin-bottom: 20px; }
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: #f8f9fa;
+            color: #333;
+            padding: 20px;
+        }
 
-        .form-box { background: #f1f3f5; padding: 20px; border-radius: 8px; margin-bottom: 30px; }
-        input, select { width: 100%; padding: 10px; margin: 8px 0; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; }
+        .container {
+            max-width: 900px;
+            margin: auto;
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+        }
 
-        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #eee; }
-        th { background: #34495e; color: white; }
-        .badge { padding: 5px 10px; border-radius: 12px; font-size: 12px; font-weight: bold; text-transform: uppercase; }
-        .bg-kineto { background: #9b59b6; color: white; }
-        .bg-fitness { background: #e67e22; color: white; }
-        .bg-exterior { background: #5f7eea; color: white; }
+        .btn {
+            padding: 10px 15px;
+            border-radius: 6px;
+            font-weight: bold;
+            border: none;
+            cursor: pointer;
+            color: white;
+            text-decoration: none;
+        }
+
+        .btn-blue {
+            background: #3498db;
+        }
+
+        .btn-red {
+            background: #e74c3c;
+            font-size: 13px;
+        }
+
+        .btn-back {
+            background: #e9ecef;
+            color: #495057;
+            display: inline-block;
+            margin-bottom: 20px;
+        }
+
+        .form-box {
+            background: #f1f3f5;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 10px;
+            margin: 8px 0;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            box-sizing: border-box;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+
+        th {
+            background: #34495e;
+            color: white;
+        }
+
+        .badge {
+            padding: 5px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .bg-kineto {
+            background: #9b59b6;
+            color: white;
+        }
+
+        .bg-fitness {
+            background: #e67e22;
+            color: white;
+        }
+
+        .bg-exterior {
+            background: #5f7eea;
+            color: white;
+        }
     </style>
 </head>
 <body>
@@ -84,9 +164,10 @@ $rooms = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <a href="../../../dashboard.php" class="btn btn-back">← Înapoi la Dashboard</a>
     <h1>🏢 Gestiune Săli</h1>
 
-    <?php if(isset($_SESSION['admin_msg'])): ?>
+    <?php if (isset($_SESSION['admin_msg'])): ?>
         <div style="background: #d4edda; color: #155724; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
-            <?php echo $_SESSION['admin_msg']; unset($_SESSION['admin_msg']); ?>
+            <?php echo $_SESSION['admin_msg'];
+            unset($_SESSION['admin_msg']); ?>
         </div>
     <?php endif; ?>
 
@@ -110,7 +191,9 @@ $rooms = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 <input type="number" name="capacity" min="1" required placeholder="Ex: 15">
             </div>
             <div style="flex: 1;">
-                <button type="submit" name="add_room" class="btn btn-blue" style="width: 100%; padding: 12px;">Adaugă Sală</button>
+                <button type="submit" name="add_room" class="btn btn-blue" style="width: 100%; padding: 12px;">Adaugă
+                    Sală
+                </button>
             </div>
         </form>
     </div>
@@ -118,20 +201,22 @@ $rooms = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <h3>📋 Sălile înregistrate în sistem</h3>
     <table>
         <thead>
-            <tr>
-                <th> ID </th>
-                <th> Nume Sală </th>
-                <th> Tip </th>
-                <th> Capacitate Maximă </th>
-                <th> Ocupată </th>
-                <th> Acțiune </th>
-            </tr>
+        <tr>
+            <th> ID</th>
+            <th> Nume Sală</th>
+            <th> Tip</th>
+            <th> Capacitate Maximă</th>
+            <th> Ocupată</th>
+            <th> Acțiune</th>
+        </tr>
         </thead>
         <tbody>
-        <?php if(empty($rooms)): ?>
-            <tr><td colspan="5" style="text-align:center; color:#777;">Nu există nicio sală în sistem.</td></tr>
+        <?php if (empty($rooms)): ?>
+            <tr>
+                <td colspan="5" style="text-align:center; color:#777;">Nu există nicio sală în sistem.</td>
+            </tr>
         <?php else: ?>
-            <?php foreach($rooms as $r): ?>
+            <?php foreach ($rooms as $r): ?>
                 <tr>
                     <td><?php echo $r['id']; ?></td>
                     <td><strong><?php echo $r['name']; ?></strong></td>
@@ -145,7 +230,8 @@ $rooms = $stmt->fetchAll(PDO::FETCH_ASSOC);
                         <?php echo $r['disponibilitate']; ?>/<?php echo $r['capacity']; ?>
                     </td>
                     <td>
-                        <a href="manage_rooms.php?delete_id=<?php echo $r['id']; ?>" class="btn btn-red" onclick="return confirm('Sigur vrei să ștergi această sală?');"> Șterge</a>
+                        <a href="manage_rooms.php?delete_id=<?php echo $r['id']; ?>" class="btn btn-red"
+                           onclick="return confirm('Sigur vrei să ștergi această sală?');"> Șterge</a>
                     </td>
                 </tr>
             <?php endforeach; ?>

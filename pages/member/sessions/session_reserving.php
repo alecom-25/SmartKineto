@@ -30,24 +30,106 @@ if (!$active_sub) {
     <meta charset="UTF-8">
     <title>Rezervare Ședință - SmartKineto</title>
     <style>
-        body { font-family: 'Segoe UI', sans-serif; background: #f8f9fa; color: #333; padding: 20px; }
-        .container { max-width: 700px; margin: auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: #f8f9fa;
+            color: #333;
+            padding: 20px;
+        }
 
-        .step-section { display: none; margin-top: 25px; padding-top: 20px; border-top: 1px solid #eee; }
-        .step-section.active { display: block; }
+        .container {
+            max-width: 700px;
+            margin: auto;
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+        }
 
-        .btn-choice { padding: 20px; font-size: 18px; cursor: pointer; margin: 10px; width: 220px; border: 2px solid #3498db; background: white; color: #3498db; border-radius: 10px; font-weight: bold; transition: 0.3s; }
-        .btn-choice:hover { background: #3498db; color: white; }
+        .step-section {
+            display: none;
+            margin-top: 25px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
 
-        select, input[type="date"] { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ccc; border-radius: 8px; font-size: 15px; }
+        .step-section.active {
+            display: block;
+        }
 
-        #slots_container { margin-top: 20px; }
-        .time-slot { display: inline-block; padding: 12px 20px; margin: 6px; border: 2px solid #3498db; color: #3498db; border-radius: 8px; cursor: pointer; font-weight: bold; transition: 0.3s; }
-        .time-slot:hover { background: #3498db; color: white; }
-        .time-slot.selected { background: #2ecc71; color: white; border-color: #27ae60; }
+        .btn-choice {
+            padding: 20px;
+            font-size: 18px;
+            cursor: pointer;
+            margin: 10px;
+            width: 220px;
+            border: 2px solid #3498db;
+            background: white;
+            color: #3498db;
+            border-radius: 10px;
+            font-weight: bold;
+            transition: 0.3s;
+        }
 
-        .btn-submit { display: none; width: 100%; margin-top: 25px; padding: 15px; background: #2ecc71; color: white; border: none; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; transition: 0.3s; }
-        .btn-submit:hover { background: #27ae60; }
+        .btn-choice:hover {
+            background: #3498db;
+            color: white;
+        }
+
+        select, input[type="date"] {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 15px;
+        }
+
+        #slots_container {
+            margin-top: 20px;
+        }
+
+        .time-slot {
+            display: inline-block;
+            padding: 12px 20px;
+            margin: 6px;
+            border: 2px solid #3498db;
+            color: #3498db;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+
+        .time-slot:hover {
+            background: #3498db;
+            color: white;
+        }
+
+        .time-slot.selected {
+            background: #2ecc71;
+            color: white;
+            border-color: #27ae60;
+        }
+
+        .btn-submit {
+            display: none;
+            width: 100%;
+            margin-top: 25px;
+            padding: 15px;
+            background: #2ecc71;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .btn-submit:hover {
+            background: #27ae60;
+        }
     </style>
 </head>
 <body>
@@ -100,7 +182,8 @@ if (!$active_sub) {
         <input type="date" id="booking_date" min="<?php echo date('Y-m-d'); ?>" onchange="fetchSlots()">
 
         <div id="slots_container">
-            <p style="color: #777; font-style: italic;">Selectează un antrenor și o dată validă pentru a vedea orarul liber.</p>
+            <p style="color: #777; font-style: italic;">Selectează un antrenor și o dată validă pentru a vedea orarul
+                liber.</p>
         </div>
     </div>
 
@@ -148,7 +231,7 @@ if (!$active_sub) {
     function checkNextStepFitness() {
         const cat = document.getElementById('category').value;
         const loc = document.getElementById('location').value;
-        if(cat && loc) {
+        if (cat && loc) {
             document.getElementById('form_category').value = cat;
             document.getElementById('form_location').value = loc;
             document.getElementById('step3').classList.add('active');
@@ -170,7 +253,7 @@ if (!$active_sub) {
         const trainerId = document.getElementById('trainer_id').value;
         const date = document.getElementById('booking_date').value;
 
-        if(!trainerId || !date) return;
+        if (!trainerId || !date) return;
 
         // AJAX: Încărcăm orele libere calculate de get_slots.php
         fetch(`get_slots.php?trainer_id=${trainerId}&date=${date}`)
@@ -198,7 +281,7 @@ if (!$active_sub) {
                     btn.className = 'time-slot';
                     btn.innerText = slot;
 
-                    btn.onclick = function() {
+                    btn.onclick = function () {
                         document.querySelectorAll('.time-slot').forEach(b => b.classList.remove('selected'));
                         btn.classList.add('selected');
 

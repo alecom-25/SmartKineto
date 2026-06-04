@@ -39,11 +39,52 @@ $available_patients = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <meta charset="UTF-8">
     <title>Adauga pacient - SmartKineto</title>
     <style>
-        body { font-family: 'Segoe UI', sans-serif; background: #f8f9fa; padding: 30px; }
-        .container { max-width: 600px; margin: auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
-        select { width: 100%; padding: 12px; margin: 15px 0; border: 1px solid #ccc; border-radius: 8px; font-size: 16px; }
-        .btn { padding: 12px 20px; border-radius: 8px; font-weight: bold; border: none; cursor: pointer; color: white; background: #2ecc71; width: 100%; font-size: 16px; }
-        .btn-back { background: #e9ecef; color: #495057; text-decoration: none; display: inline-block; padding: 10px 15px; border-radius: 8px; margin-bottom: 20px; font-weight: bold; }
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: #f8f9fa;
+            padding: 30px;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: auto;
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        select {
+            width: 100%;
+            padding: 12px;
+            margin: 15px 0;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+
+        .btn {
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-weight: bold;
+            border: none;
+            cursor: pointer;
+            color: white;
+            background: #2ecc71;
+            width: 100%;
+            font-size: 16px;
+        }
+
+        .btn-back {
+            background: #e9ecef;
+            color: #495057;
+            text-decoration: none;
+            display: inline-block;
+            padding: 10px 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>

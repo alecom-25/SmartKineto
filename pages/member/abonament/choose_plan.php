@@ -93,34 +93,40 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             background: #f0f2f5;
             padding: 20px;
         }
+
         .section-title {
             text-align: center;
             color: #2c3e50;
             margin-bottom: 30px;
         }
+
         .grid {
             display: flex;
             flex-wrap: wrap;
             gap: 20px;
             justify-content: center;
         }
+
         .card {
             background: white;
             border-radius: 10px;
             padding: 20px;
             width: 300px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             text-align: center;
         }
+
         .card h3 {
             margin-top: 0;
             color: #3498db;
         }
+
         .price {
             font-size: 1.5em;
             font-weight: bold;
             margin: 15px 0;
         }
+
         .btn-buy {
             background: #3498db;
             color: white;
@@ -131,9 +137,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             width: 100%;
             font-weight: bold;
         }
+
         .btn-buy:hover {
             background: #2980b9;
         }
+
         .tier-tag {
             font-size: 0.7em;
             background: #eee;
@@ -141,6 +149,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             border-radius: 10px;
             text-transform: uppercase;
         }
+
         .vip-card {
             border: 2px solid #f1c40f;
             background: #fffdf0;
@@ -241,9 +250,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </div>
 
 <p style="text-align:center; margin-top:30px;">
-    <?php if(!$sub){?>
+    <?php if (!$sub) { ?>
         <a href="../../../dashboard.php">Înapoi fără modificări</a>
-    <?php }else { ?>
+    <?php } else { ?>
         <a href="abonament.php">Înapoi fără modificări</a>
     <?php } ?>
 

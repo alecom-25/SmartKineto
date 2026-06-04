@@ -33,46 +33,54 @@ $userData = $stmt->fetch(PDO::FETCH_ASSOC);
             background-color: #f4f7f6;
             padding: 40px;
         }
+
         .container {
             max-width: 600px;
             margin: auto;
             background: white;
             padding: 20px;
             border-radius: 12px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
         }
+
         h2 {
             color: #2c3e50;
             border-bottom: 2px solid #3498db;
             padding-bottom: 10px;
         }
+
         .info-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 15px;
             margin-top: 20px;
         }
+
         .info-item {
             border-bottom: 1px solid #eee;
             padding: 10px 0;
         }
+
         .label {
             font-weight: bold;
             color: #7f8c8d;
             font-size: 0.85em;
             text-transform: uppercase;
         }
+
         .value {
             display: block;
             color: #2c3e50;
             margin-top: 5px;
         }
+
         .back-link {
             display: block;
             margin-top: 30px;
             color: #3498db;
             text-decoration: none;
-            font-weight: bold; }
+            font-weight: bold;
+        }
     </style>
 </head>
 

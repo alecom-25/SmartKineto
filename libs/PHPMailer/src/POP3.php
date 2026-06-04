@@ -161,12 +161,12 @@ class POP3
     /**
      * Simple static wrapper for all-in-one POP before SMTP.
      *
-     * @param string   $host        The hostname to connect to
-     * @param int|bool $port        The port number to connect to
-     * @param int|bool $timeout     The timeout value
-     * @param string   $username
-     * @param string   $password
-     * @param int      $debug_level
+     * @param string $host The hostname to connect to
+     * @param int|bool $port The port number to connect to
+     * @param int|bool $timeout The timeout value
+     * @param string $username
+     * @param string $password
+     * @param int $debug_level
      *
      * @return bool
      */
@@ -177,7 +177,8 @@ class POP3
         $username = '',
         $password = '',
         $debug_level = 0
-    ) {
+    )
+    {
         $pop = new self();
 
         return $pop->authorise($host, $port, $timeout, $username, $password, $debug_level);
@@ -188,12 +189,12 @@ class POP3
      * A connect, login, disconnect sequence
      * appropriate for POP-before SMTP authorisation.
      *
-     * @param string   $host        The hostname to connect to
-     * @param int|bool $port        The port number to connect to
-     * @param int|bool $timeout     The timeout value
-     * @param string   $username
-     * @param string   $password
-     * @param int      $debug_level
+     * @param string $host The hostname to connect to
+     * @param int|bool $port The port number to connect to
+     * @param int|bool $timeout The timeout value
+     * @param string $username
+     * @param string $password
+     * @param int $debug_level
      *
      * @return bool
      */
@@ -204,15 +205,15 @@ class POP3
         if (false === $port) {
             $this->port = static::DEFAULT_PORT;
         } else {
-            $this->port = (int) $port;
+            $this->port = (int)$port;
         }
         //If no timeout value provided, use default
         if (false === $timeout) {
             $this->tval = static::DEFAULT_TIMEOUT;
         } else {
-            $this->tval = (int) $timeout;
+            $this->tval = (int)$timeout;
         }
-        $this->do_debug = (int) $debug_level;
+        $this->do_debug = (int)$debug_level;
         $this->username = self::stripControls($username);
         $this->password = self::stripControls($password);
         //Reset the error log
@@ -236,9 +237,9 @@ class POP3
     /**
      * Connect to a POP3 server.
      *
-     * @param string   $host
+     * @param string $host
      * @param int|bool $port
-     * @param int      $tval
+     * @param int $tval
      *
      * @return bool
      */
@@ -366,7 +367,7 @@ class POP3
 
         // Clean up attributes.
         $this->connected = false;
-        $this->pop_conn  = false;
+        $this->pop_conn = false;
     }
 
     /**
@@ -456,10 +457,10 @@ class POP3
     /**
      * POP3 connection error handler.
      *
-     * @param int    $errno
+     * @param int $errno
      * @param string $errstr
      * @param string $errfile
-     * @param int    $errline
+     * @param int $errline
      */
     protected function catchWarning($errno, $errstr, $errfile, $errline)
     {

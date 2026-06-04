@@ -24,7 +24,7 @@ $all_requests = $db->query($sql)->fetchAll();
 <html>
 <head>
     <style>
-        .btn{
+        .btn {
             display: inline-flex;
             align-items: center;
             justify-content: center;
@@ -39,13 +39,13 @@ $all_requests = $db->query($sql)->fetchAll();
             transition: all 0.3s ease;
             border: none;
             cursor: pointer;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
 
         .btn:hover {
             background-color: #505958;
             transform: translateY(-1px);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
         }
 
         .btn:active {
@@ -57,48 +57,50 @@ $all_requests = $db->query($sql)->fetchAll();
             border-collapse: collapse;
             margin-top: 20px;
         }
+
         th, td {
             padding: 12px;
             border: 1px solid #ddd;
             text-align: left;
         }
+
         th {
             background: #f8f9fa;
         }
     </style>
 </head>
 <body>
-    <h2>Istoric Complet Cereri Abonamente</h2>
-    <a href="manage_payments.php" class="btn">← Înapoi la Cereri</a>
-    <table>
-        <thead>
+<h2>Istoric Complet Cereri Abonamente</h2>
+<a href="manage_payments.php" class="btn">← Înapoi la Cereri</a>
+<table>
+    <thead>
+    <tr>
+        <th>Data</th>
+        <th>Membru</th>
+        <th>Plan Solicitat</th>
+        <th>Sumă</th>
+        <th>Status Final</th>
+    </tr>
+    </thead>
+    <tbody>
+    <?php foreach ($all_requests as $req): ?>
         <tr>
-            <th>Data</th>
-            <th>Membru</th>
-            <th>Plan Solicitat</th>
-            <th>Sumă</th>
-            <th>Status Final</th>
-        </tr>
-        </thead>
-        <tbody>
-        <?php foreach ($all_requests as $req): ?>
-            <tr>
-                <td><?php echo $req['created_at']; ?></td>
-                <td><?php echo $req['username']; ?></td>
-                <td><?php echo strtoupper($req['new_tier']); ?></td>
-                <td><?php echo $req['amount_to_pay']; ?> RON</td>
-                <td>
+            <td><?php echo $req['created_at']; ?></td>
+            <td><?php echo $req['username']; ?></td>
+            <td><?php echo strtoupper($req['new_tier']); ?></td>
+            <td><?php echo $req['amount_to_pay']; ?> RON</td>
+            <td>
                     <span class="badge-<?php echo $req['status']; ?>">
                         <?php
-                        if($req['status'] == 'approved') echo "✅ Aprobat";
-                        elseif($req['status'] == 'rejected') echo "❌ Respins";
+                        if ($req['status'] == 'approved') echo "✅ Aprobat";
+                        elseif ($req['status'] == 'rejected') echo "❌ Respins";
                         else echo "⏳ În așteptare";
                         ?>
                     </span>
-                </td>
-            </tr>
-        <?php endforeach; ?>
-        </tbody>
-    </table>
+            </td>
+        </tr>
+    <?php endforeach; ?>
+    </tbody>
+</table>
 </body>
 </html>

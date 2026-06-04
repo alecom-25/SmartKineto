@@ -35,33 +35,33 @@ if (isset($_POST['approve_id'])) {
                        has_forta=VALUES(has_forta), has_kineto=VALUES(has_kineto), has_vip_perks=VALUES(has_vip_perks), expires_at=VALUES(expires_at), 
                        is_suspended = 0";
             $db->prepare($sqlSub)->execute([$req['user_id'], $req['new_tier'], $req['has_fitness'],
-                $req['has_forta'], $req['has_kineto'], $req['has_vip_perks'], $expires_at]);
+                    $req['has_forta'], $req['has_kineto'], $req['has_vip_perks'], $expires_at]);
 
             $abonament = "";
-            if($req['new_tier'] === 'membru'){
-                if($req['has_fitness']){
-                    $abonament =  " - Fitness";
-                }elseif ($req['has_forta']){
+            if ($req['new_tier'] === 'membru') {
+                if ($req['has_fitness']) {
+                    $abonament = " - Fitness";
+                } elseif ($req['has_forta']) {
                     $abonament = " - Forta";
-                }elseif ($req['has_kineto']){
+                } elseif ($req['has_kineto']) {
                     $abonament = " - Kineto";
                 }
-            }elseif($req['new_tier'] === 'premium'){
-                if($req['has_fitness'] && $req['has_forta']){
+            } elseif ($req['new_tier'] === 'premium') {
+                if ($req['has_fitness'] && $req['has_forta']) {
                     $abonament = " - Tip 1";
-                }elseif ($req['has_fitness'] && $req['has_kineto']){
+                } elseif ($req['has_fitness'] && $req['has_kineto']) {
                     $abonament = " - Tip 2";
-                }elseif($req['has_forta'] && $req['has_kineto']){
+                } elseif ($req['has_forta'] && $req['has_kineto']) {
                     $abonament = " - Tip 3";
                 }
-            }elseif($req['new_tier'] === 'vip'){
+            } elseif ($req['new_tier'] === 'vip') {
                 $abonament = "VIP";
             }
 
             $desc = "Abonament Confirmat - " . strtoupper($req['new_tier']) . $abonament;
             $db->prepare("INSERT INTO activities_history (user_id, activity_type, description, amount) 
                         VALUES (?, 'payment', ?, ?)")
-                ->execute([$req['user_id'], $desc, $req['amount_to_pay']]);
+                    ->execute([$req['user_id'], $desc, $req['amount_to_pay']]);
 
             $db->commit();
             $msg = "Plată validată cu succes!";
@@ -70,7 +70,7 @@ if (isset($_POST['approve_id'])) {
             $msg = "Eroare: " . $e->getMessage();
         }
     }
-}elseif (isset($_POST['reject_id'])) {
+} elseif (isset($_POST['reject_id'])) {
     $request_id = $_POST['reject_id'];
     $stmt = $db->prepare("UPDATE pending_upgrades SET status = 'rejected' WHERE id = ? AND status = ?");
     $stmt->execute([$request_id, 'pending']);
@@ -91,14 +91,17 @@ $pending_list = $db->query("SELECT p.*, u.username FROM pending_upgrades p JOIN 
             border-collapse: collapse;
             margin-top: 20px;
         }
+
         th, td {
             padding: 12px;
             border: 1px solid #ddd;
             text-align: left;
         }
+
         th {
             background: #f8f9fa;
         }
+
         .btn-approve {
             background: #2ecc71;
             color: white;
@@ -107,6 +110,7 @@ $pending_list = $db->query("SELECT p.*, u.username FROM pending_upgrades p JOIN 
             border-radius: 4px;
             cursor: pointer;
         }
+
         .btn-reject {
             background: #cc2e40;
             color: white;
@@ -115,12 +119,14 @@ $pending_list = $db->query("SELECT p.*, u.username FROM pending_upgrades p JOIN 
             border-radius: 4px;
             cursor: pointer;
         }
-        .btn{
+
+        .btn {
             display: flex;
             gap: 15px;
             align-items: center;
             margin-bottom: 30px;
         }
+
         .btn-history {
             display: inline-flex;
             align-items: center;
@@ -136,13 +142,13 @@ $pending_list = $db->query("SELECT p.*, u.username FROM pending_upgrades p JOIN 
             transition: all 0.3s ease;
             border: none;
             cursor: pointer;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
 
         .btn-history:hover {
             background-color: #3576b3;
             transform: translateY(-1px);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
         }
 
         .btn-history:active {
@@ -164,13 +170,13 @@ $pending_list = $db->query("SELECT p.*, u.username FROM pending_upgrades p JOIN 
             transition: all 0.3s ease;
             border: none;
             cursor: pointer;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
 
         .btn-return:hover {
             background-color: #4e982e;
             transform: translateY(-1px);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
         }
 
         .btn-return:active {
@@ -185,43 +191,43 @@ $pending_list = $db->query("SELECT p.*, u.username FROM pending_upgrades p JOIN 
     </style>
 </head>
 <body>
-    <h1>Ceri de Upgrade în Așteptare</h1>
-    <?php if(isset($msg)) echo "<p>$msg</p>"; ?>
+<h1>Ceri de Upgrade în Așteptare</h1>
+<?php if (isset($msg)) echo "<p>$msg</p>"; ?>
 
-    <div class="btn">
-        <a href="../../../dashboard.php" class="btn-return">← Înapoi la Dashboard</a>
-        <a href="payment_history.php" class="btn-history">Vezi Istoric Toate Cererile</a>
-    </div>
-    <table>
-        <thead>
+<div class="btn">
+    <a href="../../../dashboard.php" class="btn-return">← Înapoi la Dashboard</a>
+    <a href="payment_history.php" class="btn-history">Vezi Istoric Toate Cererile</a>
+</div>
+<table>
+    <thead>
+    <tr>
+        <th>Membru</th>
+        <th>Plan Nou</th>
+        <th>Suma de primit</th>
+        <th>Data Cererii</th>
+        <th>Acțiune</th>
+    </tr>
+    </thead>
+    <tbody>
+    <?php foreach ($pending_list as $p): ?>
         <tr>
-            <th>Membru</th>
-            <th>Plan Nou</th>
-            <th>Suma de primit</th>
-            <th>Data Cererii</th>
-            <th>Acțiune</th>
+            <td><?php echo $p['username']; ?></td>
+            <td><?php echo strtoupper($p['new_tier']); ?></td>
+            <td><strong><?php echo $p['amount_to_pay']; ?> RON</strong></td>
+            <td><?php echo $p['created_at']; ?></td>
+            <td>
+                <form method="POST">
+                    <input type="hidden" name="approve_id" value="<?php echo $p['id']; ?>">
+                    <button type="submit" class="btn-approve">Confirmă Plata</button>
+                </form>
+                <form method="POST">
+                    <input type="hidden" name="reject_id" value="<?php echo $p['id']; ?>">
+                    <button type="submit" class="btn-reject">Refuza Upgrade-ul</button>
+                </form>
+            </td>
         </tr>
-        </thead>
-        <tbody>
-        <?php foreach ($pending_list as $p): ?>
-            <tr>
-                <td><?php echo $p['username']; ?></td>
-                <td><?php echo strtoupper($p['new_tier']); ?></td>
-                <td><strong><?php echo $p['amount_to_pay']; ?> RON</strong></td>
-                <td><?php echo $p['created_at']; ?></td>
-                <td>
-                    <form method="POST">
-                        <input type="hidden" name="approve_id" value="<?php echo $p['id']; ?>">
-                        <button type="submit" class="btn-approve">Confirmă Plata</button>
-                    </form>
-                    <form method="POST">
-                        <input type="hidden" name="reject_id" value="<?php echo $p['id']; ?>">
-                        <button type="submit" class="btn-reject">Refuza Upgrade-ul</button>
-                    </form>
-                </td>
-            </tr>
-        <?php endforeach; ?>
-        </tbody>
-    </table>
+    <?php endforeach; ?>
+    </tbody>
+</table>
 </body>
 </html>

@@ -63,19 +63,74 @@ foreach ($apps as $app) {
     <meta charset="UTF-8">
     <title>Programul Meu - SmartKineto</title>
     <style>
-        body { font-family: 'Segoe UI', sans-serif; background: #f8f9fa; color: #333; padding: 20px; }
-        .container { max-width: 900px; margin: auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: #f8f9fa;
+            color: #333;
+            padding: 20px;
+        }
 
-        .nav-buttons { display: flex; gap: 15px; margin-bottom: 30px; margin-top: 20px; }
-        .btn { padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: bold; border: none; cursor: pointer; transition: 0.3s; font-size: 15px; }
-        .btn-blue { background: #3498db; color: white; }
-        .btn-blue:hover { background: #2980b9; }
-        .btn-green { background: #2ecc71; color: white; }
-        .btn-green:hover { background: #27ae60; }
-        .btn-back { background: #e9ecef; color: #495057; }
+        .container {
+            max-width: 900px;
+            margin: auto;
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+        }
 
-        .form-box { background: #f1f3f5; padding: 20px; border-radius: 8px; margin-bottom: 30px; display: none; }
-        .form-box.active { display: block; }
+        .nav-buttons {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+            margin-top: 20px;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: bold;
+            border: none;
+            cursor: pointer;
+            transition: 0.3s;
+            font-size: 15px;
+        }
+
+        .btn-blue {
+            background: #3498db;
+            color: white;
+        }
+
+        .btn-blue:hover {
+            background: #2980b9;
+        }
+
+        .btn-green {
+            background: #2ecc71;
+            color: white;
+        }
+
+        .btn-green:hover {
+            background: #27ae60;
+        }
+
+        .btn-back {
+            background: #e9ecef;
+            color: #495057;
+        }
+
+        .form-box {
+            background: #f1f3f5;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            display: none;
+        }
+
+        .form-box.active {
+            display: block;
+        }
 
         .close-notif {
             text-decoration: none;
@@ -85,17 +140,59 @@ foreach ($apps as $app) {
             text-align: left;
         }
 
-        label { font-weight: bold; display: block; margin-top: 10px; }
-        input[type="date"], input[type="time"] { width: 100%; padding: 10px; margin: 8px 0; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; }
+        label {
+            font-weight: bold;
+            display: block;
+            margin-top: 10px;
+        }
 
-        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #eee; }
-        th { background: #34495e; color: white; }
+        input[type="date"], input[type="time"] {
+            width: 100%;
+            padding: 10px;
+            margin: 8px 0;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            box-sizing: border-box;
+        }
 
-        .badge { padding: 5px 10px; border-radius: 5px; font-weight: bold; font-size: 13px; }
-        .badge-free { background: #d4edda; color: #155724; }
-        .badge-busy { background: #f8d7da; color: #721c24; }
-        .badge-pending { background: #fff3cd; color: #856404; }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+
+        th {
+            background: #34495e;
+            color: white;
+        }
+
+        .badge {
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-weight: bold;
+            font-size: 13px;
+        }
+
+        .badge-free {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .badge-busy {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .badge-pending {
+            background: #fff3cd;
+            color: #856404;
+        }
     </style>
 </head>
 <body>
@@ -105,7 +202,7 @@ foreach ($apps as $app) {
 
     <h1>🗓️ Gestiune Program de Lucru</h1>
 
-    <?php if(isset($_SESSION['schedule_msg'])): ?>
+    <?php if (isset($_SESSION['schedule_msg'])): ?>
         <div style="background: #e3f2fd; color: #0d47a1; padding: 15px; border-radius: 8px; margin-bottom: 20px; font-weight: bold;">
             <?php echo $_SESSION['schedule_msg']; ?>
             <!-- &times deseneaza x, face sa poti sa dai click pe x; link-ul/div-ul care il contine/ascunde-l/ramane pagina unde era inainte-->
@@ -131,7 +228,9 @@ foreach ($apps as $app) {
             <label for="stop_time">Alege ora de terminare:</label>
             <input type="time" id="stop_time" name="stop_time" required>
 
-            <button type="submit" name="add_slot" class="btn btn-blue" style="width: 100%; margin-top: 15px;">Salvează Intervalul ca Disponibil</button>
+            <button type="submit" name="add_slot" class="btn btn-blue" style="width: 100%; margin-top: 15px;">Salvează
+                Intervalul ca Disponibil
+            </button>
         </form>
     </div>
 
@@ -142,69 +241,71 @@ foreach ($apps as $app) {
             <th>Data și Ora</th>
             <th>Stare</th>
             <th>Client</th>
-            <th>Tip Antrenament </th>
-            <th>Sala </th>
+            <th>Tip Antrenament</th>
+            <th>Sala</th>
         </tr>
         </thead>
         <tbody>
-            <?php if (empty($my_schedule)): ?>
-                <tr>
-                    <td colspan="4" style="text-align: center; color: #777; font-style: italic;">Nu ai adăugat încă niciun interval orar de lucru în calendar.</td>
-                </tr>
-            <?php else: ?>
-                <?php foreach ($my_schedule as $day):
-                    echo "<tr><td colspan='4' class='day-header'>📅 " . date('d.m.Y', strtotime($day['available_date'])) .
-                    " (De la " . substr($day['start_time'], 0, 5) . " la " . substr($day['stop_time'], 0, 5) . ")</td></tr>";
+        <?php if (empty($my_schedule)): ?>
+            <tr>
+                <td colspan="4" style="text-align: center; color: #777; font-style: italic;">Nu ai adăugat încă niciun
+                    interval orar de lucru în calendar.
+                </td>
+            </tr>
+        <?php else: ?>
+            <?php foreach ($my_schedule as $day):
+                echo "<tr><td colspan='4' class='day-header'>📅 " . date('d.m.Y', strtotime($day['available_date'])) .
+                        " (De la " . substr($day['start_time'], 0, 5) . " la " . substr($day['stop_time'], 0, 5) . ")</td></tr>";
 
-                    $start_ts = strtotime($day['available_date'] . ' ' . $day['start_time']);
-                    $end_ts = strtotime($day['available_date'] . ' ' . $day['stop_time']);
+                $start_ts = strtotime($day['available_date'] . ' ' . $day['start_time']);
+                $end_ts = strtotime($day['available_date'] . ' ' . $day['stop_time']);
 
-                    for ($i = $start_ts; $i < $end_ts; $i += 3600):
-                        $time_db = date('H:i:s', $i);
-                        $time_display = date('H:i', $i);
-                        $app = isset($appointments_list[$day['available_date']][$time_db]) ? $appointments_list[$day['available_date']][$time_db] : null; ?>
-                        <tr>
-                            <td><strong><?php echo $time_display; ?></strong></td>
-                            <td>
-                                <?php if (!$app): ?>
-                                    <span class="badge badge-free">LIBER</span>
-                                <?php elseif ($app['status'] === 'pending'): ?>
-                                    <span class="badge badge-pending">CERERE PENDING</span>
-                                <?php else: ?>
-                                    <span class="badge badge-busy">OCUPAT</span>
-                                <?php endif; ?>
-                            </td>
-                            <td>
-                                <?php
-                                if (!empty($app['client_nume'])) {
-                                    echo $app['client_nume'] . ' ' . $app['client_prenume'];
-                                } else {
-                                    echo '<span style="color:#aaa;">-</span>';
-                                }
-                                ?>
-                            </td>
-                            <td>
-                                <?php
-                                if (!empty($app['session_name'])) {
-                                    echo '<strong>' . $app['session_name'] . '</strong>';
-                                } else {
-                                    echo '<span style="color:#aaa;">Nicio rezervare</span>';
-                                }
-                                ?>
-                            </td>
-                            <td>
-                                <?php
-                                if ($app && !empty($app['room_name'])) {
-                                    echo '<span style="color:#e67e22; font-weight:bold;">📍 ' . $app['room_name'] . '</span>';
-                                } else {
-                                    echo '<span style="color:#aaa;">-</span>';
-                                }
-                                ?>
-                            </td>
-                        </tr>
-                    <?php endfor;
-                endforeach;
-             endif;?>
+                for ($i = $start_ts; $i < $end_ts; $i += 3600):
+                    $time_db = date('H:i:s', $i);
+                    $time_display = date('H:i', $i);
+                    $app = isset($appointments_list[$day['available_date']][$time_db]) ? $appointments_list[$day['available_date']][$time_db] : null; ?>
+                    <tr>
+                        <td><strong><?php echo $time_display; ?></strong></td>
+                        <td>
+                            <?php if (!$app): ?>
+                                <span class="badge badge-free">LIBER</span>
+                            <?php elseif ($app['status'] === 'pending'): ?>
+                                <span class="badge badge-pending">CERERE PENDING</span>
+                            <?php else: ?>
+                                <span class="badge badge-busy">OCUPAT</span>
+                            <?php endif; ?>
+                        </td>
+                        <td>
+                            <?php
+                            if (!empty($app['client_nume'])) {
+                                echo $app['client_nume'] . ' ' . $app['client_prenume'];
+                            } else {
+                                echo '<span style="color:#aaa;">-</span>';
+                            }
+                            ?>
+                        </td>
+                        <td>
+                            <?php
+                            if (!empty($app['session_name'])) {
+                                echo '<strong>' . $app['session_name'] . '</strong>';
+                            } else {
+                                echo '<span style="color:#aaa;">Nicio rezervare</span>';
+                            }
+                            ?>
+                        </td>
+                        <td>
+                            <?php
+                            if ($app && !empty($app['room_name'])) {
+                                echo '<span style="color:#e67e22; font-weight:bold;">📍 ' . $app['room_name'] . '</span>';
+                            } else {
+                                echo '<span style="color:#aaa;">-</span>';
+                            }
+                            ?>
+                        </td>
+                    </tr>
+                <?php endfor;
+            endforeach;
+        endif; ?>
         </tbody>
     </table>
 </div>

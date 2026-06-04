@@ -1,403 +1,426 @@
 <!DOCTYPE html>
 <html lang="ro">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>KIM | Kineto Web Manager</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KIM | Kineto Web Manager</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+          rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div id="toastRoot" class="toast-root"></div>
+<div id="toastRoot" class="toast-root"></div>
 
-  <section id="authScreen" class="auth-screen">
+<section id="authScreen" class="auth-screen">
     <div class="auth-layout">
-      <div class="auth-hero">
-        <div class="logo-mark large">K</div>
-        <h1>KIM</h1>
-        <h2>Kineto Web Manager</h2>
-        <p>Aplicație modulară pentru administrarea activităților unei săli de fitness/forță și ale unui centru de kinetoterapie.</p>
-        <div class="hero-points">
-          <span>Utilizatori și roluri</span>
-          <span>Programări și orar</span>
-          <span>Abonamente și plăți</span>
-          <span>Resurse și rapoarte</span>
-          <span>Plugin-uri și exporturi</span>
-        </div>
-      </div>
-
-      <div class="auth-card">
-        <div class="auth-tabs">
-          <button class="auth-tab active" data-auth-tab="login">Login</button>
-          <button class="auth-tab" data-auth-tab="register">Register</button>
+        <div class="auth-hero">
+            <div class="logo-mark large">K</div>
+            <h1>KIM</h1>
+            <h2>Kineto Web Manager</h2>
+            <p>Aplicație modulară pentru administrarea activităților unei săli de fitness/forță și ale unui centru de
+                kinetoterapie.</p>
+            <div class="hero-points">
+                <span>Utilizatori și roluri</span>
+                <span>Programări și orar</span>
+                <span>Abonamente și plăți</span>
+                <span>Resurse și rapoarte</span>
+                <span>Plugin-uri și exporturi</span>
+            </div>
         </div>
 
-        <form id="loginForm" class="auth-form active">
-          <div>
-            <h3>Autentificare</h3>
-            <p>Alege rapid un cont demo sau introdu datele manual.</p>
-          </div>
-          <div class="demo-grid">
-            <button type="button" class="demo-card" data-demo="admin">
-              <strong>Administrator</strong>
-              <span>admin@kim.ro</span>
-            </button>
-            <button type="button" class="demo-card" data-demo="trainer">
-              <strong>Antrenor/Terapeut</strong>
-              <span>radu@kim.ro</span>
-            </button>
-            <button type="button" class="demo-card" data-demo="member">
-              <strong>Membru</strong>
-              <span>andrei@kim.ro</span>
-            </button>
-          </div>
-          <label>Email<input type="email" id="loginEmail" placeholder="admin@kim.ro" required></label>
-          <label>Parolă<input type="password" id="loginPassword" placeholder="admin123" required></label>
-          <button type="submit" class="primary-btn full">Intră în aplicație</button>
-          <p class="hint">Parole demo: admin123, trainer123, member123</p>
-        </form>
+        <div class="auth-card">
+            <div class="auth-tabs">
+                <button class="auth-tab active" data-auth-tab="login">Login</button>
+                <button class="auth-tab" data-auth-tab="register">Register</button>
+            </div>
 
-        <form id="registerForm" class="auth-form">
-          <div>
-            <h3>Înregistrare utilizator</h3>
-            <p>Contul nou este salvat local, în browser.</p>
-          </div>
-          <div class="two-col">
-            <label>Nume complet<input type="text" id="registerName" required></label>
-            <label>Telefon<input type="tel" id="registerPhone" required></label>
-          </div>
-          <label>Email<input type="email" id="registerEmail" required></label>
-          <div class="two-col">
-            <label>Parolă<input type="password" id="registerPassword" required></label>
-            <label>Rol
-              <select id="registerRole">
-                <option value="member">Membru</option>
-                <option value="trainer">Antrenor/Terapeut</option>
-              </select>
-            </label>
-          </div>
-          <button type="submit" class="primary-btn full">Creează cont</button>
-        </form>
-      </div>
+            <form id="loginForm" class="auth-form active">
+                <div>
+                    <h3>Autentificare</h3>
+                    <p>Alege rapid un cont demo sau introdu datele manual.</p>
+                </div>
+                <div class="demo-grid">
+                    <button type="button" class="demo-card" data-demo="admin">
+                        <strong>Administrator</strong>
+                        <span>admin@kim.ro</span>
+                    </button>
+                    <button type="button" class="demo-card" data-demo="trainer">
+                        <strong>Antrenor/Terapeut</strong>
+                        <span>radu@kim.ro</span>
+                    </button>
+                    <button type="button" class="demo-card" data-demo="member">
+                        <strong>Membru</strong>
+                        <span>andrei@kim.ro</span>
+                    </button>
+                </div>
+                <label>Email<input type="email" id="loginEmail" placeholder="admin@kim.ro" required></label>
+                <label>Parolă<input type="password" id="loginPassword" placeholder="admin123" required></label>
+                <button type="submit" class="primary-btn full">Intră în aplicație</button>
+                <p class="hint">Parole demo: admin123, trainer123, member123</p>
+            </form>
+
+            <form id="registerForm" class="auth-form">
+                <div>
+                    <h3>Înregistrare utilizator</h3>
+                    <p>Contul nou este salvat local, în browser.</p>
+                </div>
+                <div class="two-col">
+                    <label>Nume complet<input type="text" id="registerName" required></label>
+                    <label>Telefon<input type="tel" id="registerPhone" required></label>
+                </div>
+                <label>Email<input type="email" id="registerEmail" required></label>
+                <div class="two-col">
+                    <label>Parolă<input type="password" id="registerPassword" required></label>
+                    <label>Rol
+                        <select id="registerRole">
+                            <option value="member">Membru</option>
+                            <option value="trainer">Antrenor/Terapeut</option>
+                        </select>
+                    </label>
+                </div>
+                <button type="submit" class="primary-btn full">Creează cont</button>
+            </form>
+        </div>
     </div>
-  </section>
+</section>
 
-  <section id="appShell" class="app-shell hidden">
+<section id="appShell" class="app-shell hidden">
     <aside id="sidebar" class="sidebar">
-      <div class="sidebar-brand">
-        <div class="logo-mark">K</div>
-        <div>
-          <strong>KIM</strong>
-          <span>Kineto Web Manager</span>
+        <div class="sidebar-brand">
+            <div class="logo-mark">K</div>
+            <div>
+                <strong>KIM</strong>
+                <span>Kineto Web Manager</span>
+            </div>
         </div>
-      </div>
 
-      <div id="currentUserMini" class="user-mini"></div>
-      <nav id="sidebarNav" class="sidebar-nav"></nav>
+        <div id="currentUserMini" class="user-mini"></div>
+        <nav id="sidebarNav" class="sidebar-nav"></nav>
 
-      <div class="sidebar-footer">
-        <button id="resetDemoBtn" class="ghost-btn full">Reset date demo</button>
-        <button id="logoutBtn" class="danger-btn full">Ieșire</button>
-      </div>
+        <div class="sidebar-footer">
+            <button id="resetDemoBtn" class="ghost-btn full">Reset date demo</button>
+            <button id="logoutBtn" class="danger-btn full">Ieșire</button>
+        </div>
     </aside>
 
     <main class="main">
-      <header class="topbar">
-        <button id="menuToggle" class="icon-btn">☰</button>
-        <div>
-          <h2 id="pageTitle">Dashboard</h2>
-          <p id="pageSubtitle">Administrare modulară KIM</p>
-        </div>
-        <div class="topbar-actions">
-          <span id="roleBadge" class="role-badge"></span>
-          <span id="dateBadge" class="date-badge"></span>
-        </div>
-      </header>
-
-      <section id="adminDashboardView" class="view">
-        <div class="role-hero admin">
-          <div>
-            <span>Interfață administrator</span>
-            <h3>Control complet asupra aplicației</h3>
-            <p>Administrezi utilizatori, programări, abonamente, specialiști, săli, echipamente, plugin-uri și rapoarte.</p>
-          </div>
-        </div>
-        <div class="stats-grid">
-          <div class="stat-card"><span>Utilizatori activi</span><strong id="adminActiveUsers">0</strong></div>
-          <div class="stat-card"><span>Programări luna curentă</span><strong id="adminMonthBookings">0</strong></div>
-          <div class="stat-card"><span>Abonamente active</span><strong id="adminActiveSubs">0</strong></div>
-          <div class="stat-card"><span>Rată ocupare sesiuni</span><strong id="adminOccupancy">0%</strong></div>
-        </div>
-        <div class="content-grid">
-          <div class="panel">
-            <div class="panel-head">
-              <div><h3>Sesiuni următoare</h3><p>Privire de ansamblu asupra orarului.</p></div>
-              <button class="secondary-btn" data-jump="scheduleView">Gestionează orar</button>
+        <header class="topbar">
+            <button id="menuToggle" class="icon-btn">☰</button>
+            <div>
+                <h2 id="pageTitle">Dashboard</h2>
+                <p id="pageSubtitle">Administrare modulară KIM</p>
             </div>
-            <div id="adminUpcomingSessions" class="list-stack"></div>
-          </div>
-          <div class="panel">
-            <div class="panel-head">
-              <div><h3>Activitate recentă</h3><p>Operațiuni efectuate în aplicație.</p></div>
+            <div class="topbar-actions">
+                <span id="roleBadge" class="role-badge"></span>
+                <span id="dateBadge" class="date-badge"></span>
             </div>
-            <div id="adminActivityFeed" class="list-stack"></div>
-          </div>
-        </div>
-      </section>
+        </header>
 
-      <section id="trainerDashboardView" class="view">
-        <div class="role-hero trainer">
-          <div>
-            <span>Interfață antrenor/terapeut</span>
-            <h3>Sesiunile tale, programul tău, membrii tăi</h3>
-            <p>Poți crea, modifica sau anula sesiuni, poți verifica rezervările și conflictele de orar.</p>
-          </div>
-        </div>
-        <div class="stats-grid">
-          <div class="stat-card"><span>Sesiunile mele</span><strong id="trainerTotalSessions">0</strong></div>
-          <div class="stat-card"><span>Rezervări la mine</span><strong id="trainerTotalBookings">0</strong></div>
-          <div class="stat-card"><span>Sesiuni azi</span><strong id="trainerTodaySessions">0</strong></div>
-          <div class="stat-card"><span>Grad ocupare</span><strong id="trainerOccupancy">0%</strong></div>
-        </div>
-        <div class="content-grid">
-          <div class="panel">
-            <div class="panel-head">
-              <div><h3>Agenda mea</h3><p>Sesiuni create sau alocate specialistului autentificat.</p></div>
-              <button class="primary-btn" data-open="session">Creează sesiune</button>
+        <section id="adminDashboardView" class="view">
+            <div class="role-hero admin">
+                <div>
+                    <span>Interfață administrator</span>
+                    <h3>Control complet asupra aplicației</h3>
+                    <p>Administrezi utilizatori, programări, abonamente, specialiști, săli, echipamente, plugin-uri și
+                        rapoarte.</p>
+                </div>
             </div>
-            <div id="trainerAgenda" class="cards-grid two"></div>
-          </div>
-          <div class="panel">
-            <div class="panel-head">
-              <div><h3>Membri programați</h3><p>Lista membrilor înscriși la sesiunile tale.</p></div>
+            <div class="stats-grid">
+                <div class="stat-card"><span>Utilizatori activi</span><strong id="adminActiveUsers">0</strong></div>
+                <div class="stat-card"><span>Programări luna curentă</span><strong id="adminMonthBookings">0</strong>
+                </div>
+                <div class="stat-card"><span>Abonamente active</span><strong id="adminActiveSubs">0</strong></div>
+                <div class="stat-card"><span>Rată ocupare sesiuni</span><strong id="adminOccupancy">0%</strong></div>
             </div>
-            <div id="trainerBookedMembers" class="list-stack"></div>
-          </div>
-        </div>
-      </section>
-
-      <section id="memberDashboardView" class="view">
-        <div class="role-hero member">
-          <div>
-            <span>Interfață membru</span>
-            <h3>Rezervări, abonamente și istoric personal</h3>
-            <p>Poți vedea sesiuni disponibile, îți poți rezerva locul și poți consulta istoricul activităților.</p>
-          </div>
-        </div>
-        <div class="stats-grid">
-          <div class="stat-card"><span>Rezervările mele</span><strong id="memberBookings">0</strong></div>
-          <div class="stat-card"><span>Abonament activ</span><strong id="memberActiveSub">-</strong></div>
-          <div class="stat-card"><span>Sesiuni disponibile</span><strong id="memberAvailableSessions">0</strong></div>
-          <div class="stat-card"><span>Activități totale</span><strong id="memberHistoryCount">0</strong></div>
-        </div>
-        <div class="content-grid">
-          <div class="panel">
-            <div class="panel-head">
-              <div><h3>Sesiuni recomandate</h3><p>Rezervă o sesiune de fitness, forță sau kinetoterapie.</p></div>
-              <button class="secondary-btn" data-jump="scheduleView">Vezi toate</button>
+            <div class="content-grid">
+                <div class="panel">
+                    <div class="panel-head">
+                        <div><h3>Sesiuni următoare</h3>
+                            <p>Privire de ansamblu asupra orarului.</p></div>
+                        <button class="secondary-btn" data-jump="scheduleView">Gestionează orar</button>
+                    </div>
+                    <div id="adminUpcomingSessions" class="list-stack"></div>
+                </div>
+                <div class="panel">
+                    <div class="panel-head">
+                        <div><h3>Activitate recentă</h3>
+                            <p>Operațiuni efectuate în aplicație.</p></div>
+                    </div>
+                    <div id="adminActivityFeed" class="list-stack"></div>
+                </div>
             </div>
-            <div id="memberRecommendedSessions" class="cards-grid two"></div>
-          </div>
-          <div class="panel">
-            <div class="panel-head">
-              <div><h3>Abonamentul meu</h3><p>Stare, perioadă și istoric.</p></div>
+        </section>
+
+        <section id="trainerDashboardView" class="view">
+            <div class="role-hero trainer">
+                <div>
+                    <span>Interfață antrenor/terapeut</span>
+                    <h3>Sesiunile tale, programul tău, membrii tăi</h3>
+                    <p>Poți crea, modifica sau anula sesiuni, poți verifica rezervările și conflictele de orar.</p>
+                </div>
             </div>
-            <div id="memberSubscriptionPanel" class="list-stack"></div>
-          </div>
-        </div>
-      </section>
-
-      <section id="usersView" class="view">
-        <div class="panel">
-          <div class="panel-head">
-            <div><h3>Gestiunea utilizatorilor</h3><p>Înregistrare, profiluri, roluri și permisiuni distincte.</p></div>
-            <button id="openUserModal" class="primary-btn">Adaugă utilizator</button>
-          </div>
-          <div class="toolbar">
-            <input id="userSearch" type="search" placeholder="Caută după nume, email, telefon sau rol">
-            <select id="userRoleFilter">
-              <option value="all">Toate rolurile</option>
-              <option value="admin">Administratori</option>
-              <option value="trainer">Antrenori/Terapeuți</option>
-              <option value="member">Membri</option>
-            </select>
-            <select id="userStatusFilter">
-              <option value="all">Toate statusurile</option>
-              <option value="active">Activ</option>
-              <option value="suspended">Suspendat</option>
-            </select>
-          </div>
-          <div class="table-wrap">
-            <table>
-              <thead>
-                <tr>
-                  <th>Nume</th>
-                  <th>Email</th>
-                  <th>Telefon</th>
-                  <th>Rol</th>
-                  <th>Status</th>
-                  <th>Istoric activități</th>
-                  <th>Acțiuni</th>
-                </tr>
-              </thead>
-              <tbody id="usersTable"></tbody>
-            </table>
-          </div>
-        </div>
-      </section>
-
-      <section id="scheduleView" class="view">
-        <div class="panel">
-          <div class="panel-head">
-            <div><h3>Programări și orar</h3><p>Vizualizare program, rezervare, creare, modificare, anulare și conflicte de orar.</p></div>
-            <button id="openSessionModal" class="primary-btn">Adaugă sesiune</button>
-          </div>
-          <div class="toolbar four">
-            <input id="sessionSearch" type="search" placeholder="Caută sesiuni, sală, specialist">
-            <select id="sessionTypeFilter">
-              <option value="all">Toate tipurile</option>
-              <option value="fitness">Fitness</option>
-              <option value="strength">Forță</option>
-              <option value="kineto">Kinetoterapie</option>
-              <option value="mixed">Mixt</option>
-            </select>
-            <select id="sessionStatusFilter">
-              <option value="all">Toate statusurile</option>
-              <option value="active">Active</option>
-              <option value="cancelled">Anulate</option>
-            </select>
-            <input id="sessionDateFilter" type="date">
-          </div>
-          <div id="scheduleCards" class="cards-grid"></div>
-        </div>
-      </section>
-
-      <section id="subscriptionsView" class="view">
-        <div class="panel">
-          <div class="panel-head">
-            <div><h3>Abonamente și plăți</h3><p>Tipuri de abonamente, activare, suspendare, expirare și istoric.</p></div>
-            <button id="openSubscriptionModal" class="primary-btn">Adaugă abonament</button>
-          </div>
-          <div id="subscriptionSummary" class="stats-grid small"></div>
-          <div class="table-wrap mt">
-            <table>
-              <thead>
-                <tr>
-                  <th>Utilizator</th>
-                  <th>Tip</th>
-                  <th>Start</th>
-                  <th>Expirare</th>
-                  <th>Preț</th>
-                  <th>Status</th>
-                  <th>Acțiuni</th>
-                </tr>
-              </thead>
-              <tbody id="subscriptionsTable"></tbody>
-            </table>
-          </div>
-        </div>
-      </section>
-
-      <section id="trainersView" class="view">
-        <div class="panel">
-          <div class="panel-head">
-            <div><h3>Antrenori și terapeuți</h3><p>Specializări, program, import și export CSV/XML.</p></div>
-            <button id="openTrainerModal" class="primary-btn">Adaugă specialist</button>
-          </div>
-          <div class="toolbar wrap">
-            <input id="trainerSearch" type="search" placeholder="Caută specialist, specializare sau program">
-            <button id="exportTrainersCsv" class="secondary-btn">Export CSV</button>
-            <button id="exportTrainersXml" class="secondary-btn">Export XML</button>
-            <label class="file-btn">Import CSV<input id="importTrainersCsv" type="file" accept=".csv,text/csv"></label>
-            <label class="file-btn">Import XML<input id="importTrainersXml" type="file" accept=".xml,text/xml"></label>
-          </div>
-          <div id="trainersGrid" class="cards-grid"></div>
-        </div>
-      </section>
-
-      <section id="resourcesView" class="view">
-        <div class="content-grid">
-          <div class="panel">
-            <div class="panel-head">
-              <div><h3>Săli și zone</h3><p>Capacitate și disponibilitate.</p></div>
-              <button id="openRoomModal" class="primary-btn">Adaugă sală</button>
+            <div class="stats-grid">
+                <div class="stat-card"><span>Sesiunile mele</span><strong id="trainerTotalSessions">0</strong></div>
+                <div class="stat-card"><span>Rezervări la mine</span><strong id="trainerTotalBookings">0</strong></div>
+                <div class="stat-card"><span>Sesiuni azi</span><strong id="trainerTodaySessions">0</strong></div>
+                <div class="stat-card"><span>Grad ocupare</span><strong id="trainerOccupancy">0%</strong></div>
             </div>
-            <div id="roomsGrid" class="cards-grid two"></div>
-          </div>
-          <div class="panel">
-            <div class="panel-head">
-              <div><h3>Echipamente</h3><p>Inventar opțional pentru un plus de complexitate.</p></div>
-              <button id="openEquipmentModal" class="primary-btn">Adaugă echipament</button>
+            <div class="content-grid">
+                <div class="panel">
+                    <div class="panel-head">
+                        <div><h3>Agenda mea</h3>
+                            <p>Sesiuni create sau alocate specialistului autentificat.</p></div>
+                        <button class="primary-btn" data-open="session">Creează sesiune</button>
+                    </div>
+                    <div id="trainerAgenda" class="cards-grid two"></div>
+                </div>
+                <div class="panel">
+                    <div class="panel-head">
+                        <div><h3>Membri programați</h3>
+                            <p>Lista membrilor înscriși la sesiunile tale.</p></div>
+                    </div>
+                    <div id="trainerBookedMembers" class="list-stack"></div>
+                </div>
             </div>
-            <div id="equipmentList" class="list-stack"></div>
-          </div>
-        </div>
-      </section>
+        </section>
 
-      <section id="reportsView" class="view">
-        <div class="panel">
-          <div class="panel-head">
-            <div><h3>Rapoarte și statistici</h3><p>CSV/XML pentru date, PNG/WebP pentru diagrame.</p></div>
-            <div class="head-actions">
-              <button id="exportReportsCsv" class="secondary-btn">Export CSV</button>
-              <button id="exportReportsXml" class="secondary-btn">Export XML</button>
-              <button id="exportChartPng" class="secondary-btn">Export PNG</button>
-              <button id="exportChartWebp" class="secondary-btn">Export WebP</button>
+        <section id="memberDashboardView" class="view">
+            <div class="role-hero member">
+                <div>
+                    <span>Interfață membru</span>
+                    <h3>Rezervări, abonamente și istoric personal</h3>
+                    <p>Poți vedea sesiuni disponibile, îți poți rezerva locul și poți consulta istoricul
+                        activităților.</p>
+                </div>
             </div>
-          </div>
-          <div class="stats-grid">
-            <div class="stat-card"><span>Rezervări azi</span><strong id="reportTodayBookings">0</strong></div>
-            <div class="stat-card"><span>Rezervări săptămâna curentă</span><strong id="reportWeekBookings">0</strong></div>
-            <div class="stat-card"><span>Rezervări luna curentă</span><strong id="reportMonthBookings">0</strong></div>
-            <div class="stat-card"><span>Top specialist</span><strong id="reportTopTrainer">-</strong></div>
-          </div>
-          <div class="report-layout">
-            <div class="chart-wrap">
-              <canvas id="reportsCanvas" width="1200" height="560"></canvas>
+            <div class="stats-grid">
+                <div class="stat-card"><span>Rezervările mele</span><strong id="memberBookings">0</strong></div>
+                <div class="stat-card"><span>Abonament activ</span><strong id="memberActiveSub">-</strong></div>
+                <div class="stat-card"><span>Sesiuni disponibile</span><strong id="memberAvailableSessions">0</strong>
+                </div>
+                <div class="stat-card"><span>Activități totale</span><strong id="memberHistoryCount">0</strong></div>
             </div>
-            <div class="panel inner">
-              <h3>Statistici rapide</h3>
-              <div id="reportQuickStats" class="list-stack"></div>
+            <div class="content-grid">
+                <div class="panel">
+                    <div class="panel-head">
+                        <div><h3>Sesiuni recomandate</h3>
+                            <p>Rezervă o sesiune de fitness, forță sau kinetoterapie.</p></div>
+                        <button class="secondary-btn" data-jump="scheduleView">Vezi toate</button>
+                    </div>
+                    <div id="memberRecommendedSessions" class="cards-grid two"></div>
+                </div>
+                <div class="panel">
+                    <div class="panel-head">
+                        <div><h3>Abonamentul meu</h3>
+                            <p>Stare, perioadă și istoric.</p></div>
+                    </div>
+                    <div id="memberSubscriptionPanel" class="list-stack"></div>
+                </div>
             </div>
-          </div>
-        </div>
-      </section>
+        </section>
 
-      <section id="pluginsView" class="view">
-        <div class="panel">
-          <div class="panel-head">
-            <div><h3>Plugin-uri și micro-servicii Web</h3><p>Funcționalități extensibile, simulate front-end, fără back-end.</p></div>
-            <button id="openPluginModal" class="primary-btn">Adaugă plugin</button>
-          </div>
-          <div id="pluginsGrid" class="cards-grid"></div>
-        </div>
-      </section>
+        <section id="usersView" class="view">
+            <div class="panel">
+                <div class="panel-head">
+                    <div><h3>Gestiunea utilizatorilor</h3>
+                        <p>Înregistrare, profiluri, roluri și permisiuni distincte.</p></div>
+                    <button id="openUserModal" class="primary-btn">Adaugă utilizator</button>
+                </div>
+                <div class="toolbar">
+                    <input id="userSearch" type="search" placeholder="Caută după nume, email, telefon sau rol">
+                    <select id="userRoleFilter">
+                        <option value="all">Toate rolurile</option>
+                        <option value="admin">Administratori</option>
+                        <option value="trainer">Antrenori/Terapeuți</option>
+                        <option value="member">Membri</option>
+                    </select>
+                    <select id="userStatusFilter">
+                        <option value="all">Toate statusurile</option>
+                        <option value="active">Activ</option>
+                        <option value="suspended">Suspendat</option>
+                    </select>
+                </div>
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                        <tr>
+                            <th>Nume</th>
+                            <th>Email</th>
+                            <th>Telefon</th>
+                            <th>Rol</th>
+                            <th>Status</th>
+                            <th>Istoric activități</th>
+                            <th>Acțiuni</th>
+                        </tr>
+                        </thead>
+                        <tbody id="usersTable"></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
 
-      <section id="profileView" class="view">
-        <div class="panel">
-          <div class="panel-head">
-            <div><h3>Profil utilizator</h3><p>Date personale, rol, abonamente și istoricul activităților.</p></div>
-            <button id="editOwnProfileBtn" class="secondary-btn">Editează profilul</button>
-          </div>
-          <div id="profileContent" class="profile-grid"></div>
-        </div>
-      </section>
+        <section id="scheduleView" class="view">
+            <div class="panel">
+                <div class="panel-head">
+                    <div><h3>Programări și orar</h3>
+                        <p>Vizualizare program, rezervare, creare, modificare, anulare și conflicte de orar.</p></div>
+                    <button id="openSessionModal" class="primary-btn">Adaugă sesiune</button>
+                </div>
+                <div class="toolbar four">
+                    <input id="sessionSearch" type="search" placeholder="Caută sesiuni, sală, specialist">
+                    <select id="sessionTypeFilter">
+                        <option value="all">Toate tipurile</option>
+                        <option value="fitness">Fitness</option>
+                        <option value="strength">Forță</option>
+                        <option value="kineto">Kinetoterapie</option>
+                        <option value="mixed">Mixt</option>
+                    </select>
+                    <select id="sessionStatusFilter">
+                        <option value="all">Toate statusurile</option>
+                        <option value="active">Active</option>
+                        <option value="cancelled">Anulate</option>
+                    </select>
+                    <input id="sessionDateFilter" type="date">
+                </div>
+                <div id="scheduleCards" class="cards-grid"></div>
+            </div>
+        </section>
+
+        <section id="subscriptionsView" class="view">
+            <div class="panel">
+                <div class="panel-head">
+                    <div><h3>Abonamente și plăți</h3>
+                        <p>Tipuri de abonamente, activare, suspendare, expirare și istoric.</p></div>
+                    <button id="openSubscriptionModal" class="primary-btn">Adaugă abonament</button>
+                </div>
+                <div id="subscriptionSummary" class="stats-grid small"></div>
+                <div class="table-wrap mt">
+                    <table>
+                        <thead>
+                        <tr>
+                            <th>Utilizator</th>
+                            <th>Tip</th>
+                            <th>Start</th>
+                            <th>Expirare</th>
+                            <th>Preț</th>
+                            <th>Status</th>
+                            <th>Acțiuni</th>
+                        </tr>
+                        </thead>
+                        <tbody id="subscriptionsTable"></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <section id="trainersView" class="view">
+            <div class="panel">
+                <div class="panel-head">
+                    <div><h3>Antrenori și terapeuți</h3>
+                        <p>Specializări, program, import și export CSV/XML.</p></div>
+                    <button id="openTrainerModal" class="primary-btn">Adaugă specialist</button>
+                </div>
+                <div class="toolbar wrap">
+                    <input id="trainerSearch" type="search" placeholder="Caută specialist, specializare sau program">
+                    <button id="exportTrainersCsv" class="secondary-btn">Export CSV</button>
+                    <button id="exportTrainersXml" class="secondary-btn">Export XML</button>
+                    <label class="file-btn">Import CSV<input id="importTrainersCsv" type="file" accept=".csv,text/csv"></label>
+                    <label class="file-btn">Import XML<input id="importTrainersXml" type="file" accept=".xml,text/xml"></label>
+                </div>
+                <div id="trainersGrid" class="cards-grid"></div>
+            </div>
+        </section>
+
+        <section id="resourcesView" class="view">
+            <div class="content-grid">
+                <div class="panel">
+                    <div class="panel-head">
+                        <div><h3>Săli și zone</h3>
+                            <p>Capacitate și disponibilitate.</p></div>
+                        <button id="openRoomModal" class="primary-btn">Adaugă sală</button>
+                    </div>
+                    <div id="roomsGrid" class="cards-grid two"></div>
+                </div>
+                <div class="panel">
+                    <div class="panel-head">
+                        <div><h3>Echipamente</h3>
+                            <p>Inventar opțional pentru un plus de complexitate.</p></div>
+                        <button id="openEquipmentModal" class="primary-btn">Adaugă echipament</button>
+                    </div>
+                    <div id="equipmentList" class="list-stack"></div>
+                </div>
+            </div>
+        </section>
+
+        <section id="reportsView" class="view">
+            <div class="panel">
+                <div class="panel-head">
+                    <div><h3>Rapoarte și statistici</h3>
+                        <p>CSV/XML pentru date, PNG/WebP pentru diagrame.</p></div>
+                    <div class="head-actions">
+                        <button id="exportReportsCsv" class="secondary-btn">Export CSV</button>
+                        <button id="exportReportsXml" class="secondary-btn">Export XML</button>
+                        <button id="exportChartPng" class="secondary-btn">Export PNG</button>
+                        <button id="exportChartWebp" class="secondary-btn">Export WebP</button>
+                    </div>
+                </div>
+                <div class="stats-grid">
+                    <div class="stat-card"><span>Rezervări azi</span><strong id="reportTodayBookings">0</strong></div>
+                    <div class="stat-card"><span>Rezervări săptămâna curentă</span><strong
+                            id="reportWeekBookings">0</strong></div>
+                    <div class="stat-card"><span>Rezervări luna curentă</span><strong
+                            id="reportMonthBookings">0</strong></div>
+                    <div class="stat-card"><span>Top specialist</span><strong id="reportTopTrainer">-</strong></div>
+                </div>
+                <div class="report-layout">
+                    <div class="chart-wrap">
+                        <canvas id="reportsCanvas" width="1200" height="560"></canvas>
+                    </div>
+                    <div class="panel inner">
+                        <h3>Statistici rapide</h3>
+                        <div id="reportQuickStats" class="list-stack"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="pluginsView" class="view">
+            <div class="panel">
+                <div class="panel-head">
+                    <div><h3>Plugin-uri și micro-servicii Web</h3>
+                        <p>Funcționalități extensibile, simulate front-end, fără back-end.</p></div>
+                    <button id="openPluginModal" class="primary-btn">Adaugă plugin</button>
+                </div>
+                <div id="pluginsGrid" class="cards-grid"></div>
+            </div>
+        </section>
+
+        <section id="profileView" class="view">
+            <div class="panel">
+                <div class="panel-head">
+                    <div><h3>Profil utilizator</h3>
+                        <p>Date personale, rol, abonamente și istoricul activităților.</p></div>
+                    <button id="editOwnProfileBtn" class="secondary-btn">Editează profilul</button>
+                </div>
+                <div id="profileContent" class="profile-grid"></div>
+            </div>
+        </section>
     </main>
-  </section>
+</section>
 
-  <div id="modalRoot" class="modal-root hidden">
+<div id="modalRoot" class="modal-root hidden">
     <div class="modal-backdrop"></div>
     <div class="modal-card">
-      <div class="modal-head">
-        <h3 id="modalTitle"></h3>
-        <button id="closeModal" class="icon-btn">×</button>
-      </div>
-      <div id="modalBody"></div>
+        <div class="modal-head">
+            <h3 id="modalTitle"></h3>
+            <button id="closeModal" class="icon-btn">×</button>
+        </div>
+        <div id="modalBody"></div>
     </div>
-  </div>
+</div>
 
-  <script src="script.js"></script>
+<script src="script.js"></script>
 </body>
 </html>

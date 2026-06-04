@@ -37,6 +37,7 @@ $activities = $stmt->fetchAll(PDO::FETCH_ASSOC);
             background: #f4f7f6;
             padding: 20px;
         }
+
         .container {
             max-width: 900px;
             margin: auto;
@@ -50,6 +51,7 @@ $activities = $stmt->fetchAll(PDO::FETCH_ASSOC);
             display: flex;
             gap: 10px;
         }
+
         .filter-btn {
             padding: 8px 16px;
             border: 1px solid #3498db;
@@ -58,6 +60,7 @@ $activities = $stmt->fetchAll(PDO::FETCH_ASSOC);
             color: #3498db;
             transition: 0.3s;
         }
+
         .filter-btn.active {
             background: #3498db;
             color: white;
@@ -68,11 +71,13 @@ $activities = $stmt->fetchAll(PDO::FETCH_ASSOC);
             border-collapse: collapse;
             margin-top: 10px;
         }
+
         th, td {
             padding: 12px;
             text-align: left;
             border-bottom: 1px solid #eee;
         }
+
         th {
             background-color: #f8f9fa;
             color: #777;
@@ -86,18 +91,22 @@ $activities = $stmt->fetchAll(PDO::FETCH_ASSOC);
             font-size: 0.8em;
             font-weight: bold;
         }
+
         .type-access {
             background: #e3f2fd;
             color: #1976d2;
         }
+
         .type-purchase {
             background: #f1f8e9;
             color: #388e3c;
         }
+
         .type-session {
             background: #fff3e0;
             color: #f57c00;
         }
+
         .type-payment {
             background: #f3e5f5;
             color: #7b1fa2;
@@ -111,7 +120,8 @@ $activities = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     <div class="filters">
         <a href="history.php?type=all" class="filter-btn <?php echo $filter === 'all' ? 'active' : ''; ?>">Toate</a>
-        <a href="history.php?type=access" class="filter-btn <?php echo $filter === 'access' ? 'active' : ''; ?>">Intrari</a>
+        <a href="history.php?type=access"
+           class="filter-btn <?php echo $filter === 'access' ? 'active' : ''; ?>">Intrari</a>
         <a href="history.php?type=purchase" class="filter-btn <?php echo $filter === 'purchase' ? 'active' : ''; ?>">Cumparaturi</a>
         <a href="history.php?type=session" class="filter-btn <?php echo $filter === 'session' ? 'active' : ''; ?>">Sedinte</a>
         <a href="history.php?type=payment" class="filter-btn <?php echo $filter === 'payment' ? 'active' : ''; ?>">Abonamente</a>
@@ -131,13 +141,17 @@ $activities = $stmt->fetchAll(PDO::FETCH_ASSOC);
             <?php foreach ($activities as $act): ?>
                 <tr>
                     <td><?php echo date('d.m.Y H:i', strtotime($act['created_at'])); ?></td>
-                    <td><span class="type-badge type-<?php echo $act['activity_type']; ?>"><?php echo ucfirst($act['activity_type']); ?></span></td>
+                    <td>
+                        <span class="type-badge type-<?php echo $act['activity_type']; ?>"><?php echo ucfirst($act['activity_type']); ?></span>
+                    </td>
                     <td><?php echo htmlspecialchars($act['description']); ?></td>
                     <td><?php echo $act['amount'] > 0 ? $act['amount'] . ' RON' : '-'; ?></td>
                 </tr>
             <?php endforeach; ?>
         <?php else: ?>
-            <tr><td colspan="4">Nu am gasit nicio activitate pentru acest filtru.</td></tr>
+            <tr>
+                <td colspan="4">Nu am gasit nicio activitate pentru acest filtru.</td>
+            </tr>
         <?php endif; ?>
         </tbody>
     </table>

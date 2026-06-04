@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Scholarly HTML & IEEE SRS - SmartKineto</title>
+    <link rel="stylesheet" href="https://w3c.github.io/scholarly-html/css/scholarly.min.css">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+        }
+
+        h1, h2, h3, h4 {
+            color: #2c3e50;
+        }
+
+        h2 {
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 5px;
+            margin-top: 40px;
+        }
+
+        h3 {
+            margin-top: 25px;
+            color: #34495e;
+        }
+
+        code {
+            background-color: #f4f7f6;
+            padding: 2px 5px;
+            border-radius: 4px;
+            color: #e74c3c;
+            font-weight: bold;
+        }
+
+        pre {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            overflow-x: auto;
+        }
+
+        .highlight {
+            background-color: #e8f8f5;
+            border-left: 4px solid #1abc9c;
+            padding: 10px;
+            margin: 10px 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body prefix="schema: http://schema.org/">
+<header>
+    <div class="banner">
+        <img src="https://w3c.github.io/scholarly-html/scholarly-html.svg" width="227" height="50"
+             alt="Scholarly HTML logo">
+        <div class="status">Software Requirements Specification (SRS)</div>
+    </div>
+    <h1 property="schema:name">SmartKineto - Sistem Integrat de Management pentru Clinici de Recuperare</h1>
+</header>
+
+<div role="contentinfo">
+    <dl>
+        <dt>Autori</dt>
+        <dd>
+                <span property="schema:author" typeof="schema:Person">
+                    <span property="schema:name">Coman Alexia - Dora</span>
+                </span>
+        </dd>
+        <dt>Licență</dt>
+        <dd>
+            <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank">Creative Commons Attribution 4.0
+                International (CC BY 4.0)</a>
+        </dd>
+    </dl>
+</div>
+
+<section id="introduction">
+    <h2>1. Introducere</h2>
+
+    <h3>1.1 Scop</h3>
+    <p>
+        Scopul acestui document este de a detalia cerințele software, arhitectura și logica de business pentru aplicația
+        web <strong>SmartKineto</strong>.
+    </p>
+
+    <h3>1.2 Convenții ale Documentului</h3>
+    <ul>
+        <li><strong>UI/UX:</strong> User Interface / User Experience.</li>
+        <li><strong>State-based UI:</strong> Interfață care își schimbă afișajul strict pe baza stării datelor
+            persistente din server.
+        </li>
+        <li><strong>ACID:</strong> Atomicitate, Consistență, Izolare, Durabilitate (în contextul bazelor de date).</li>
+    </ul>
+
+    <h3>1.3 Scopul Produsului</h3>
+    <p>
+        SmartKineto este o platformă digitală concepută pentru a optimiza fluxurile de lucru dintr-o clinică modernă.
+        Aceasta elimină suprapunerile de programări, automatizează comunicarea prin email și oferă o gestiune
+        transparentă a abonamentelor și utilizatorilor pe baza unor roluri predefinite.
+    </p>
+</section>
+
+<section id="overall-description">
+    <h2>2. Descriere Generală</h2>
+
+    <h3>2.1 Perspectiva Produsului și Arhitectura</h3>
+    <p>
+        Sistemul urmează o arhitectură <strong>Client-Server</strong>, iar backend-ul este construit în
+        <strong>PHP</strong> și interacționează cu o bază de date relațională <strong>MySQL</strong>. Comunicarea
+        asincronă cu interfața se realizează prin API-uri interne (AJAX) pentru a oferi un răspuns imediat fără
+        reîncărcarea paginii.
+    </p>
+
+    <h3>2.2 Clase de Utilizatori</h3>
+    <p>Sistemul gestionează trei tipuri de actori, fiecare cu un nivel de acces strict definit:</p>
+    <ul>
+        <li><strong>Administrator:</strong> Acces total asupra sistemului, export de date (CSV/XML), gestiunea
+            staff-ului, a membrilor și a sălilor disponibile.
+        </li>
+        <li><strong>Staff (Antrenor / Kinetoterapeut):</strong> Gestiunea propriului orar, capabilitatea de a aproba,
+            reprograma sau anula ședințe și de a trimite mesaje personalizate pacienților, precum și monitorizarea și
+            eventual aprobarea sau respingerea unei schimbări de abonament.
+        </li>
+        <li><strong>Membru:</strong> Vizualizarea istoricului plăților, a stării abonamentului și inițierea cererilor de
+            programare pe baza sloturilor disponibile în timp real.
+        </li>
+    </ul>
+
+    <h3>2.3 Proiectarea Interfeței Web (UI/UX)</h3>
+    <p>
+        Interfața web a fost proiectată conform principiilor <em>Responsive Web Design</em>, utilizând HTML și CSS (fără
+        a depinde excesiv de framework-uri externe masive).
+    </p>
+    <p><strong>Motivarea alegerilor de design:</strong></p>
+    <ul>
+        <li>S-a optat pentru un layout minimalist și aerisit, cu o paletă de culori axată pe albastru
+            (profesionalism/medical) și culori semantice (verde pentru succes, roșu pentru erori).
+        </li>
+        <li>Formularele și tabelele utilizează efecte de umbrire (box-shadow) și carduri pentru a focaliza atenția
+            utilizatorului pe fluxul de acțiune principal (ex: efectuarea unei rezervări).
+        </li>
+    </ul>
+</section>
+
+<section id="system-features">
+    <h2>3. Caracteristicile Sistemului (Funcționalități Esențiale)</h2>
+
+    <h3>3.1 Motorul Dinamic de Programări</h3>
+    <p>
+        Sistemul gestionează rezervările într-un mod inteligent. Nu doar interoghează baza de date pentru a exclude
+        intervalele ocupate, ci implementează o validare contextuală: dacă un pacient solicită o programare pentru ziua
+        curentă, algoritmul compară ora serverului cu sloturile disponibile și ascunde dinamic orele deja expirate,
+        prevenind posibilitatea unor rezervări în trecut.
+    </p>
+
+    <h3>3.2 Notificări Persistente</h3>
+    <p>
+        Pentru alertarea pacienților cu privire la stadiul programării, a fost implementat un sistem robust de
+        notificări. În loc de stocarea alertelor în memoria volatilă a browserului (sesiuni), s-a introdus flag-ul
+        <code>is_read</code> la nivel de rând în tabelul <code>appointments</code>. Astfel, "închiderea" unei notificări
+        reprezintă un <code>UPDATE</code> direct în baza de date, asigurând persistența acțiunii pe orice dispozitiv.
+    </p>
+
+    <h3>3.3 Comunicare Automatizată prin Email cu Mesaje Personalizate</h3>
+    <p>
+        Sistemul a fost integrat cu protocolul SMTP utilizând librăria <strong>PHPMailer</strong>. La fiecare acțiune
+        critică (Confirmare, Reprogramare, Anulare), pacienții primesc șabloane HTML responsive. În plus, arhitectura
+        permite terapeuților să injecteze mesaje personalizate (ex: indicații medicale) care sunt concatenate automat în
+        structura email-ului.
+    </p>
+
+    <h3>3.4 Gestiunea Tranzacțiilor SQL</h3>
+    <p>
+        Operațiunile care afectează simultan mai multe tabele (ex: adăugarea unui nou utilizator afectează
+        <code>users</code>, <code>user_details</code> și <code>subscriptions</code>) sunt împachetate în <strong>Tranzacții
+        SQL</strong> (utilizând <code>$db->beginTransaction()</code> și <code>commit()</code>). Aceasta garantează
+        atomicitatea procesului, prevenind coruperea datelor în caz de eroare fatală la execuție.
+    </p>
+
+    <h3> 3.5 Gestiunea Avansată a Utilizatorilor și a Abonamentelor</h3>
+    <p>
+        Sistemul integrează un modul complex de autentificare și autorizare. Administratorul poate asigna niveluri de
+        acces (roles) și fiecare membru își poate alege un abonanemt (Fitness, Forță, Kineto, mixte și VIP), schimbare
+        ce trebuie confirmată de antrenor. Informațiile sunt filtrate dinamic pe baza acestor roluri (ex: un pacient
+        fără abonament fitness nu va putea selecta anumite tipuri de servicii sau antrenori).
+    </p>
+
+    <h3> 3.6 Afișarea Dinamică a Orarului (AJAX) </h3>
+    <p>
+        Pentru o experiență de utilizare fluidă, selectarea unei date în formularul de rezervare declanșează o
+        interogare asincronă (AJAX) către server. Aceasta returnează în format JSON doar antrenorii și sălile
+        disponibile exact în acel moment, fără a necesita reîncărcarea întregii pagini.
+    </p>
+</section>
+
+<section id="system-design">
+    <h2>4. Structura Datelor (System Design)</h2>
+    <p>
+        Proveniența și modelarea datelor respectă principiile formelor normale din bazele de date relaționale.
+        Integritatea referențială este asigurată prin constrângeri <code>FOREIGN KEY</code> (cu reguli <code>ON DELETE
+        CASCADE / SET NULL</code>).
+    </p>
+    <p>Structura de bază implică separarea conceptuală:</p>
+    <ul>
+        <li><strong>Date de Autentificare:</strong> Tabelul <code>users</code> (stochează doar email, parolă hash-uită
+            și rol).
+        </li>
+        <li><strong>Date Personale:</strong> Tabelul <code>user_details</code> (nume, telefon, adresă), legat 1:1 de
+            `users`.
+        </li>
+        <li><strong>Gestiunea Operațională:</strong> Tabelele <code>appointments</code>, <code>rooms</code>, <code>session_types</code>,
+            interconectate pentru a genera disponibilitatea reală.
+        </li>
+    </ul>
+    <p>Aplicația expune și consumă date prin intermediul unor micro-scripturi interne (ex: <code>get_slots.php</code>,
+        <code>get_rooms_availability.php</code>) care funcționează ca un API intern, returnând date exclusiv în format
+        <strong>JSON</strong> către interfața clientului (via <code>fetch()</code> în JavaScript).</p>
+</section>
+
+<section id="nonfunctional">
+    <h2>5. Cerințe Non-funcționale</h2>
+
+    <h3>5.1 Securitate</h3>
+    <ul>
+        <li>Toate parolele sunt securizate unidirecțional folosind funcția <code>password_hash()</code> (algoritm
+            BCRYPT).
+        </li>
+        <li>Protecția împotriva injecțiilor SQL este garantată prin folosirea exclusivă a obiectelor
+            <strong>PDO</strong> cu declarații preparate (Prepared Statements).
+        </li>
+        <li>Validarea se face pe două straturi: în frontend (atribute HTML) și în backend (verificări PHP înainte de
+            interacțiunea cu baza de date).
+        </li>
+    </ul>
+
+    <h3>5.2 Interoperabilitate</h3>
+    <p>Sistemul include module de import și export al datelor (Staff și Rapoarte) în formate standardizate (CSV și XML),
+        permițând importul facil în alte sisteme ERP sau programe de calcul tabelar.</p>
+</section>
+
+<section id="licensing">
+    <h2>6. Livrabile și Licențiere</h2>
+    <p>
+        Tot codul sursă al acestui proiect este oferit sub incidența unei licențe libere. Conținutul pus la dispoziție
+        respectă termenii stipulați de <strong>Creative Commons (CC BY 4.0)</strong>, permițând copierea, distribuirea
+        și adaptarea materialului, cu condiția atribuirii corespunzătoare a autorului original.
+    </p>
+</section>
+</body>
+</html>
