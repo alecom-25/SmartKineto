@@ -17,7 +17,7 @@ SmartKineto este o aplicație web completă dedicată eficientizării activită�
 ## 🛠️ Tehnologii Utilizate
 
 * **Backend:** PHP  (cu arhitectură bazată pe PDO și Tranzacții SQL)
-* **Bază de date:** MySQL / MariaDB
+* **Bază de date:** MySQL
 * **Frontend:** HTML, CSS, JavaScript
 * **Librării Externe:** PHPMailer
 
