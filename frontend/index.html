@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="KIM – Kineto Web Manager: aplicație modulară pentru administrarea sălilor de fitness și a centrelor de kinetoterapie.">
+    <meta name="author" content="SmartKineto Team">
     <title>KIM | Kineto Web Manager</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -325,9 +327,9 @@
                 <div class="toolbar wrap">
                     <input id="trainerSearch" type="search" placeholder="Caută specialist, specializare sau program">
                     <button id="exportTrainersCsv" class="secondary-btn">Export CSV</button>
-                    <button id="exportTrainersXml" class="secondary-btn">Export XML</button>
+                    <button id="exportTrainersXml" class="secondary-btn">Export JSON</button>
                     <label class="file-btn">Import CSV<input id="importTrainersCsv" type="file" accept=".csv,text/csv"></label>
-                    <label class="file-btn">Import XML<input id="importTrainersXml" type="file" accept=".xml,text/xml"></label>
+                    <label class="file-btn">Import JSON<input id="importTrainersXml" type="file" accept=".json,application/json"></label>
                 </div>
                 <div id="trainersGrid" class="cards-grid"></div>
             </div>
@@ -361,7 +363,7 @@
                         <p>CSV/XML pentru date, PNG/WebP pentru diagrame.</p></div>
                     <div class="head-actions">
                         <button id="exportReportsCsv" class="secondary-btn">Export CSV</button>
-                        <button id="exportReportsXml" class="secondary-btn">Export XML</button>
+                        <button id="exportReportsXml" class="secondary-btn">Export JSON</button>
                         <button id="exportChartPng" class="secondary-btn">Export PNG</button>
                         <button id="exportChartWebp" class="secondary-btn">Export WebP</button>
                     </div>
