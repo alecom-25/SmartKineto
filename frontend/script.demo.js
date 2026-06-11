@@ -63,60 +63,55 @@ const SEED = {
   ]
 };
 
-const API_BASE = "../api/";
+const API_BASE = "../";
 
 const Api = {
-  async request(endpoint, options = {}) {
-    const resp = await fetch(API_BASE + endpoint, {
-      credentials: "same-origin",
-      headers: {
-        "Accept": "application/json",
-        "X-Requested-With": "XMLHttpRequest",
-        ...(options.body ? {"Content-Type": "application/json"} : {})
-      },
-      ...options
-    });
-
-    let data = null;
-    try { data = await resp.json(); } catch { data = null; }
-
-    if (!resp.ok) {
-      throw new Error(data?.message || `Eroare server HTTP ${resp.status}`);
+  async get(endpoint) {
+    try {
+      const resp = await fetch(API_BASE + endpoint, {
+        method: "GET",
+        headers: { "Accept": "application/json", "X-Requested-With": "XMLHttpRequest" }
+      });
+      if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+      return await resp.json();
+    } catch {
+      return null; // fallback pe Store local
     }
-    return data;
   },
-  get(endpoint) {
-    return this.request(endpoint, { method: "GET" });
+  async post(endpoint, data) {
+    try {
+      const resp = await fetch(API_BASE + endpoint, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json",
+          "X-Requested-With": "XMLHttpRequest"
+        },
+        body: JSON.stringify(data)
+      });
+      if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+      return await resp.json();
+    } catch {
+      return null; // fallback pe Store local
+    }
   },
-  post(endpoint, data) {
-    return this.request(endpoint, { method: "POST", body: JSON.stringify(data || {}) });
+  async loginRequest(email, password) {
+    return await this.post("login.php", { email, password });
   },
-  loginRequest(email, password) {
-    return this.post("login.php", { email, password });
+  async fetchUsers() {
+    return await this.get("pages/admin/useri/register_member.php?action=list");
   },
-  me() {
-    return this.get("me.php");
+  async fetchSessions() {
+    return await this.get("pages/member/sessions/get_slots.php");
   },
-  logout() {
-    return this.post("logout.php", {});
+  async fetchTrainers() {
+    return await this.get("pages/member/sessions/get_trainers.php");
   },
-  register(data) {
-    return this.post("register.php", data);
+  async bookSession(sessionId) {
+    return await this.post("pages/member/sessions/process_booking.php", { session_id: sessionId });
   },
-  fetchData() {
-    return this.get("data.php");
-  },
-  bookSession(sessionId) {
-    return this.post("book_session.php", { session_id: sessionId });
-  },
-  cancelBooking(sessionId) {
-    return this.post("cancel_booking.php", { session_id: sessionId });
-  },
-  updateProfile(data) {
-    return this.post("update_profile.php", data);
-  },
-  fetchStats() {
-    return this.get("stats.php");
+  async fetchStats() {
+    return await this.get("pages/admin/rapoarte/statistics.php?format=json");
   }
 };
 
@@ -158,48 +153,38 @@ const Store = {
   }
 };
 
-async function loadAppData() {
-  const data = await Api.fetchData();
-  if (!data?.success) {
-    throw new Error(data?.message || "Nu am putut încărca datele din baza de date.");
-  }
-
-  ["users", "sessions", "subscriptions", "rooms", "equipment", "plugins", "activity"].forEach(key => {
-    Store.save(key, data[key] ?? []);
-  });
-
-  return data;
-}
-
 const Auth = {
   current: null,
   async loginAsync(email, password) {
     const serverResp = await Api.loginRequest(email.trim(), password);
-    if (!serverResp?.success || !serverResp.user) return false;
-
-    await loadAppData();
-    this.current = serverResp.user;
-    sessionStorage.setItem("kim_session_user", JSON.stringify(serverResp.user));
+    if (serverResp && serverResp.success && serverResp.user) {
+      const u = serverResp.user;
+      Store.updateItem("users", u.id, u);
+      this.current = u;
+      sessionStorage.setItem("kim_session", u.id);
+      return true;
+    }
+    return this.login(email, password);
+  },
+  login(email, password) {
+    // XSS-safe: esc() folosit la randare; parole comparate plaintext doar în demo
+    const u = Store.getAll("users").find(x =>
+      x.email.toLowerCase() === email.trim().toLowerCase() && x.password === password
+    );
+    if (!u) return false;
+    if (u.status === "suspended") { toast("Cont suspendat", "Contactați administratorul.", "error"); return false; }
+    this.current = u;
+    sessionStorage.setItem("kim_session", u.id);
     return true;
   },
-  async logout() {
-    try { await Api.logout(); } catch {}
+  logout() {
     this.current = null;
-    sessionStorage.removeItem("kim_session_user");
+    sessionStorage.removeItem("kim_session");
   },
-  async restore() {
-    try {
-      const resp = await Api.me();
-      if (!resp?.success || !resp.user) return false;
-      await loadAppData();
-      this.current = resp.user;
-      sessionStorage.setItem("kim_session_user", JSON.stringify(resp.user));
-      return true;
-    } catch {
-      this.current = null;
-      sessionStorage.removeItem("kim_session_user");
-      return false;
-    }
+  restore() {
+    const id = sessionStorage.getItem("kim_session");
+    if (id) this.current = Store.findOne("users", id);
+    return !!this.current;
   },
   is(role) { return this.current?.role === role; },
   can(roles) { return roles.includes(this.current?.role); }
@@ -218,11 +203,6 @@ const NAV = {
     {id:"profileView", label:"👤 Profil"},
   ],
   trainer: [
-    {id:"trainerDashboardView", label:"🏠 Dashboard"},
-    {id:"scheduleView", label:"📅 Programul meu"},
-    {id:"profileView", label:"👤 Profil"},
-  ],
-  kineto: [
     {id:"trainerDashboardView", label:"🏠 Dashboard"},
     {id:"scheduleView", label:"📅 Programul meu"},
     {id:"profileView", label:"👤 Profil"},
@@ -251,15 +231,14 @@ const PAGE_TITLES = {
 
 let currentView = null;
 
-document.addEventListener("DOMContentLoaded", async () => {
+document.addEventListener("DOMContentLoaded", () => {
   Store.init();
-  bindGlobal();
-  const restored = await Auth.restore();
-  if (restored) {
+  if (Auth.restore()) {
     showApp();
   } else {
     showAuth();
   }
+  bindGlobal();
 });
 
 function showAuth() {
@@ -280,7 +259,7 @@ function showApp() {
 }
 
 function roleLabel(r) {
-  return {admin:"Administrator", trainer:"Specialist", kineto:"Kinetoterapeut", member:"Membru"}[r] ?? r;
+  return {admin:"Administrator", trainer:"Specialist", member:"Membru"}[r] ?? r;
 }
 
 function buildNav() {
@@ -350,7 +329,7 @@ function bindGlobal() {
   });
 
   document.querySelectorAll("[data-demo]").forEach(btn => {
-    const creds = {admin:["admin@kim.ro","admin123"], trainer:["alecom@gmail.com","alexia"], member:["isandrei@gmail.com","123456"]};
+    const creds = {admin:["admin@kim.ro","admin123"], trainer:["radu@kim.ro","trainer123"], member:["andrei@kim.ro","member123"]};
     btn.addEventListener("click", () => {
       const [e, p] = creds[btn.dataset.demo];
       $("loginEmail").value = e; $("loginPassword").value = p;
@@ -364,40 +343,32 @@ function bindGlobal() {
     const btn   = e.target.querySelector("[type=submit]");
     btn.textContent = "Se conectează...";
     btn.disabled = true;
-    let ok = false;
-    let errMsg = "Email sau parolă incorectă sau serverul nu răspunde.";
-    try {
-      ok = await Auth.loginAsync(email, pass);
-    } catch (err) {
-      errMsg = err.message || errMsg;
-    }
+    const ok = await Auth.loginAsync(email, pass);
     btn.textContent = "Intră în aplicație";
     btn.disabled = false;
     if (ok) { showApp(); toast("Bun venit!", `Autentificat ca ${Auth.current.name}`); }
-    else toast("Eroare", errMsg, "error");
+    else toast("Eroare", "Email sau parolă incorectă.", "error");
   });
 
-  $("registerForm").addEventListener("submit", async e => {
+  $("registerForm").addEventListener("submit", e => {
     e.preventDefault();
     const name  = $("registerName").value.trim();
     const phone = $("registerPhone").value.trim();
     const email = $("registerEmail").value.trim();
-    const password = $("registerPassword").value;
+    const pass  = $("registerPassword").value;
     const role  = $("registerRole").value;
-
-    try {
-      const resp = await Api.register({name, phone, email, password, role});
-      if (!resp?.success) throw new Error(resp?.message || "Contul nu a putut fi creat.");
-      toast("Cont creat!", "Poți acum să te autentifici.");
-      document.querySelector("[data-auth-tab='login']").click();
-    } catch (err) {
-      toast("Eroare", err.message || "Email deja înregistrat sau serverul nu răspunde.", "error");
+    if (Store.getAll("users").find(u => u.email.toLowerCase() === email.toLowerCase())) {
+      toast("Eroare", "Email deja înregistrat.", "error"); return;
     }
+    const newUser = {id:uuid(), name, phone, email, password:pass, role, status:"active", joinDate:today()};
+    Store.addItem("users", newUser);
+    toast("Cont creat!", "Poți acum să te autentifici.");
+    document.querySelector("[data-auth-tab='login']").click();
   });
 
-  $("logoutBtn").addEventListener("click", async () => { await Auth.logout(); showAuth(); toast("La revedere!", ""); });
+  $("logoutBtn").addEventListener("click", () => { Auth.logout(); showAuth(); toast("La revedere!", ""); });
 
-  $("resetDemoBtn").addEventListener("click", async () => { await loadAppData(); showApp(); toast("Date reîncărcate", "Datele au fost luate din baza de date MySQL."); });
+  $("resetDemoBtn").addEventListener("click", () => { Store.reset(); showApp(); toast("Date resetate", "Datele demo au fost restaurate."); });
 
   $("menuToggle").addEventListener("click", () => $("sidebar").classList.toggle("open"));
 
@@ -499,7 +470,7 @@ function sessionCard(s, role) {
     actions = `<button class="small-btn primary" onclick="bookSession('${s.id}')">Rezervă loc</button>`;
   } else if (role === "member" && s.booked?.includes(Auth.current.id)) {
     actions = `<button class="small-btn danger" onclick="cancelBooking('${s.id}')">Anulează rezervare</button>`;
-  } else if (role === "trainer" || role === "kineto" || role === "admin") {
+  } else if (role === "trainer" || role === "admin") {
     actions = `<button class="small-btn" onclick="editSessionForm('${s.id}')">Editează</button>
                <button class="small-btn danger" onclick="deleteSession('${s.id}')">Șterge</button>`;
   }
@@ -519,35 +490,29 @@ function sessionCard(s, role) {
   </div>`;
 }
 
-async function bookSession(sId) {
+function bookSession(sId) {
   const me = Auth.current;
+  const subs = Store.getAll("subscriptions");
+  const activeSub = subs.find(s=>s.userId===me.id && s.status==="active");
+  if (!activeSub) { toast("Abonament necesar", "Trebuie să ai un abonament activ pentru a rezerva.", "error"); return; }
   const s = Store.findOne("sessions", sId);
   if (!s) return;
-
-  try {
-    const resp = await Api.bookSession(sId);
-    if (!resp?.success) throw new Error(resp?.message || "Rezervarea nu a putut fi salvată.");
-    await loadAppData();
-    toast("Rezervare confirmată!", `Rezervarea pentru "${s.title}" a fost salvată în baza de date.`);
-    renderView(currentView);
-  } catch (err) {
-    toast("Eroare rezervare", err.message || "Nu s-a putut face rezervarea.", "error");
-  }
+  if (s.booked?.includes(me.id)) { toast("Deja rezervat", "Ești deja înscris la această sesiune.", "error"); return; }
+  if ((s.booked?.length??0) >= s.capacity) { toast("Sesiune plină", "Nu mai sunt locuri disponibile.", "error"); return; }
+  Store.updateItem("sessions", sId, {booked: [...(s.booked??[]), me.id]});
+  Store.logActivity("Rezervare adăugată", me.name, s.title);
+  toast("Rezervare confirmată!", `Te-ai înscris la "${s.title}".`);
+  renderView(currentView);
 }
 
-async function cancelBooking(sId) {
+function cancelBooking(sId) {
+  const me = Auth.current;
   const s  = Store.findOne("sessions", sId);
   if (!s) return;
-
-  try {
-    const resp = await Api.cancelBooking(sId);
-    if (!resp?.success) throw new Error(resp?.message || "Anularea nu a putut fi salvată.");
-    await loadAppData();
-    toast("Rezervare anulată", `Ai anulat "${s.title}" în baza de date.`);
-    renderView(currentView);
-  } catch (err) {
-    toast("Eroare", err.message || "Nu s-a putut anula rezervarea.", "error");
-  }
+  Store.updateItem("sessions", sId, {booked: (s.booked??[]).filter(id=>id!==me.id)});
+  Store.logActivity("Rezervare anulată", me.name, s.title);
+  toast("Rezervare anulată", `Ai anulat "${s.title}".`);
+  renderView(currentView);
 }
 
 function renderUsers() {
@@ -654,12 +619,12 @@ function viewUserHistory(id) {
 
 function renderSchedule() {
   const role = Auth.current.role;
-  const canEdit = role === "admin" || role === "trainer" || role === "kineto";
+  const canEdit = role === "admin" || role === "trainer";
   if (!canEdit) { $("openSessionModal").classList.add("hidden"); } else { $("openSessionModal").classList.remove("hidden"); }
 
   const render = () => {
     let sessions = Store.getAll("sessions");
-    if (role === "trainer" || role === "kineto") sessions = sessions.filter(s=>s.trainer===Auth.current.id);
+    if (role === "trainer") sessions = sessions.filter(s=>s.trainer===Auth.current.id);
     const search = $("sessionSearch").value.toLowerCase();
     const type   = $("sessionTypeFilter").value;
     const status = $("sessionStatusFilter").value;
@@ -680,7 +645,7 @@ function renderSchedule() {
 
 function openSessionForm(sessionId = null) {
   const s = sessionId ? Store.findOne("sessions", sessionId) : null;
-  const users = Store.getAll("users").filter(u=>u.role==="trainer"||u.role==="kineto"||u.role==="admin");
+  const users = Store.getAll("users").filter(u=>u.role==="trainer"||u.role==="admin");
   const rooms = Store.getAll("rooms");
   openModal(s ? "Editează sesiune" : "Adaugă sesiune", `
     <form class="form-grid" id="sessionForm">
@@ -829,9 +794,31 @@ async function renderTrainers() {
 }
 
 async function loadTrainersFromDB() {
-  // În varianta integrată, specialiștii sunt deja încărcați din MySQL prin api/data.php.
-  // Funcția rămâne doar ca să nu schimbăm structura renderTrainers().
-  return true;
+  const [fitness, kineto] = await Promise.all([
+    Api.get("pages/member/sessions/get_trainers.php?type=fitness"),
+    Api.get("pages/member/sessions/get_trainers.php?type=kineto")
+  ]);
+  if (!fitness && !kineto) return; // niciun răspuns de la PHP -> păstrăm datele locale
+
+  const rows = [
+    ...(fitness || []).map(r => ({...r, _kind: "Antrenor"})),
+    ...(kineto  || []).map(r => ({...r, _kind: "Kinetoterapeut"}))
+  ];
+
+  let users = Store.getAll("users").filter(u => !String(u.id).startsWith("db-")); // scoatem importurile anterioare din DB
+  rows.forEach(r => {
+    users.push({
+      id: "db-" + r.id,
+      name: `${r.nume ?? ""} ${r.prenume ?? ""}`.trim() || "Specialist",
+      email: "",
+      phone: "-",
+      role: "trainer",
+      status: "active",
+      specialization: `${r._kind} (din baza de date)`,
+      joinDate: today()
+    });
+  });
+  Store.save("users", users); // datele reale intră în store și apar în interfață
 }
 
 function openTrainerForm() {
@@ -1010,7 +997,7 @@ const deleteEquipment = (id) => { if(confirm("Ștergi echipamentul?")){ Store.de
 
 async function renderReports() {
   const liveStats = await Api.fetchStats();
-  const sessions = liveStats?.sessions || Store.getAll("sessions");
+  const sessions = liveStats?.sessions ?? Store.getAll("sessions");
 
   const today_ = today();
   const weekStart = (() => { const d = new Date(); d.setDate(d.getDate()-d.getDay()+1); return d.toISOString().slice(0,10); })();
@@ -1203,24 +1190,16 @@ function editProfileModal(u) {
         <button type="submit" class="primary-btn">Salvează</button>
       </div>
     </form>
-  `, async (e) => {
+  `, (e) => {
     const fd = new FormData(e.target);
     const patch = {name: fd.get("name"), phone: fd.get("phone"), email: fd.get("email")};
     if (fd.get("password")) patch.password = fd.get("password");
-
-    try {
-      const resp = await Api.updateProfile(patch);
-      if (!resp?.success) throw new Error(resp?.message || "Profilul nu a putut fi actualizat.");
-      await loadAppData();
-      Auth.current = resp.user || {...Auth.current, ...patch};
-      sessionStorage.setItem("kim_session_user", JSON.stringify(Auth.current));
-      toast("Profil actualizat", "Modificările au fost salvate în baza de date.");
-      closeModal();
-      renderUserMini();
-      renderProfile();
-    } catch (err) {
-      toast("Eroare", err.message || "Nu s-a putut actualiza profilul.", "error");
-    }
+    Store.updateItem("users", u.id, patch);
+    Auth.current = {...Auth.current, ...patch};
+    toast("Profil actualizat");
+    closeModal();
+    renderUserMini();
+    renderProfile();
   });
 }
 
