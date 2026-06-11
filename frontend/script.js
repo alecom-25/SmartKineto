@@ -1,17 +1,5 @@
-/* ============================================================
-   KIM – Kineto Web Manager  |  script.js
-
-   Arhitectură:
-   - Interfață SPA (Single Page Application) în HTML/CSS/JS pur
-   - Apeluri Ajax (fetch) asincrone către serviciile Web PHP
-   - LocalStorage ca fallback/cache când serverul nu e disponibil
-   - Toate datele afișate sunt sanitizate XSS prin esc()
-   - Import/Export CSV și JSON conform cerințelor
-   ============================================================ */
-
 "use strict";
 
-/* ── UTILS ─────────────────────────────────────────────────── */
 const $ = (id) => document.getElementById(id);
 const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const uuid = () => crypto.randomUUID ? crypto.randomUUID() : Math.random().toString(36).slice(2);
@@ -20,7 +8,6 @@ const fmtDate = (d) => d ? new Date(d).toLocaleDateString("ro-RO", {day:"2-digit
 const fmtTime = (t) => t ?? "";
 const clamp = (v, lo, hi) => Math.min(Math.max(v, lo), hi);
 
-/* ── TOAST ─────────────────────────────────────────────────── */
 function toast(title, msg = "", type = "ok") {
   const root = $("toastRoot");
   const el = document.createElement("div");
@@ -30,7 +17,6 @@ function toast(title, msg = "", type = "ok") {
   setTimeout(() => el.remove(), 3800);
 }
 
-/* ── SEED DATA ─────────────────────────────────────────────── */
 const SEED = {
   users: [
     {id:"u1", name:"Admin KIM", email:"admin@kim.ro", phone:"0700000001", role:"admin", password:"admin123", status:"active", joinDate:"2024-01-10"},
@@ -77,12 +63,7 @@ const SEED = {
   ]
 };
 
-/* ── AJAX API LAYER ─────────────────────────────────────────
-   Apeluri fetch() asincrone către PHP backend.
-   Dacă serverul nu răspunde (dev local fără PHP), fallback
-   automat pe LocalStorage, fără erori vizibile.
-   ──────────────────────────────────────────────────────────── */
-const API_BASE = "../"; // rădăcina proiectului PHP
+const API_BASE = "../";
 
 const Api = {
   async get(endpoint) {
@@ -134,7 +115,6 @@ const Api = {
   }
 };
 
-/* ── LOCAL STORE (cache + fallback) ─────────────────────────── */
 const Store = {
   _k: (key) => `kim_${key}`,
   get(key) {
@@ -173,21 +153,17 @@ const Store = {
   }
 };
 
-/* ── AUTH ─────────────────────────────────────────────────── */
 const Auth = {
   current: null,
   async loginAsync(email, password) {
-    // Încearcă mai întâi autentificarea pe serverul PHP via Ajax
     const serverResp = await Api.loginRequest(email.trim(), password);
     if (serverResp && serverResp.success && serverResp.user) {
-      // Server a răspuns — sincronizăm utilizatorul în LocalStorage
       const u = serverResp.user;
       Store.updateItem("users", u.id, u);
       this.current = u;
       sessionStorage.setItem("kim_session", u.id);
       return true;
     }
-    // Fallback: autentificare locală (demo / dev fără server)
     return this.login(email, password);
   },
   login(email, password) {
@@ -214,7 +190,6 @@ const Auth = {
   can(roles) { return roles.includes(this.current?.role); }
 };
 
-/* ── NAV CONFIG ────────────────────────────────────────────── */
 const NAV = {
   admin: [
     {id:"adminDashboardView", label:"🏠 Dashboard"},
@@ -254,10 +229,8 @@ const PAGE_TITLES = {
   profileView: ["Profil", "Informații cont"],
 };
 
-/* ── APP STATE ─────────────────────────────────────────────── */
 let currentView = null;
 
-/* ── BOOT ──────────────────────────────────────────────────── */
 document.addEventListener("DOMContentLoaded", () => {
   Store.init();
   if (Auth.restore()) {
@@ -268,7 +241,6 @@ document.addEventListener("DOMContentLoaded", () => {
   bindGlobal();
 });
 
-/* ── AUTH SCREEN ───────────────────────────────────────────── */
 function showAuth() {
   $("authScreen").classList.remove("hidden");
   $("appShell").classList.add("hidden");
@@ -339,7 +311,7 @@ function renderView(id) {
     subscriptionsView: renderSubscriptions,
     trainersView: renderTrainers,
     resourcesView: renderResources,
-    reportsView: renderReports,   // async
+    reportsView: renderReports,
     pluginsView: renderPlugins,
     profileView: renderProfile,
   };
@@ -347,9 +319,7 @@ function renderView(id) {
   if (fn) Promise.resolve(fn()).catch(console.error);
 }
 
-/* ── GLOBAL BINDINGS ───────────────────────────────────────── */
 function bindGlobal() {
-  // Auth tabs
   document.querySelectorAll("[data-auth-tab]").forEach(btn => {
     btn.addEventListener("click", () => {
       document.querySelectorAll(".auth-tab,.auth-form").forEach(x => x.classList.remove("active"));
@@ -358,7 +328,6 @@ function bindGlobal() {
     });
   });
 
-  // Demo cards
   document.querySelectorAll("[data-demo]").forEach(btn => {
     const creds = {admin:["admin@kim.ro","admin123"], trainer:["radu@kim.ro","trainer123"], member:["andrei@kim.ro","member123"]};
     btn.addEventListener("click", () => {
@@ -367,7 +336,6 @@ function bindGlobal() {
     });
   });
 
-  // Login
   $("loginForm").addEventListener("submit", async e => {
     e.preventDefault();
     const email = $("loginEmail").value.trim();
@@ -382,7 +350,6 @@ function bindGlobal() {
     else toast("Eroare", "Email sau parolă incorectă.", "error");
   });
 
-  // Register
   $("registerForm").addEventListener("submit", e => {
     e.preventDefault();
     const name  = $("registerName").value.trim();
@@ -399,27 +366,21 @@ function bindGlobal() {
     document.querySelector("[data-auth-tab='login']").click();
   });
 
-  // Logout
   $("logoutBtn").addEventListener("click", () => { Auth.logout(); showAuth(); toast("La revedere!", ""); });
 
-  // Reset
   $("resetDemoBtn").addEventListener("click", () => { Store.reset(); showApp(); toast("Date resetate", "Datele demo au fost restaurate."); });
 
-  // Menu toggle
   $("menuToggle").addEventListener("click", () => $("sidebar").classList.toggle("open"));
 
-  // Modal close
   $("closeModal").addEventListener("click", closeModal);
   document.querySelector(".modal-backdrop").addEventListener("click", closeModal);
 
-  // Delegated nav jumps
   document.body.addEventListener("click", e => {
     const jump = e.target.closest("[data-jump]");
     if (jump) navigateTo(jump.dataset.jump);
   });
 }
 
-/* ── MODAL ─────────────────────────────────────────────────── */
 function openModal(title, bodyHTML, onSubmit) {
   $("modalTitle").textContent = title;
   $("modalBody").innerHTML = bodyHTML;
@@ -431,7 +392,6 @@ function openModal(title, bodyHTML, onSubmit) {
 }
 function closeModal() { $("modalRoot").classList.add("hidden"); }
 
-/* ── ADMIN DASHBOARD ───────────────────────────────────────── */
 function renderAdminDashboard() {
   const users    = Store.getAll("users");
   const sessions = Store.getAll("sessions");
@@ -454,7 +414,6 @@ function renderAdminDashboard() {
   ).join("") || `<div class="empty-state">Nicio activitate.</div>`;
 }
 
-/* ── TRAINER DASHBOARD ─────────────────────────────────────── */
 function renderTrainerDashboard() {
   const me = Auth.current;
   const allSessions = Store.getAll("sessions");
@@ -481,7 +440,6 @@ function renderTrainerDashboard() {
   document.querySelector("[data-open='session']")?.addEventListener("click", () => openSessionForm());
 }
 
-/* ── MEMBER DASHBOARD ──────────────────────────────────────── */
 function renderMemberDashboard() {
   const me = Auth.current;
   const sessions = Store.getAll("sessions");
@@ -502,7 +460,6 @@ function renderMemberDashboard() {
     : `<div class="list-item"><span>Nu ai un abonament activ.</span><button class="small-btn primary" onclick="navigateTo('subscriptionsView')">Alege abonament</button></div>`;
 }
 
-/* ── HELPERS: SESSION CARD ─────────────────────────────────── */
 function sessionCard(s, role) {
   const statusCls = s.status === "active" ? "status-active" : "status-cancelled";
   const trainer   = Store.findOne("users", s.trainer);
@@ -533,7 +490,6 @@ function sessionCard(s, role) {
   </div>`;
 }
 
-/* ── RESERVATIONS ──────────────────────────────────────────── */
 function bookSession(sId) {
   const me = Auth.current;
   const subs = Store.getAll("subscriptions");
@@ -559,7 +515,6 @@ function cancelBooking(sId) {
   renderView(currentView);
 }
 
-/* ── USERS VIEW ─────────────────────────────────────────────── */
 function renderUsers() {
   const render = (filter = "all", statusFilter = "all", search = "") => {
     let users = Store.getAll("users");
@@ -662,7 +617,6 @@ function viewUserHistory(id) {
     </div>`);
 }
 
-/* ── SCHEDULE VIEW ─────────────────────────────────────────── */
 function renderSchedule() {
   const role = Auth.current.role;
   const canEdit = role === "admin" || role === "trainer";
@@ -747,7 +701,6 @@ function deleteSession(id) {
   renderView(currentView);
 }
 
-/* ── SUBSCRIPTIONS VIEW ────────────────────────────────────── */
 function renderSubscriptions() {
   const role = Auth.current.role;
   let subs = Store.getAll("subscriptions");
@@ -813,10 +766,9 @@ const suspendSub  = (id) => { Store.updateItem("subscriptions",id,{status:"suspe
 const activateSub = (id) => { Store.updateItem("subscriptions",id,{status:"active"}); toast("Abonament activat"); renderSubscriptions(); };
 const deleteSub   = (id) => { if(confirm("Ștergi abonamentul?")){ Store.deleteItem("subscriptions",id); toast("Șters"); renderSubscriptions(); } };
 
-/* ── TRAINERS VIEW ─────────────────────────────────────────── */
-function renderTrainers() {
+async function renderTrainers() {
   const render = (q="") => {
-    let trainers = Store.getAll("users").filter(u=>u.role==="trainer"||u.role==="admin");
+    let trainers = Store.getAll("users").filter(u=>u.role==="trainer"||u.role==="admin"||u.role==="kineto");
     if (q) trainers = trainers.filter(u=>[u.name,u.email,u.specialization,u.schedule].some(f=>String(f||"").toLowerCase().includes(q.toLowerCase())));
     $("trainersGrid").innerHTML = trainers.map(u=>`<div class="trainer-card">
       <h4>${esc(u.name)}</h4>
@@ -834,10 +786,39 @@ function renderTrainers() {
     </div>`).join("") || `<div class="empty-state">Niciun specialist.</div>`;
   };
 
+  await loadTrainersFromDB(); // aduce specialiștii reali din MySQL; dacă serverul nu răspunde, rămâne pe datele demo
   render();
   $("trainerSearch").addEventListener("input", e=>render(e.target.value));
   $("openTrainerModal").onclick = () => openTrainerForm();
   bindTrainerImportExport();
+}
+
+async function loadTrainersFromDB() {
+  const [fitness, kineto] = await Promise.all([
+    Api.get("pages/member/sessions/get_trainers.php?type=fitness"),
+    Api.get("pages/member/sessions/get_trainers.php?type=kineto")
+  ]);
+  if (!fitness && !kineto) return; // niciun răspuns de la PHP -> păstrăm datele locale
+
+  const rows = [
+    ...(fitness || []).map(r => ({...r, _kind: "Antrenor"})),
+    ...(kineto  || []).map(r => ({...r, _kind: "Kinetoterapeut"}))
+  ];
+
+  let users = Store.getAll("users").filter(u => !String(u.id).startsWith("db-")); // scoatem importurile anterioare din DB
+  rows.forEach(r => {
+    users.push({
+      id: "db-" + r.id,
+      name: `${r.nume ?? ""} ${r.prenume ?? ""}`.trim() || "Specialist",
+      email: "",
+      phone: "-",
+      role: "trainer",
+      status: "active",
+      specialization: `${r._kind} (din baza de date)`,
+      joinDate: today()
+    });
+  });
+  Store.save("users", users); // datele reale intră în store și apar în interfață
 }
 
 function openTrainerForm() {
@@ -868,7 +849,6 @@ function openTrainerForm() {
 }
 
 function bindTrainerImportExport() {
-  // Export CSV
   $("exportTrainersCsv").onclick = () => {
     const trainers = Store.getAll("users").filter(u=>u.role==="trainer");
     const csv = ["Nume,Email,Telefon,Specializare,Program,Status",
@@ -877,7 +857,6 @@ function bindTrainerImportExport() {
     downloadFile("specialisti.csv", csv, "text/csv;charset=utf-8;");
     toast("Export CSV", "Fișierul a fost descărcat.");
   };
-  // Export JSON (CSV + JSON conform cerințelor)
   $("exportTrainersXml").onclick = () => {
     const trainers = Store.getAll("users").filter(u=>u.role==="trainer").map(u=>({
       nume: u.name, email: u.email, telefon: u.phone??'',
@@ -886,7 +865,6 @@ function bindTrainerImportExport() {
     downloadFile("specialisti.json", JSON.stringify({specialisti: trainers}, null, 2), "application/json");
     toast("Export JSON", "Fișierul a fost descărcat.");
   };
-  // Import CSV
   $("importTrainersCsv").onchange = (e) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -907,7 +885,6 @@ function bindTrainerImportExport() {
     reader.readAsText(file);
     e.target.value = "";
   };
-  // Import JSON
   $("importTrainersXml").onchange = (e) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -915,7 +892,7 @@ function bindTrainerImportExport() {
     reader.onload = (ev) => {
       try {
         const parsed = JSON.parse(ev.target.result);
-        const list = parsed.specialisti ?? parsed; // acceptă array direct sau {specialisti:[...]}
+        const list = parsed.specialisti ?? parsed;
         if (!Array.isArray(list)) throw new Error("Format invalid");
         let added = 0;
         list.forEach(u => {
@@ -942,7 +919,6 @@ function bindTrainerImportExport() {
   };
 }
 
-/* ── RESOURCES VIEW ────────────────────────────────────────── */
 function renderResources() {
   const rooms = Store.getAll("rooms");
   $("roomsGrid").innerHTML = rooms.map(r=>`<div class="room-card">
@@ -1019,9 +995,7 @@ function openEquipmentForm(id = null) {
 const editEquipmentForm = (id) => openEquipmentForm(id);
 const deleteEquipment = (id) => { if(confirm("Ștergi echipamentul?")){ Store.deleteItem("equipment",id); toast("Echipament șters"); renderResources(); } };
 
-/* ── REPORTS VIEW ──────────────────────────────────────────── */
 async function renderReports() {
-  // Încearcă să obțină statisticile live de pe serverul PHP via Ajax
   const liveStats = await Api.fetchStats();
   const sessions = liveStats?.sessions ?? Store.getAll("sessions");
 
@@ -1045,7 +1019,6 @@ async function renderReports() {
   $("reportMonthBookings").textContent = monthB;
   $("reportTopTrainer").textContent    = topTrainer?.name ?? "-";
 
-  // Quick stats
   $("reportQuickStats").innerHTML = [
     {label:"Total sesiuni", val: sessions.length},
     {label:"Sesiuni active", val: sessions.filter(s=>s.status==="active").length},
@@ -1055,7 +1028,6 @@ async function renderReports() {
 
   drawChart(sessions);
 
-  // Export handlers
   $("exportReportsCsv").onclick = () => {
     const csv = ["Data,Sesiune,Tip,Rezervari,Capacitate",
       ...sessions.map(s=>`"${s.date}","${s.title}","${s.type}","${s.booked?.length??0}","${s.capacity}"`)
@@ -1063,7 +1035,6 @@ async function renderReports() {
     downloadFile("raport.csv", csv, "text/csv");
     toast("Export CSV", "Raportul a fost descărcat.");
   };
-  // Export JSON (conform cerință: CSV + JSON)
   $("exportReportsXml").onclick = () => {
     const data = {
       exportat: new Date().toISOString(),
@@ -1097,7 +1068,6 @@ function drawChart(sessions) {
   const chartH = H - 100;
   const startX = 70;
 
-  // Axes
   ctx.strokeStyle = "#e5eaf2"; ctx.lineWidth = 1;
   for (let i=0; i<=5; i++) {
     const y = 40 + (chartH/5)*(5-i);
@@ -1113,7 +1083,6 @@ function drawChart(sessions) {
     const barHeight = (vals[i]/max)*chartH;
     const y = 40 + chartH - barHeight;
     ctx.fillStyle = colors[i%colors.length];
-    // Rounded bars
     ctx.beginPath();
     ctx.roundRect(x, y, barW, barHeight, [8,8,0,0]);
     ctx.fill();
@@ -1133,7 +1102,6 @@ function exportCanvas(fmt) {
   toast(`Export ${fmt.toUpperCase()}`, "Graficul a fost descărcat.");
 }
 
-/* ── PLUGINS VIEW ──────────────────────────────────────────── */
 function renderPlugins() {
   const plugins = Store.getAll("plugins");
   $("pluginsGrid").innerHTML = plugins.map(p=>`<div class="plugin-card">
@@ -1176,7 +1144,6 @@ const installPlugin   = (id) => { Store.updateItem("plugins",id,{status:"install
 const uninstallPlugin = (id) => { Store.updateItem("plugins",id,{status:"pending"}); toast("Plugin dezinstalat"); renderPlugins(); };
 const deletePlugin    = (id) => { if(confirm("Ștergi plugin-ul?")){ Store.deleteItem("plugins",id); toast("Plugin șters"); renderPlugins(); } };
 
-/* ── PROFILE VIEW ──────────────────────────────────────────── */
 function renderProfile() {
   const u = Auth.current;
   const subs = Store.getAll("subscriptions").filter(s=>s.userId===u.id);
@@ -1236,7 +1203,6 @@ function editProfileModal(u) {
   });
 }
 
-/* ── EXPORT / DOWNLOAD HELPER ──────────────────────────────── */
 function downloadFile(filename, content, mimeType) {
   const blob = new Blob([content], {type: mimeType});
   const url = URL.createObjectURL(blob);
@@ -1245,7 +1211,6 @@ function downloadFile(filename, content, mimeType) {
   setTimeout(() => URL.revokeObjectURL(url), 1000);
 }
 
-/* ── EXPOSE GLOBALS (called from inline onclick) ───────────── */
 Object.assign(window, {
   bookSession, cancelBooking, editSessionForm, deleteSession,
   editUserForm, deleteUser, toggleUserStatus, viewUserHistory,
